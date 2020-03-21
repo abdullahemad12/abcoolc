@@ -60,9 +60,9 @@ NOT                 (N|n)(O|o)(T|t)
 
 INTEGERS            [0-9]*
 
-TBOOLEAN            true
+TBOOLEAN            t(R|r)(U|u)(E|e)
 
-FBOOLEAN            false
+FBOOLEAN            f(A|a)(L|l)(S|s)(E|e)
 
 TYPEID              [A-Z](([A-Za-z0-9]|_)*) 
 
@@ -83,6 +83,38 @@ STRING              \"(\\\n|\\.|[^\0|\n|\"|\\])*\"
 NULSTR              \".*\0.*\"
 
 UNMATCHEDSTR        \"
+
+CLASS               (C|c)(L|l)(L|l)(A|a)(S|s)
+
+ELSE                (E|e)(L|l)(S|s)(E|e)
+
+FI                  (F|f)(I|i)
+
+IF                  (I|i)(F|f)
+
+IN                  (I|i)(N|n)
+
+INHERITS            (I|i)(N|n)(H|h)(E|e)(R|r)(I|i)(T|t)(S|s)
+
+LET                 (L|l)(E|e)(T|t)
+
+LOOP                (L|l)(O|o)(O|o)(P|p)
+
+POOL                (P|p)(O|o)(O|o)(L|l)
+
+THEN                (T|t)(H|h)(E|e)(N|n)
+
+WHILE               (W|w)(H|h)(I|i)(L|l)(E|e)
+
+CASE                (C|c)(A|a)(S|s)(E|e)
+
+ESAC                (E|e)(S|s)(A|a)(C|c)
+
+OF                  (O|o)(F|f)
+
+NEW                 (N|n)(E|e)(W|w)
+
+ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
 
 %%
 
@@ -134,7 +166,7 @@ UNMATCHEDSTR        \"
 
 
 
-
+ /*Key words*/
 
 
  
@@ -156,15 +188,7 @@ UNMATCHEDSTR        \"
     return TYPEID;
 }
 
-TBOOLEAN {
-    cool_yylval.boolean = true;
-    return BOOL_CONST;
-}
 
-FBOOLEAN {
-    cool_yylval.boolean = false;
-    return BOOL_CONST;
-}
 
 
  /**
@@ -219,12 +243,56 @@ FBOOLEAN {
 
 {LE} { return LE; }
 
-{NOT} { return NOT; }
+
 
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
   */
+{NOT} { return NOT; }
+
+
+{TBOOLEAN} {
+    cool_yylval.boolean = true;
+    return BOOL_CONST;
+}
+
+{FBOOLEAN} {
+    cool_yylval.boolean = false;
+    return BOOL_CONST;
+}
+
+{CLASS} { return CLASS; }
+
+{ELSE} { return ELSE; }
+
+{FI}  { return FI; } 
+
+{IF}  { return IF; }
+
+{IN}  { return IN; }
+
+{INHERITS} { return INHERITS; }
+
+{ISVOID}  { return ISVOID; }
+
+{LET} { return LET; }
+
+{LOOP} { return LOOP; }
+
+{POOL} { return POOL; }
+
+{THEN} { return THEN; }
+
+{WHILE} { return WHILE; }
+
+{CASE} { return CASE; }
+
+{ESAC} { return ESAC; }
+
+{NEW} { return NEW; }
+
+{OF} { return OF; }
 
 
  /*
