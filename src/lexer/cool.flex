@@ -68,7 +68,7 @@ STRING              \"(\\\n|\\.|[^\0|\n|\"|\\])*\"
 
 NULSTR              \".*\0.*\"
 
-UNMATCHEDSTR        h
+UNMATCHEDSTR        \"
 
 %%
 
