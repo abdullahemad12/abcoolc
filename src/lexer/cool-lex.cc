@@ -434,8 +434,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 /* %% [3.0] code to copy yytext_ptr to yytext[] goes here, if %array \ */\
 	(yy_c_buf_p) = yy_cp;
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 6
-#define YY_END_OF_BUFFER 7
+#define YY_NUM_RULES 8
+#define YY_END_OF_BUFFER 9
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -443,10 +443,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[13] =
+static const flex_int16_t yy_accept[30] =
     {   0,
-        4,    4,    7,    6,    2,    1,    2,    4,    6,    4,
-        3,    0
+        4,    4,    9,    8,    2,    1,    7,    4,    8,    0,
+        5,    0,    0,    0,    4,    3,    0,    0,    0,    6,
+        0,    5,    0,    0,    5,    0,    6,    0,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -454,17 +455,17 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    2,    2,    3,
         2,    2,    2,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    4,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    1,    1,    1,
-        6,    7,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    4,    1,    5,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    1,    1,    1,
+        7,    8,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    9,    1,    1,    1,    1,    1,    1,    1,    1,
 
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,   10,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -481,33 +482,58 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[8] =
+static const YY_CHAR yy_meta[12] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1
+        1,    1,    2,    1,    1,    1,    1,    1,    1,    3,
+        3
     } ;
 
-static const flex_int16_t yy_base[13] =
+static const flex_int16_t yy_base[35] =
     {   0,
-        0,    0,   11,   12,   12,   12,   12,    5,    2,    3,
-       12,   12
+        0,    0,   27,   98,   98,   98,    7,   16,   13,   14,
+        9,   23,    4,   30,    8,   98,   37,   42,   49,    0,
+        0,   98,   58,   65,    0,   74,    0,    0,   98,   85,
+       88,   91,   12,   94
     } ;
 
-static const flex_int16_t yy_def[13] =
+static const flex_int16_t yy_def[35] =
     {   0,
-       12,    1,   12,   12,   12,   12,   12,   12,   12,   12,
-       12,    0
+       29,    1,   29,   29,   29,   29,   30,   29,   29,   30,
+       31,   30,   31,   32,   29,   29,   33,   34,   32,   19,
+       19,   29,   33,   34,   19,   34,   24,   24,    0,   29,
+       29,   29,   29,   29
     } ;
 
-static const flex_int16_t yy_nxt[20] =
+static const flex_int16_t yy_nxt[110] =
     {   0,
-        4,    5,    6,    7,    8,    9,    4,   10,   11,   10,
-       12,    3,   12,   12,   12,   12,   12,   12,   12
+        4,    5,    6,    5,    7,    8,    9,    4,    4,    4,
+        4,   11,   17,   15,   14,   12,   13,   14,   11,   14,
+       16,   15,   12,   13,   14,   17,   29,   29,   29,   29,
+       29,   29,   29,   18,   20,   29,   29,   29,   29,   29,
+       21,   22,   29,   29,   29,   23,   25,   29,   29,   29,
+       26,   19,   21,   20,   29,   29,   29,   29,   29,   21,
+       17,   29,   29,   29,   29,   29,   29,   17,   17,   25,
+       29,   29,   29,   26,   19,   21,   17,   29,   27,   29,
+       29,   29,   29,   29,   28,   10,   29,   10,   13,   29,
+       13,   19,   29,   19,   24,   29,   24,    3,   29,   29,
+
+       29,   29,   29,   29,   29,   29,   29,   29,   29
     } ;
 
-static const flex_int16_t yy_chk[20] =
+static const flex_int16_t yy_chk[110] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,   10,    9,    8,
-        3,   12,   12,   12,   12,   12,   12,   12,   12
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    7,   33,   15,   13,    7,    7,    7,   10,   11,
+        9,    8,   10,   10,   10,   12,    3,    0,    0,    0,
+        0,    0,    0,   12,   14,    0,    0,    0,    0,    0,
+       14,   17,    0,    0,    0,   17,   18,    0,    0,    0,
+       18,   18,   18,   19,    0,    0,    0,    0,    0,   19,
+       23,    0,    0,    0,    0,    0,    0,   23,   23,   24,
+        0,    0,    0,   24,   24,   24,   26,    0,   26,    0,
+        0,    0,    0,    0,   26,   30,    0,   30,   31,    0,
+       31,   32,    0,   32,   34,    0,   34,   29,   29,   29,
+
+       29,   29,   29,   29,   29,   29,   29,   29,   29
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -516,9 +542,9 @@ static char *yy_last_accepting_cpos;
 extern int yy_flex_debug;
 int yy_flex_debug = 1;
 
-static const flex_int16_t yy_rule_linenum[6] =
+static const flex_int16_t yy_rule_linenum[8] =
     {   0,
-       82,   85,  101,  104,  115
+       82,   85,  101,  104,  126,  150,  156
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -574,11 +600,11 @@ extern YYSTYPE cool_yylval;
 /*prototypes*/
 int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length);
 
-#line 577 "cool-lex.cc"
+#line 603 "cool-lex.cc"
 /*
  * Define names for regular expressions here.
  */
-#line 581 "cool-lex.cc"
+#line 607 "cool-lex.cc"
 
 #define INITIAL 0
 
@@ -868,7 +894,7 @@ YY_DECL
    */
    
  /* on new line skip and increment the line number */
-#line 871 "cool-lex.cc"
+#line 897 "cool-lex.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -897,13 +923,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 13 )
+				if ( yy_current_state >= 30 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 12 );
+		while ( yy_base[yy_current_state] != 98 );
 
 yy_find_action:
 /* %% [10.0] code to find the action number goes here */
@@ -926,13 +952,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 6 )
+			else if ( yy_act < 8 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 6 )
+			else if ( yy_act == 8 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 7 )
+			else if ( yy_act == 9 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -990,11 +1016,56 @@ YY_RULE_SETUP
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
   */
+/*
+  *  String constants (C syntax)
+  *  Escape sequence \c is accepted for all characters c. Except for 
+  *  \n \t \b \f, the result is c.
+  *  valid strings meet the following criteria: 
+  *  1. They start and end with quotations
+  *  2. characters in the string can be any except for the following: \0  
+  *  3. \n character is only allowed if it follows a escape character \
+  *  4. \ character is only allowed if it perceeds any other allowed character including itself
+  *  Any character not satisfying this criteria is invalid 
+  */
+case 5:
+/* rule 5 can match eol */
+YY_RULE_SETUP
+#line 126 "cool.flex"
+{
+    int err =  convertEscapedToAscii(yytext, yyleng, string_buf, MAX_STR_CONST);
+    if(err == -1) 
+    {
+        cool_yylval.error_msg = "String constant too long"; 
+        return ERROR;
+    }
+    cool_yylval.symbol = stringtable.add_string(string_buf);
+    return STR_CONST;
+}
+	YY_BREAK
+/*
+  * Error Handling for strings
+  * Three errors that could occur in a string according 
+  * to the COOL language specifications:
+  * 1. The string is too long to be treated as a constant (handled when processing a valid string)
+  * 2. The string contains a null terminator byte (any other characters are allowed given that they may satisfy some condition)
+  * 3. The string has an unmatched quotation due to one the following reasons:
+  *          A. An unescaped newline was encountered before the closing quotation was found
+  *          B. EOF occured before the closing quotation was found
+  */
+/*matches strings that contains the null character in them*/
+case 6:
+YY_RULE_SETUP
+#line 150 "cool.flex"
+{
+    cool_yylval.error_msg = "String contains null character";
+    return ERROR;
+}
+	YY_BREAK
 /*the only other possible case for an invalid string is if only the string had
    an unmatched quotation*/
-case 5:
+case 7:
 YY_RULE_SETUP
-#line 115 "cool.flex"
+#line 156 "cool.flex"
 {
     // consume the rest of the input until a new line or EOF
     char c;
@@ -1002,7 +1073,7 @@ YY_RULE_SETUP
     while((c=yyinput()) != EOF && c != 0) 
     {
         // only skip if the new line is escaped
-        if(prev != '\\' && c == 'n') 
+        if(prev != '\\' && c == '\n') 
         {
             break;
         }
@@ -1013,12 +1084,12 @@ YY_RULE_SETUP
     return ERROR;
 }
 	YY_BREAK
-case 6:
+case 8:
 YY_RULE_SETUP
-#line 136 "cool.flex"
+#line 177 "cool.flex"
 ECHO;
 	YY_BREAK
-#line 1021 "cool-lex.cc"
+#line 1092 "cool-lex.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1327,7 +1398,7 @@ static int yy_get_next_buffer (void)
 	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
 /* %% [16.0] code to find the next state goes here */
-		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 11);
 		if ( yy_accept[yy_current_state] )
 			{
 			(yy_last_accepting_state) = yy_current_state;
@@ -1336,7 +1407,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 13 )
+			if ( yy_current_state >= 30 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1360,7 +1431,7 @@ static int yy_get_next_buffer (void)
     /* %% [17.0] code to find the next state, and perhaps do backing up, goes here */
 	char *yy_cp = (yy_c_buf_p);
 
-	YY_CHAR yy_c = 1;
+	YY_CHAR yy_c = 11;
 	if ( yy_accept[yy_current_state] )
 		{
 		(yy_last_accepting_state) = yy_current_state;
@@ -1369,11 +1440,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 13 )
+		if ( yy_current_state >= 30 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 12);
+	yy_is_jam = (yy_current_state == 29);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -2165,7 +2236,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 136 "cool.flex"
+#line 177 "cool.flex"
 
 
 
@@ -2240,7 +2311,7 @@ int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length
         return -1;
     }
     // terminate the string
-    dest[i] = '\0'; 
+    dest[strptr] = '\0'; 
     return 0;
 }
 

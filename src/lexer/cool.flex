@@ -60,7 +60,7 @@ OBJECTID            [a-z](([A-Za-z0-9]|_)*)
 
 NEWLINE             \n
 
-SPECIALCHARACTERS   [\t\r\b\f\v" "]
+SPECIALCHARACTERS   [\t\r\b\f\v]|" "
 
 STARTCOMMENT        \(*  
 
@@ -159,7 +159,7 @@ UNMATCHEDSTR        \"
     while((c=yyinput()) != EOF && c != 0) 
     {
         // only skip if the new line is escaped
-        if(prev != '\\' && c == 'n') 
+        if(prev != '\\' && c == '\n') 
         {
             break;
         }
@@ -247,6 +247,6 @@ int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length
         return -1;
     }
     // terminate the string
-    dest[i] = '\0'; 
+    dest[strptr] = '\0'; 
     return 0;
 }
