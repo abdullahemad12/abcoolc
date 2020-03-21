@@ -84,7 +84,7 @@ NULSTR              \".*\0.*\"
 
 UNMATCHEDSTR        \"
 
-CLASS               (C|c)(L|l)(L|l)(A|a)(S|s)
+CLASS               (C|c)(L|l)(A|a)(S|s)(S|s)
 
 ELSE                (E|e)(L|l)(S|s)(E|e)
 
@@ -119,86 +119,11 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
 %%
 
 
- /**
-   * single characters 
-   */
-   
- /* on new line skip and increment the line number */
-{NEWLINE} { ++curr_lineno; } 
-
-  /* Other special characters skip */
-{SPECIALCHARACTERS} { }
-
-
-\{ { return '{'; }
-
-\} { return '}'; }
-
-\( { return '('; }
-
-\) { return ')'; }
-
-\[ { return '['; }
-
-\] { return ']'; }
-
-\: { return ':'; }
-
-\; { return ';'; }
-
-\. { return '.'; }
-
-\, { return ','; } 
-
-\@ { return '@'; }
-
-\+ { return '+'; }
-
-\- { return '-'; }
-
-\* { return '*'; }
-
-\/ { return '/'; }
-
-\~ { return '~'; }
-
-\< { return '<'; }
-
 
 
  /*Key words*/
 
 
- 
- /**
-   * 10.1 Integers and Identifiers
-   */
- /**
-   * when a group of digits is matched, simply add them to the string table
-   */
-{INTEGERS} {
-    cool_yylval.symbol = inttable.add_string(yytext);
-    return INT_CONST;
-}
- /**
-   * when a word starting with a capital letter is matched
-   */  
-{TYPEID} {
-    cool_yylval.symbol = idtable.add_string(yytext);
-    return TYPEID;
-}
-
-
-
-
- /**
-   * when a word starting with a small letter is matched
-   */
-{OBJECTID} {
-    cool_yylval.symbol = idtable.add_string(yytext);
-    return OBJECTID;
-}   
-   
  /*
   *  comments
   */
@@ -228,7 +153,11 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
 }   
 
  /*one line comment*/
-{ONELINECOMMENT} { }
+{ONELINECOMMENT} {  
+        if(yytext[yyleng-1] == '\n') {
+            ++curr_lineno;
+        }
+}
 
  /**
    * single line comments 
@@ -294,7 +223,83 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
 
 {OF} { return OF; }
 
+ /**
+   * 10.1 Integers and Identifiers
+   */
+ /**
+   * when a group of digits is matched, simply add them to the string table
+   */
+{INTEGERS} {
+    cool_yylval.symbol = inttable.add_string(yytext);
+    return INT_CONST;
+}
+ /**
+   * when a word starting with a capital letter is matched
+   */  
+{TYPEID} {
+    cool_yylval.symbol = idtable.add_string(yytext);
+    return TYPEID;
+}
 
+
+ /**
+   * single characters 
+   */
+   
+ /* on new line skip and increment the line number */
+{NEWLINE} { ++curr_lineno; } 
+
+  /* Other special characters skip */
+{SPECIALCHARACTERS} { }
+
+
+\{ { return '{'; }
+
+\} { return '}'; }
+
+\( { return '('; }
+
+\) { return ')'; }
+
+\: { return ':'; }
+
+\; { return ';'; }
+
+\. { return '.'; }
+
+\, { return ','; } 
+
+\@ { return '@'; }
+
+\+ { return '+'; }
+
+\- { return '-'; }
+
+\* { return '*'; }
+
+\/ { return '/'; }
+
+\~ { return '~'; }
+
+\< { return '<'; }
+
+\= { return '='; }
+
+. {
+   cool_yylval.error_msg = yytext;
+   return ERROR;
+}
+
+
+
+ /**
+   * when a word starting with a small letter is matched
+   */
+{OBJECTID} {
+    cool_yylval.symbol = idtable.add_string(yytext);
+    return OBJECTID;
+}   
+   
  /*
   *  String constants (C syntax)
   *  Escape sequence \c is accepted for all characters c. Except for 
@@ -346,6 +351,7 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
         // only skip if the new line is escaped
         if(prev != '\\' && c == '\n') 
         {
+            ++curr_lineno;
             break;
         }
         prev = c;
@@ -381,6 +387,10 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
   */ 
 char convertEscapedCharacter(char c)
 {
+    if(c == '\n')
+    {
+        ++curr_lineno;
+    }
     switch(c)
     {
         case 'n': return '\n';
@@ -452,6 +462,11 @@ int skipCommentSection()
     char prev = ' ';
     while((c=yyinput()) != EOF && c != 0 && n_opened > 0)
     {
+        // update line count
+        if(c == '\n') 
+        {
+            ++curr_lineno;
+        }
         if(prev == '*' && c == ')') {
             --n_opened;
         }
@@ -460,6 +475,9 @@ int skipCommentSection()
         }
         prev = c;
     }
-    
+    if(c == '\n')
+    {
+        ++curr_lineno;
+    }
     return n_opened;
 }
