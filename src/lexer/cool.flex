@@ -66,6 +66,8 @@ STARTCOMMENT        \(\*
 
 CLOSECOMMENT        \*\)  
 
+ONELINECOMMENT      "-""-".*\n|"-""-".*
+
 STRING              \"(\\\n|\\.|[^\0|\n|\"|\\])*\"
 
 NULSTR              \".*\0.*\"
@@ -84,6 +86,8 @@ UNMATCHEDSTR        \"
 
   /* Other special characters skip */
 {SPECIALCHARACTERS} { }
+
+
  
  
  /**
@@ -139,6 +143,9 @@ UNMATCHEDSTR        \"
    cool_yylval.error_msg = "Unmatched *)";
    return ERROR;
 }   
+
+ /*one line comment*/
+{ONELINECOMMENT} { }
 
  /**
    * single line comments 
