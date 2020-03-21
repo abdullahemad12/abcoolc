@@ -1,3 +1,9 @@
+(*
+ * This program creates a stack which is then used for an interpreter of the defined language.
+ * Author - Abdullah Emad
+ * Compilation - coolc stack.cl atoi.cl
+ * Execution - spim stack.s
+ *)
 class Main inherits IO{
 	list : List;
 	handleQueries() : Object{

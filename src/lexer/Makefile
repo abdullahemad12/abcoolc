@@ -16,7 +16,7 @@ LSRC= Makefile
 OBJS= ${CFIL:.cc=.o}
 OUTPUT= test.output
 
-CPPINCLUDE= -I. -I${CLASSDIR}/include/PA${ASSN} -I${CLASSDIR}/src/PA${ASSN}
+CPPINCLUDE= -I. -I${CLASSDIR}/include/lexer -I${CLASSDIR}/src/lexer
 
 
 FFLAGS= -d -ocool-lex.cc
@@ -51,10 +51,10 @@ ${LIBS}:
 	${CLASSDIR}/etc/link-object ${ASSN} $@
 
 ${TSRC} ${CSRC}:
-	-ln -s ${CLASSDIR}/src/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/src/lexer/$@ $@
 
 ${HSRC}:
-	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/include/lexer/$@ $@
 
 clean :
 	-rm -f ${OUTPUT} *.s core ${OBJS} lexer cool-lex.cc *~ parser cgen semant

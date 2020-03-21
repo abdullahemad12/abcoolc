@@ -434,8 +434,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 /* %% [3.0] code to copy yytext_ptr to yytext[] goes here, if %array \ */\
 	(yy_c_buf_p) = yy_cp;
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 6
-#define YY_END_OF_BUFFER 7
+#define YY_NUM_RULES 8
+#define YY_END_OF_BUFFER 9
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -443,10 +443,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[17] =
+static const flex_int16_t yy_accept[31] =
     {   0,
-        4,    4,    7,    6,    2,    1,    2,    4,    6,    0,
-        5,    0,    4,    3,    0,    0
+        4,    4,    9,    8,    2,    1,    2,    4,    8,    7,
+        0,    5,    0,    0,    0,    4,    3,    0,    0,    0,
+        6,    0,    5,    0,    0,    5,    0,    6,    0,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -462,9 +463,9 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    8,    1,    1,    1,    1,    1,    1,    1,    1,
 
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    9,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,   10,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -481,37 +482,60 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[10] =
+static const YY_CHAR yy_meta[12] =
     {   0,
-        1,    1,    2,    1,    1,    1,    1,    1,    2
+        1,    1,    2,    1,    1,    1,    1,    1,    1,    3,
+        3
     } ;
 
-static const flex_int16_t yy_base[18] =
+static const flex_int16_t yy_base[36] =
     {   0,
-        0,    0,   17,   27,   27,   27,    6,   11,    6,   11,
-       27,   17,    7,   27,    0,   27,   10
+        0,    0,   23,  104,  104,  104,    8,   17,   14,  104,
+       16,    6,   25,    4,   33,    9,  104,   41,   46,   54,
+        0,    0,  104,   63,   71,    0,   80,    0,    0,  104,
+       91,   94,   97,   12,  100
     } ;
 
-static const flex_int16_t yy_def[18] =
+static const flex_int16_t yy_def[36] =
     {   0,
-       16,    1,   16,   16,   16,   16,   17,   16,   16,   17,
-       16,   17,   16,   16,   10,    0,   16
+       30,    1,   30,   30,   30,   30,   31,   30,   30,   30,
+       31,   32,   31,   32,   33,   30,   30,   34,   35,   33,
+       20,   20,   30,   34,   35,   20,   35,   25,   25,    0,
+       30,   30,   30,   30,   30
     } ;
 
-static const flex_int16_t yy_nxt[37] =
+static const flex_int16_t yy_nxt[116] =
     {   0,
-        4,    5,    6,    7,    8,    9,    4,    4,    4,   11,
-       10,   13,   14,   12,   11,   13,   16,   16,   12,   10,
-       15,   16,   16,   16,   16,   10,    3,   16,   16,   16,
-       16,   16,   16,   16,   16,   16
+        4,    5,    6,    7,    8,    9,    4,    4,   10,    4,
+        4,   12,   18,   16,   15,   13,   15,   14,   15,   12,
+       17,   16,   30,   13,   30,   14,   15,   18,   30,   30,
+       30,   30,   30,   30,   30,   19,   21,   30,   30,   30,
+       30,   30,   30,   22,   23,   30,   30,   30,   24,   26,
+       30,   30,   30,   27,   30,   20,   22,   21,   30,   30,
+       30,   30,   30,   30,   22,   18,   30,   30,   30,   30,
+       30,   30,   18,   18,   26,   30,   30,   30,   27,   30,
+       20,   22,   18,   28,   30,   30,   30,   30,   30,   30,
+       29,   11,   30,   11,   14,   30,   14,   20,   30,   20,
+
+       25,   30,   25,    3,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30
     } ;
 
-static const flex_int16_t yy_chk[37] =
+static const flex_int16_t yy_chk[116] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    7,
-       17,   13,    9,    7,   10,    8,    3,    0,   10,   12,
-       12,    0,    0,    0,    0,   12,   16,   16,   16,   16,
-       16,   16,   16,   16,   16,   16
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    7,   34,   16,   14,    7,   12,    7,    7,   11,
+        9,    8,    3,   11,    0,   11,   11,   13,    0,    0,
+        0,    0,    0,    0,    0,   13,   15,    0,    0,    0,
+        0,    0,    0,   15,   18,    0,    0,    0,   18,   19,
+        0,    0,    0,   19,    0,   19,   19,   20,    0,    0,
+        0,    0,    0,    0,   20,   24,    0,    0,    0,    0,
+        0,    0,   24,   24,   25,    0,    0,    0,   25,    0,
+       25,   25,   27,   27,    0,    0,    0,    0,    0,    0,
+       27,   31,    0,   31,   32,    0,   32,   33,    0,   33,
+
+       35,    0,   35,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -520,9 +544,9 @@ static char *yy_last_accepting_cpos;
 extern int yy_flex_debug;
 int yy_flex_debug = 1;
 
-static const flex_int16_t yy_rule_linenum[6] =
+static const flex_int16_t yy_rule_linenum[8] =
     {   0,
-       86,   89,  113,  116,  132
+       82,   85,  101,  104,  126,  150,  156
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -574,22 +598,15 @@ extern int verbose_flag;
 
 extern YYSTYPE cool_yylval;
 
-bool comment = false;
-int commnentnestings = 0;
-bool string = false;
-int stringnestings = 0;
 
+/*prototypes*/
+int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length);
 
-
-/*
- *  Add Your own definitions here
- */
-
-#line 588 "cool-lex.cc"
+#line 605 "cool-lex.cc"
 /*
  * Define names for regular expressions here.
  */
-#line 592 "cool-lex.cc"
+#line 609 "cool-lex.cc"
 
 #define INITIAL 0
 
@@ -869,17 +886,17 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
+#line 73 "cool.flex"
+
+
+
 #line 77 "cool.flex"
-
-
-
-#line 81 "cool.flex"
  /**
    * single characters 
    */
    
  /* on new line skip and increment the line number */
-#line 882 "cool-lex.cc"
+#line 899 "cool-lex.cc"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -908,13 +925,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 17 )
+				if ( yy_current_state >= 31 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 27 );
+		while ( yy_base[yy_current_state] != 104 );
 
 yy_find_action:
 /* %% [10.0] code to find the action number goes here */
@@ -937,13 +954,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 6 )
+			else if ( yy_act < 8 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 6 )
+			else if ( yy_act == 8 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 7 )
+			else if ( yy_act == 9 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -962,27 +979,19 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 86 "cool.flex"
+#line 82 "cool.flex"
 { ++curr_lineno; } 
 	YY_BREAK
 /* Other special characters skip */
 case 2:
 YY_RULE_SETUP
-#line 89 "cool.flex"
+#line 85 "cool.flex"
 { }
 	YY_BREAK
 /*on EOF */
 case YY_STATE_EOF(INITIAL):
-#line 92 "cool.flex"
+#line 88 "cool.flex"
 { 
-   if(string) {
-        strcpy(cool_yylval.error_msg, "EOF in string constant"); 
-        return ERROR;
-    }
-    if(comment) {
-        strcpy(cool_yylval.error_msg, "EOF in comment"); 
-        return ERROR;
-    }
     yyterminate();    
  }
 	YY_BREAK
@@ -994,12 +1003,12 @@ case YY_STATE_EOF(INITIAL):
   */
 case 3:
 YY_RULE_SETUP
-#line 113 "cool.flex"
+#line 101 "cool.flex"
 { return (DARROW); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 116 "cool.flex"
+#line 104 "cool.flex"
 {
     cool_yylval.symbol = inttable.add_string(yytext);
     return INT_CONST;
@@ -1013,22 +1022,76 @@ YY_RULE_SETUP
   *  String constants (C syntax)
   *  Escape sequence \c is accepted for all characters c. Except for 
   *  \n \t \b \f, the result is c.
-  *
+  *  valid strings meet the following criteria: 
+  *  1. They start and end with quotations
+  *  2. characters in the string can be any except for the following: \0  
+  *  3. \n character is only allowed if it follows a escape character \
+  *  4. \ character is only allowed if it perceeds any other allowed character including itself
+  *  Any character not satisfying this criteria is invalid 
   */
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 132 "cool.flex"
+#line 126 "cool.flex"
 {
-    printf("hello\n");
+    int err =  convertEscapedToAscii(yytext, yyleng, string_buf, MAX_STR_CONST);
+    if(err == -1) 
+    {
+        cool_yylval.error_msg = "String constant too long"; 
+        return ERROR;
+    }
+    cool_yylval.symbol = stringtable.add_string(string_buf);
+    return STR_CONST;
 }
 	YY_BREAK
+/*
+  * Error Handling for strings
+  * Three errors that could occur in a string according 
+  * to the COOL language specifications:
+  * 1. The string is too long to be treated as a constant (handled when processing a valid string)
+  * 2. The string contains a null terminator byte (any other characters are allowed given that they may satisfy some condition)
+  * 3. The string has an unmatched quotation due to one the following reasons:
+  *          A. An unescaped newline was encountered before the closing quotation was found
+  *          B. EOF occured before the closing quotation was found
+  */
+/*matches strings that contains the null character in them*/
 case 6:
 YY_RULE_SETUP
-#line 136 "cool.flex"
+#line 150 "cool.flex"
+{
+    cool_yylval.error_msg = "String contains null character";
+    return ERROR;
+}
+	YY_BREAK
+/*the only other possible case for an invalid string is if only the string had
+   an unmatched quotation*/
+case 7:
+YY_RULE_SETUP
+#line 156 "cool.flex"
+{
+    // consume the rest of the input until a new line or EOF
+    char c;
+    char prev= '"';
+    while((c=yyinput()) != EOF && c != 0) 
+    {
+        // only skip if the new line is escaped
+        if(prev != '\\' && c == 'n') 
+        {
+            break;
+        }
+        prev = c;
+    }
+    
+    cool_yylval.error_msg = "Unterminated string constant";
+    return ERROR;
+}
+	YY_BREAK
+case 8:
+YY_RULE_SETUP
+#line 177 "cool.flex"
 ECHO;
 	YY_BREAK
-#line 1031 "cool-lex.cc"
+#line 1094 "cool-lex.cc"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1337,7 +1400,7 @@ static int yy_get_next_buffer (void)
 	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
 /* %% [16.0] code to find the next state goes here */
-		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 9);
+		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 11);
 		if ( yy_accept[yy_current_state] )
 			{
 			(yy_last_accepting_state) = yy_current_state;
@@ -1346,7 +1409,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 17 )
+			if ( yy_current_state >= 31 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1370,7 +1433,7 @@ static int yy_get_next_buffer (void)
     /* %% [17.0] code to find the next state, and perhaps do backing up, goes here */
 	char *yy_cp = (yy_c_buf_p);
 
-	YY_CHAR yy_c = 9;
+	YY_CHAR yy_c = 11;
 	if ( yy_accept[yy_current_state] )
 		{
 		(yy_last_accepting_state) = yy_current_state;
@@ -1379,11 +1442,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 17 )
+		if ( yy_current_state >= 31 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 16);
+	yy_is_jam = (yy_current_state == 30);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -2175,23 +2238,82 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 136 "cool.flex"
+#line 177 "cool.flex"
 
 
+
+
+/****************
+ *    helpers   *
+ ****************/
+ 
+/**
+  * EFFECTS: converts the escaped character to the correct ASCII character value.
+  *          special characters and their conversions:
+  *                    - 'n' => '\n'
+  *                    - 'b' => '\b'
+  *                    - 'f' => '\f'
+  *                    - 't' => '\t'
+  *                    - '0' => '\0'
+  *           Any other character is returned as it is
+  * REQUIRES: the given character to be preceeded by a bachslash 
+  * RETURNS: the correct conversion of the given character
+  * PARAMETERS: char c: the given character
+  */ 
+char convertEscapedCharacter(char c)
+{
+    switch(c)
+    {
+        case 'n': return '\n';
+        case 'b': return '\b';
+        case 'f': return '\f';
+        case 't': return '\t';
+        case '0': return '\0';
+        default: return c;
+    }
+}
 
 /**
   * EFFECTS: Converts the escaped characters to it is equivalent ASCII code
   * MODIFIES: dest 
-  * REQUIRES: src and dest to be pointers to initialized strings. src must be null terminated
+  * REQUIRES: 
+  *  - src and dest to be pointers to initialized strings. 
+  *  - src to be null terminated
+  *  - src to be a valid string. i.e this function should only be called when matched with a valid string "STRING"
+  * RETURNS: returns zero on success, and non-zero integer otherwise 
+  * ERRORS: 
+  * -1: the string is too long
   * PARAMETERS: 
   * - char* src: pointer to the source string
   * - char* dest: pointer to the destination string
-  * - int max_length: the maximum length of the string to be processed. typically the size of the destination buffer
+  * - int dest_length: the maximum length of the string to be processed. typically the size of the destination buffer
   */ 
-void convertEscapedToAscii(char* src, char* dest, int max_length)
+int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length)
 {
-
+    int strptr = 0;
+    int i;
+    // from 1 to -1 to skip the quotation
+    for(i = 1; i < src_length-1 && strptr < dest_length; i++) 
+    {
+        if(src[i] == '\\')
+        {
+            // because this is a valid string, there must always be a next character 
+            // that is different from \0. 
+            dest[strptr++] = convertEscapedCharacter(src[i+1]);
+            // skip over the next character since we have already read it
+            ++i; 
+        }
+        else 
+        {
+            dest[strptr++] = src[i];
+        }
+    }
+    if(strptr >= dest_length - 1) 
+    {
+        return -1;
+    }
+    // terminate the string
+    dest[i] = '\0'; 
+    return 0;
 }
-
-
 

@@ -1,5 +1,5 @@
-lextest.o lextest.d : lextest.cc ../../include/PA2/copyright.h \
- ../../include/PA2/cool-parse.h ../../include/PA2/copyright.h \
- ../../include/PA2/cool-io.h ../../include/PA2/tree.h \
- ../../include/PA2/stringtab.h ../../include/PA2/list.h \
- ../../include/PA2/utilities.h
+lextest.o lextest.d : lextest.cc ../../include/lexer/copyright.h \
+ ../../include/lexer/cool-parse.h ../../include/lexer/copyright.h \
+ ../../include/lexer/cool-io.h ../../include/lexer/tree.h \
+ ../../include/lexer/stringtab.h ../../include/lexer/list.h \
+ ../../include/lexer/utilities.h
