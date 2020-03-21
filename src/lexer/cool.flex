@@ -52,7 +52,17 @@ int skipCommentSection();
 
 DARROW              =>
 
+ASSIGN              <-
+
+LE                  <=
+
+NOT                 (N|n)(O|o)(T|t)
+
 INTEGERS            [0-9]*
+
+TBOOLEAN            true
+
+FBOOLEAN            false
 
 TYPEID              [A-Z](([A-Za-z0-9]|_)*) 
 
@@ -88,7 +98,45 @@ UNMATCHEDSTR        \"
 {SPECIALCHARACTERS} { }
 
 
- 
+\{ { return '{'; }
+
+\} { return '}'; }
+
+\( { return '('; }
+
+\) { return ')'; }
+
+\[ { return '['; }
+
+\] { return ']'; }
+
+\: { return ':'; }
+
+\; { return ';'; }
+
+\. { return '.'; }
+
+\, { return ','; } 
+
+\@ { return '@'; }
+
+\+ { return '+'; }
+
+\- { return '-'; }
+
+\* { return '*'; }
+
+\/ { return '/'; }
+
+\~ { return '~'; }
+
+\< { return '<'; }
+
+
+
+
+
+
  
  /**
    * 10.1 Integers and Identifiers
@@ -107,6 +155,17 @@ UNMATCHEDSTR        \"
     cool_yylval.symbol = idtable.add_string(yytext);
     return TYPEID;
 }
+
+TBOOLEAN {
+    cool_yylval.boolean = true;
+    return BOOL_CONST;
+}
+
+FBOOLEAN {
+    cool_yylval.boolean = false;
+    return BOOL_CONST;
+}
+
 
  /**
    * when a word starting with a small letter is matched
@@ -154,8 +213,13 @@ UNMATCHEDSTR        \"
  /*
   *  The multiple-character operators.
   */
-{DARROW} { return (DARROW); }
+{DARROW} { return DARROW; }
 
+{ASSIGN} { return ASSIGN; }
+
+{LE} { return LE; }
+
+{NOT} { return NOT; }
 
  /*
   * Keywords are case-insensitive except for the values true and false,
