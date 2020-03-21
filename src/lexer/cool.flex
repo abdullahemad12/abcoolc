@@ -43,7 +43,7 @@ extern YYSTYPE cool_yylval;
 
 /*prototypes*/
 int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length);
-
+int skipCommentSection();
 %}
 
 /*
@@ -62,7 +62,9 @@ NEWLINE             \n
 
 SPECIALCHARACTERS   [\t\r\b\f\v]|" "
 
-STARTCOMMENT        \(*  
+STARTCOMMENT        \(\*
+
+CLOSECOMMENT        \*\)  
 
 STRING              \"(\\\n|\\.|[^\0|\n|\"|\\])*\"
 
@@ -83,16 +85,64 @@ UNMATCHEDSTR        \"
   /* Other special characters skip */
 {SPECIALCHARACTERS} { }
  
-  /*on EOF */
-<<EOF>> { 
-    yyterminate();    
- }
-
  
+ /**
+   * 10.1 Integers and Identifiers
+   */
+ /**
+   * when a group of digits is matched, simply add them to the string table
+   */
+{INTEGERS} {
+    cool_yylval.symbol = inttable.add_string(yytext);
+    return INT_CONST;
+}
+ /**
+   * when a word starting with a capital letter is matched
+   */  
+{TYPEID} {
+    cool_yylval.symbol = idtable.add_string(yytext);
+    return TYPEID;
+}
+
+ /**
+   * when a word starting with a small letter is matched
+   */
+{OBJECTID} {
+    cool_yylval.symbol = idtable.add_string(yytext);
+    return OBJECTID;
+}   
+   
  /*
-  *  Nested comments
+  *  comments
   */
 
+ /*
+  * nested comments
+  * skip all the input till the closing tag or EOF
+  */
+{STARTCOMMENT} {
+    int err = skipCommentSection();
+    if(err) 
+    {
+        cool_yylval.error_msg = "EOF in comment";
+        return ERROR;
+    }
+}
+
+ /**
+   * Handle unmatched bracket error
+   * simply if a dangling bracket was matched, it means that 
+   * no previously matching open bracket was seen because if it 
+   * was, it would have been already consumed
+   */
+{CLOSECOMMENT} {
+   cool_yylval.error_msg = "Unmatched *)";
+   return ERROR;
+}   
+
+ /**
+   * single line comments 
+   */
 
  /*
   *  The multiple-character operators.
@@ -100,10 +150,6 @@ UNMATCHEDSTR        \"
 {DARROW} { return (DARROW); }
 
 
-{INTEGERS} {
-    cool_yylval.symbol = inttable.add_string(yytext);
-    return INT_CONST;
-}
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
@@ -249,4 +295,32 @@ int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length
     // terminate the string
     dest[strptr] = '\0'; 
     return 0;
+}
+
+
+/**
+  * EFFECTS: skips the comment section including all the nested comments 
+  * MODIFIES: the input pointer
+  * RETURNS: 0 if the comment block was closed successfully, 1 otherwise
+  * ERRORS: 
+  * n: returned when EOF is reached but no closing bracket was found. 
+  *    n is the number of brackets that was opened but not matched
+  */
+int skipCommentSection()
+{
+    int n_opened = 1;
+    char c;
+    char prev = ' ';
+    while((c=yyinput()) != EOF && c != 0 && n_opened > 0)
+    {
+        if(prev == '*' && c == ')') {
+            --n_opened;
+        }
+        else if(prev == '(' && c == '*'){
+            ++n_opened;
+        }
+        prev = c;
+    }
+    
+    return n_opened;
 }
