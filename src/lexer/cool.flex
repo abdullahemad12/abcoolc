@@ -58,7 +58,7 @@ LE                  <=
 
 NOT                 (N|n)(O|o)(T|t)
 
-INTEGERS            [0-9]*
+INTEGERS            [0-9]+
 
 TBOOLEAN            t(R|r)(U|u)(E|e)
 
@@ -78,9 +78,12 @@ CLOSECOMMENT        \*\)
 
 ONELINECOMMENT      "-""-".*\n|"-""-".*
 
-STRING              \"(\\\n|\\.|[^\0|\n|\"|\\])*\"
+STRING              \"(\\\n|\\[^\0]|[^\0|\n|\"|\\])*\"
+
+ESCAPEDNULSTR       \".*\\\0.*\"
 
 NULSTR              \".*\0.*\"
+
 
 UNMATCHEDSTR        \"
 
@@ -285,11 +288,6 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
 
 \= { return '='; }
 
-. {
-   cool_yylval.error_msg = yytext;
-   return ERROR;
-}
-
 
 
  /**
@@ -340,6 +338,12 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
     cool_yylval.error_msg = "String contains null character";
     return ERROR;
 }
+
+{ESCAPEDNULSTR} {
+    cool_yylval.error_msg = "String contains escaped null character";
+    return ERROR; 
+}
+
  /*the only other possible case for an invalid string is if only the string had
    an unmatched quotation*/
 {UNMATCHEDSTR} {
@@ -362,6 +366,12 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
 }
 
 
+
+ /*the given character could not be matched in any possible way. probably an error*/
+. {
+   cool_yylval.error_msg = yytext;
+   return ERROR;
+}
 
 
 %%

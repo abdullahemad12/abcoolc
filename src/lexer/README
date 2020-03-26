@@ -16,7 +16,7 @@ Your directory should contain the following files:
  *.*             other generated files
 
 The include (.h) files for this assignment can be found in 
-[cool root]/PA2
+[cool root]/lexer
 
 	The Makefile contains targets for compiling and running your
 	program. DO NOT MODIFY.
@@ -106,3 +106,202 @@ Instructions
 Write-up for PA2
 ----------------
 
+The core implementation can be found in "cool.flex". The file starts by defining important regular expressions and naming them. Those regular expressions and their actions will be discussed in details one by one. 
+
+
+**REGEX design notes**
+
+A case insensitive keyword K is represented as follows: (c0|C0)(c1|C1)....(cn|Cn) where ci is the ith lowercase letter of K and Ci is the ith upper letter of K. true and false are the only exception as they have to start with lower case letters. 
+
+**DARROW** 
+
+This represents the "=>" input token. 
+
+Action: Since no value associated with it, the action is to simply return the code associated with this token.
+
+
+**ASSIGN**
+
+This represent the "<-" input token.
+
+Action: Returns the code associated with this token.
+
+
+**LE**
+
+This represents the less than or equal, "<=" input token. 
+
+Action: Returns the code associated with this token.
+
+
+**NOT**
+
+This represents the NOT input token. 
+
+Action: Returns the code associated with this token.
+
+
+**INTEGERS**
+
+This represents an integer in the code. An integer is the concatenation of one or more digit from zero to nine. Hence, [0-9]+
+
+Action: Insert the value in the inttable, assign its relevant entry to cool_yyval.symbol and return the code associated with this token.
+
+
+**TBOOLEAN**
+
+This represents the boolean value of true. note that the true token must begin with a lower case t while the other letters can be of any form.
+
+Action: set cool_yyval.boolean to true and return a boolean code.
+
+**FBOOLEAN**
+ 
+This represents the boolean value of false. note that the false token must begin with a lower case t while the other letters can be of any form.
+
+Action: set cool_yyval.boolean to false and return a boolean code.
+
+
+**TYPEID**
+
+
+This represents a type id. A type ID must begin with an upper case letter concatenated with any letters and underscores.
+
+Action: Add it to the stringtable, set its value and return the code.
+
+
+**OBJECTID**
+
+the represents an object id. An Object ID must begin with a lower case letter concatenated with any letters and underscores.
+
+Action: Add it to the stringtable, set its value and return the code.
+
+**NEWLINE**
+
+A new line character
+
+Action: increment the curr_lineno variable
+
+**SPECIALCHARACTER**
+
+any tabs, backspaces, etc... 
+
+Action: do nothing
+
+
+**STARTCOMMENT**
+
+represents a block comment opening "(*".
+
+ACTION: skip all the following input, including any nested comments, until the matching closing *) is encountered, or EOF has been reached. If EOF was reached before seeing 
+a closing tag, an ERROR token is returned.
+
+
+**CLOSECOMMENT**
+
+Represents a block comment closure "*)".
+
+ACTION: return an ERROR token, because there is no way for this to match except if this is a dangling "*)" with no comment opening associated with it.
+
+**ONELINECOMMENT**
+
+Represents a single line comment "--". Matches any character after "--" until a new line is encountered. If no new line is encountered, this means this must be the last line in the file and EOF was reached and hence after trying to match any character concatenated with a new line, it will try to match any character. 
+
+ACTION: do nothing
+
+
+**STRING** 
+ 
+Represents a cool string (array of characters). The following rules, encoded in the STRING regex, define how a valid cool string should be formated:
+
+1. They start and end with quotations
+2. characters in the string can be any except for \0 (The null terminator ASCII code) 
+3. \n character is only allowed if it follows a escape character \
+4. \ character is only allowed if it perceeds any other allowed character including itself
+
+Any character not satisfying this criteria is invalid.
+
+the associated regex, \"(\\\n|\\[^\0]|[^\0|\n|\"|\\])*\", can be explained as follows: 
+
+It begins and ends with a quotation mark. In the middle it accepts any number of concatenations of the following characters: 
+
+1. an escaped new line. i.e a new line preceeded with a '\' character
+2. Any possible escaped character except the null terminator. Any character preceeded with a '\' character.
+3. Any character That is not one of the following four: a null terminator, a new line, a double quotation, a backslack. Note that any of these characters except the null terminator is valid if it was escaped. Thus, if they dont match the first two cases, than it must be the case that they are not escaped and they should not match this case.
+
+The following sections covers the possible format errors of a string.
+
+
+Action: if the string is matched successfully with this regular expression, the next step is escaping all the escaped characters and represent them as a single ASCII character. The first thing it does is it replaces any character c preceeded with a backslach with the character c, i.e it replace \c with c. The following characters are exceptions: n, b, f, t, 0. If any of these characters are escaped, the will be replaced by \n, \b, \f, \t, \0 where \n denotes a single character (a new line) and \b denotes a single character (a backslash) and so on. It then stores them, character by character, in a buffer of a fixed size. If the size of the string is too large for the buffer, it simply returns an Error token.
+
+**NULSTR**
+
+This is possibly a valid string that starts with a quotation and ends with a quotation; however, it contains a null character somewhere. Hence, it should report this as an error. 
+
+Action: return an ERROR token.
+
+**ESCAPEDNULSTR**
+
+This is possibly a valid string that starts with a quotation and ends with a quotation; however, it contains an escaped null character somewhere. Hence, it should report this as an error. 
+
+
+Action: return an ERROR token.
+
+**UNMATCHEDSTR**
+
+The construction of this regular expression depends on the fact that any valid string is matched with the STRING regex, otherwise this wont work correctly. Because an invalid string, is one that contains a null character, an escaped null character or missing a closing quotation, the string will match with this regex only if it does not match with the above Regex given that the lexical analyzer always tries to match the largest string.
+
+
+Action: return an ERROR token.
+
+
+**Keywords**
+
+Because the keywords have almost the same definition, they are all explained and listed in this section. A keyword is case insensitive that are represented as discussed in the design notes section. 
+
+1. TBOOLEAN
+2. FBOOLEAN 
+3. CLASS 
+4. ELSE
+5. FI
+6. IF
+7. IN
+8. INHERITS
+9. LET
+10. LOOP
+11. POOL
+12. THEN
+13. WHILE
+14. CASE
+15. ESAC
+16. OF
+17. NEW
+18. ISVOID
+
+
+Action: all of them simply returns the code of the keyword.
+
+
+
+**Single characters**
+
+All single characters are represented in this section 
+
+1. {
+2. }
+3. (
+4. )
+5. :
+6. ;
+7. .
+8. ,
+9. @
+10. +
+11. -
+12. *
+13. /
+14. ~
+15. <
+16. =
+
+
+Action: simply return the ASCII code of each character
