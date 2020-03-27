@@ -1,4 +1,5 @@
-stringtab.o stringtab.d : stringtab.cc ../../include/PA3/copyright.h \
-  ../../include/PA3/stringtab_functions.h ../../include/PA3/copyright.h \
-  ../../include/PA3/cool-io.h ../../include/PA3/stringtab.h \
-  ../../include/PA3/list.h ../../include/PA3/stringtab.h
+stringtab.o stringtab.d : stringtab.cc ../../include/parser/copyright.h \
+ ../../include/parser/stringtab_functions.h \
+ ../../include/parser/copyright.h ../../include/parser/cool-io.h \
+ ../../include/parser/stringtab.h ../../include/parser/list.h \
+ ../../include/parser/stringtab.h

@@ -21,7 +21,7 @@ OBJS= ${CFIL:.cc=.o}
 OUTPUT= good.output bad.output
 
 
-CPPINCLUDE= -I. -I${CLASSDIR}/include/PA${ASSN} -I${CLASSDIR}/src/PA${ASSN}
+CPPINCLUDE= -I. -I${CLASSDIR}/include/parser -I${CLASSDIR}/src/parser
 
 BFLAGS = -d -v -y -b cool --debug -p cool_yy
 
@@ -60,10 +60,10 @@ ${LIBS}:
 	${CLASSDIR}/etc/link-object ${ASSN} $@
 
 ${TSRC} ${CSRC}:
-	-ln -s ${CLASSDIR}/src/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/src/parser/$@ $@
 
 ${HSRC}:
-	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/include/parser/$@ $@
 
 clean :
 	-rm -f ${OUTPUT} *.s core ${OBJS} ${CGEN} ${HGEN} lexer parser cgen semant *~ *.a *.o 

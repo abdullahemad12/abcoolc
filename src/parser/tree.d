@@ -1,3 +1,4 @@
-tree.o tree.d : tree.cc ../../include/PA3/copyright.h ../../include/PA3/tree.h \
-  ../../include/PA3/copyright.h ../../include/PA3/stringtab.h \
-  ../../include/PA3/list.h ../../include/PA3/cool-io.h
+tree.o tree.d : tree.cc ../../include/parser/copyright.h \
+ ../../include/parser/tree.h ../../include/parser/copyright.h \
+ ../../include/parser/stringtab.h ../../include/parser/list.h \
+ ../../include/parser/cool-io.h

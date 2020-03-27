@@ -15,6 +15,7 @@ CFIL= ${CSRC} ${CGEN}
 LSRC= Makefile
 OBJS= ${CFIL:.cc=.o}
 OUTPUT= test.output
+MYTEST= mytest.cl
 
 CPPINCLUDE= -I. -I${CLASSDIR}/include/lexer -I${CLASSDIR}/src/lexer
 
@@ -47,6 +48,13 @@ cool-lex.cc: cool.flex
 dotest:	lexer test.cl
 	./lexer test.cl
 
+mytest:
+	if [ "`../../bin/lexer mytest.cl`" == "`./lexer mytest.cl`" ]; then \
+		echo "Test Passed"; \
+	else \
+		echo "Test Failed"; \
+	fi;\
+
 ${LIBS}:
 	${CLASSDIR}/etc/link-object ${ASSN} $@
 
@@ -61,6 +69,7 @@ clean :
 
 clean-compile:
 	@-rm -f core ${OBJS} cool-lex.cc ${LSRC}
+	
 
 %.d: %.cc ${SRC} ${LSRC}
 	${SHELL} -ec '${DEPEND} $< | sed '\''s/\($*\.o\)[ :]*/\1 $@ : /g'\'' > $@'

@@ -220,7 +220,7 @@ Represents a cool string (array of characters). The following rules, encoded in 
 
 Any character not satisfying this criteria is invalid.
 
-the associated regex, \"(\\\n|\\[^\0]|[^\0|\n|\"|\\])*\", can be explained as follows: 
+the associated regex, \"(\\\n|\\[^\0]|[^\0\n\"\\])*\", can be explained as follows: 
 
 It begins and ends with a quotation mark. In the middle it accepts any number of concatenations of the following characters: 
 
@@ -305,3 +305,28 @@ All single characters are represented in this section
 
 
 Action: simply return the ASCII code of each character
+
+
+**Testing the Lexical Analyzer**
+
+For testing, I run diff to compute the difference between running my lexer on a test file and running the sample lexer on the same text file. If the output of diff is empty, then my lexer passes the test. Otherwise, there is an error. To make things easier, I wrote a script that runs the diff command on both lexers and compare the output of diff. By default, the make file runs the diff command on the file "mytest.cl". The file can be changed by changing the value of the variable MYTEST
+
+To run the test on "mytest.cl"
+
+`make mytest`
+
+To run the test on any different cool file (path/to/file.cl)
+
+`make mytest MYTEST=path/to/file.cl`
+
+
+This command was run on all the sample programs provided in examples and it passed. Additionally, the mytest.cl is a comprehensive set of valid and invalid strings including user strings, integers, type identifiers, object identifiers, case insensitive keywords, comments and white spaces. An all the special cases I could think of. Additionally, it tests for invalid programs, such as: 
+
+1. A string with no matching closing quotation, possibly because it contains a non-escaped new line character
+2. A string with a null terminator character in between.
+3. A string with an escaped nul terminator character
+4. An EOF in the middle of the string
+5. An unmatched comment block 
+6. A nested comment block with it's nested comments unmatched 
+7. A comment that has EOF
+8. Special Characters That are not part of the cool program

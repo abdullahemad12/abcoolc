@@ -78,7 +78,7 @@ CLOSECOMMENT        \*\)
 
 ONELINECOMMENT      "-""-".*\n|"-""-".*
 
-STRING              \"(\\\n|\\[^\0]|[^\0|\n|\"|\\])*\"
+STRING              \"(\\\n|\\[^\0]|[^\0\n\"\\])*\"
 
 ESCAPEDNULSTR       \".*\\\0.*\"
 
