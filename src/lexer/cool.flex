@@ -352,11 +352,22 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
     char prev= '"';
     while((c=yyinput()) != EOF && c != 0) 
     {
-        // only skip if the new line is escaped
-        if(prev != '\\' && c == '\n') 
+        if(prev != '\\') 
         {
-            ++curr_lineno;
-            break;
+             // only skip if the new line is escaped
+            if(c == '\n')
+            {
+                ++curr_lineno;
+                break;
+            }
+            else 
+            {
+                // we dont really care what c is in this case 
+                // I set it to a nul terminator to avoid having it mistaken for
+                // a backslash escape
+                c = '\0';
+            }
+
         }
         prev = c;
     }
@@ -407,7 +418,7 @@ char convertEscapedCharacter(char c)
         case 'b': return '\b';
         case 'f': return '\f';
         case 't': return '\t';
-        case '0': return '\0';
+        case '0': return '0';
         default: return c;
     }
 }

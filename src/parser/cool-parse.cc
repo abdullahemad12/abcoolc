@@ -1572,7 +1572,7 @@ yyreduce:
     {
   case 2:
 #line 147 "cool.y"
-                                { (yyloc) = (yylsp[0]); ast_root = program((yyvsp[0].classes)); }
+                                { (yyloc) = (yylsp[0]); ast_root = program((yyvsp[0].classes)); printf("%s", (yyvsp[0].classes));}
 #line 1577 "cool.tab.c"
     break;
 

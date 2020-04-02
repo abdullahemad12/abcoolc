@@ -675,7 +675,7 @@ static const flex_int16_t yy_rule_linenum[52] =
       220,  222,  224,  226,  228,  236,  243,  254,  257,  260,
       262,  264,  266,  268,  270,  272,  274,  276,  278,  280,
       282,  284,  286,  288,  290,  297,  314,  338,  343,  350,
-      372
+      383
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1472,11 +1472,22 @@ YY_RULE_SETUP
     char prev= '"';
     while((c=yyinput()) != EOF && c != 0) 
     {
-        // only skip if the new line is escaped
-        if(prev != '\\' && c == '\n') 
+        if(prev != '\\') 
         {
-            ++curr_lineno;
-            break;
+             // only skip if the new line is escaped
+            if(c == '\n')
+            {
+                ++curr_lineno;
+                break;
+            }
+            else 
+            {
+                // we dont really care what c is in this case 
+                // I set it to a nul terminator to avoid having it mistaken for
+                // a backslash escape
+                c = '\0';
+            }
+
         }
         prev = c;
     }
@@ -1488,7 +1499,7 @@ YY_RULE_SETUP
 /*the given character could not be matched in any possible way. probably an error*/
 case 51:
 YY_RULE_SETUP
-#line 372 "cool.flex"
+#line 383 "cool.flex"
 {
    cool_yylval.error_msg = yytext;
    return ERROR;
@@ -1496,10 +1507,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 378 "cool.flex"
+#line 389 "cool.flex"
 ECHO;
 	YY_BREAK
-#line 1502 "cool-lex.cc"
+#line 1513 "cool-lex.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2648,7 +2659,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 378 "cool.flex"
+#line 389 "cool.flex"
 
 
 
@@ -2682,7 +2693,7 @@ char convertEscapedCharacter(char c)
         case 'b': return '\b';
         case 'f': return '\f';
         case 't': return '\t';
-        case '0': return '\0';
+        case '0': return '0';
         default: return c;
     }
 }

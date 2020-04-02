@@ -1,0 +1,5 @@
+	-1 (backslash2)	 more backslashes in strings
+	-1 (longstring_escapedbackslashes)	 long strings with escaped characters
+	-1 (null_in_string_unescaped_newline)	 null and unescaped newline in string
+	-1 (pathologicalstrings)	 some pathological strings
+	-1 (wq0607-c2)	 sequences of block comments and strings
