@@ -319,6 +319,9 @@ To run the test on any different cool file (path/to/file.cl)
 
 `make mytest MYTEST=path/to/file.cl`
 
+To run the tests provided by the online class run:
+
+`make test`
 
 This command was run on all the sample programs provided in examples and it passed. Additionally, the mytest.cl is a comprehensive set of valid and invalid strings including user strings, integers, type identifiers, object identifiers, case insensitive keywords, comments and white spaces. An all the special cases I could think of. Additionally, it tests for invalid programs, such as: 
 

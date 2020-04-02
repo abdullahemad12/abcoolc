@@ -27,6 +27,8 @@ CFLAGS= -g -Wall -Wno-unused -Wno-write-strings ${CPPINCLUDE}
 FLEX=flex ${FFLAGS}
 DEPEND = ${CC} -MM ${CPPINCLUDE}
 
+test: 
+	perl pa1-grading.pl
 
 source : ${SRC} ${TSRC} ${LSRC} ${LIBS} lsource
 
@@ -54,7 +56,7 @@ mytest:
 	else \
 		echo "Test Failed"; \
 	fi;\
-
+	
 ${LIBS}:
 	${CLASSDIR}/etc/link-object ${ASSN} $@
 
