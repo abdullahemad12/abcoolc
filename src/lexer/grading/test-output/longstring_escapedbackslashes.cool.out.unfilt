@@ -1,3 +1,0 @@
-#name "./longstring_escapedbackslashes.cool"
-#16 ERROR "String constant too long"
-#32 ERROR "String constant too long"

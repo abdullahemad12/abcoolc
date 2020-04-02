@@ -82,7 +82,7 @@ STRING              \"(\\\n|\\[^\0]|[^\0\n\"\\])*\"
 
 ESCAPEDNULSTR       \".*\\\0.*\"
 
-NULSTR              \".*\0.*\"
+NULSTR              \".*\0.*\"|\".*\0.*\n
 
 
 UNMATCHEDSTR        \"
@@ -335,12 +335,12 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
   
  /*matches strings that contains the null character in them*/
 {NULSTR} {
-    cool_yylval.error_msg = "String contains null character";
+    cool_yylval.error_msg = "String contains null character.";
     return ERROR;
 }
 
 {ESCAPEDNULSTR} {
-    cool_yylval.error_msg = "String contains escaped null character";
+    cool_yylval.error_msg = "String contains escaped null character.";
     return ERROR; 
 }
 
@@ -360,14 +360,14 @@ ISVOID              (I|i)(S|s)(V|v)(O|o)(I|i)(D|d)
                 ++curr_lineno;
                 break;
             }
-            else 
-            {
+
+        }
+        else 
+        {
                 // we dont really care what c is in this case 
                 // I set it to a nul terminator to avoid having it mistaken for
                 // a backslash escape
                 c = '\0';
-            }
-
         }
         prev = c;
     }
@@ -458,7 +458,7 @@ int convertEscapedToAscii(char* src, int src_length, char* dest, int dest_length
             dest[strptr++] = src[i];
         }
     }
-    if(strptr >= dest_length - 1) 
+    if(strptr >= dest_length) 
     {
         return -1;
     }
@@ -481,7 +481,7 @@ int skipCommentSection()
     int n_opened = 1;
     char c;
     char prev = ' ';
-    while((c=yyinput()) != EOF && c != 0 && n_opened > 0)
+    while(n_opened > 0 &&(c=yyinput()) != EOF && c != 0)
     {
         // update line count
         if(c == '\n') 

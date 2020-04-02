@@ -1,6 +1,0 @@
-1d0
-< STR_CONST "(*"
-3c2
-< STR_CONST "*)(*"
----
-> LONGERROR

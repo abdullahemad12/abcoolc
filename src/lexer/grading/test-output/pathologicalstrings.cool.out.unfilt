@@ -1,6 +1,0 @@
-#name "./pathologicalstrings.cool"
-#15 ERROR "String constant too long"
-#28 ERROR "String constant too long"
-#41 ERROR "String constant too long"
-#55 ERROR "String constant too long"
-#69 ERROR "String constant too long"
