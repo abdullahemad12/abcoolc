@@ -144,24 +144,28 @@
     /* 
     Save the root of the abstract syntax tree in a global variable.
     */
-    program	: class_list	{ @$ = @1; ast_root = program($1); }
+    program	: class_list	{ SET_NODELOC(@1); @$ = @1; ast_root = program($1); }
     ;
     
     class_list
     : class			/* single class */
-    { $$ = single_Classes($1);
+    { SET_NODELOC(@1); 
+    $$ = single_Classes($1);
     parse_results = $$; }
     | class_list class	/* several classes */
-    { $$ = append_Classes($1,single_Classes($2)); 
+    { SET_NODELOC(@1);
+     $$ = append_Classes($1,single_Classes($2)); 
     parse_results = $$; }
     ;
     
     /* If no parent is specified, the class inherits from the Object class. */
     class	: CLASS TYPEID '{' dummy_feature_list '}' ';'
-    { $$ = class_($2,idtable.add_string("Object"),$4,
+    { SET_NODELOC(@1);
+     $$ = class_($2,idtable.add_string("Object"),$4,
     stringtable.add_string(curr_filename)); }
     | CLASS TYPEID INHERITS TYPEID '{' dummy_feature_list '}' ';'
-    { $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
+    { SET_NODELOC(@1); 
+    $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
     ;
     
     /* Feature list may be empty, but no empty features in list. */
