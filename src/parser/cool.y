@@ -135,8 +135,16 @@
     %type <class_> class
     
     /* You will want to change the following line. */
-    %type <features> dummy_feature_list
+    %type <features> feature_list
+    %type <feature> feature
     
+    
+    %type <formals> formal_list
+    %type <formals> formalsc
+    %type <formal> formal
+    
+    
+    %type <expression> expr
     /* Precedence declarations go here. */
     
     
@@ -159,20 +167,75 @@
     ;
     
     /* If no parent is specified, the class inherits from the Object class. */
-    class	: CLASS TYPEID '{' dummy_feature_list '}' ';'
+    class	: CLASS TYPEID '{' feature_list '}' ';'
     { SET_NODELOC(@1);
      $$ = class_($2,idtable.add_string("Object"),$4,
     stringtable.add_string(curr_filename)); }
-    | CLASS TYPEID INHERITS TYPEID '{' dummy_feature_list '}' ';'
+    | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
     { SET_NODELOC(@1); 
     $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
     ;
     
     /* Feature list may be empty, but no empty features in list. */
-    dummy_feature_list:		/* empty */
-    {  $$ = nil_Features(); }
+    feature_list : feature_list feature
+    {
+        SET_NODELOC(@1);
+        $$ = append_Features($1, single_Features($2));
+    }  
+    | { $$ = nil_Features(); }
+   
+    
+    /* Feature definition */
+    feature : OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';'  
+    {
+        SET_NODELOC(@1);
+        $$ = method($1, $3, $6, $8);
+    }
+    | OBJECTID ':' TYPEID ';' 
+    {
+        SET_NODELOC(@1);
+        $$ = attr($1, $3, no_expr());
+    } 
+    | OBJECTID ':' TYPEID ASSIGN expr ';' 
+    {
+        SET_NODELOC(@1);
+        $$ = attr($1, $3, $5);
+    }
     
     
+    /* formal list */
+    formal_list : formal formalsc 
+    {
+       SET_NODELOC(@1);
+       $$ = append_Formals(single_Formals($1), $2);
+    }
+    | 
+    {
+       $$ = nil_Formals(); 
+    }
+    
+    formalsc : formalsc ',' formal
+    {
+        SET_NODELOC(@1);
+        $$ = append_Formals($1, single_Formals($3));
+    }
+    |
+    {
+       $$ = nil_Formals(); 
+    }
+    
+    /*formal*/
+    formal : OBJECTID ':' TYPEID 
+    {
+        SET_NODELOC(@1);
+        $$ = formal($1, $3);
+    }
+    
+    
+    expr : 
+    {
+    
+    }
     /* end of grammar */
     %%
     
