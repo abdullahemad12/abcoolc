@@ -1729,7 +1729,7 @@ yyreduce:
   case 7:
 #line 203 "cool.y"
     {
-        SET_NODELOC((yylsp[-1]));
+        SET_NODELOC((yylsp[0]));
         (yyval.features) = append_Features((yyvsp[-1].features), single_Features((yyvsp[0].feature)));
     }
 #line 1736 "cool.tab.c"
@@ -1788,7 +1788,7 @@ yyreduce:
   case 14:
 #line 240 "cool.y"
     {
-        SET_NODELOC((yylsp[-2]));
+        SET_NODELOC((yylsp[0]));
         (yyval.formals) = append_Formals((yyvsp[-2].formals), single_Formals((yyvsp[0].formal)));
     }
 #line 1795 "cool.tab.c"
@@ -2005,7 +2005,7 @@ yyreduce:
 #line 381 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
-        int_const((yyvsp[0].symbol));
+        (yyval.expression) = int_const((yyvsp[0].symbol));
     }
 #line 2011 "cool.tab.c"
     break;
@@ -2014,7 +2014,7 @@ yyreduce:
 #line 386 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
-        string_const((yyvsp[0].symbol));
+        (yyval.expression) = string_const((yyvsp[0].symbol));
     }
 #line 2020 "cool.tab.c"
     break;
@@ -2023,7 +2023,7 @@ yyreduce:
 #line 391 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
-        bool_const((yyvsp[0].boolean));
+        (yyval.expression) = bool_const((yyvsp[0].boolean));
     }
 #line 2029 "cool.tab.c"
     break;

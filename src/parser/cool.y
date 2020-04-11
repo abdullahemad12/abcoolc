@@ -201,7 +201,7 @@
     /* Feature list may be empty, but no empty features in list. */
     feature_list : feature_list feature
     {
-        SET_NODELOC(@1);
+        SET_NODELOC(@2);
         $$ = append_Features($1, single_Features($2));
     }  
     | { $$ = nil_Features(); }
@@ -238,7 +238,7 @@
     
     formalsc : formalsc ',' formal
     {
-        SET_NODELOC(@1);
+        SET_NODELOC(@3);
         $$ = append_Formals($1, single_Formals($3));
     }
     |
@@ -380,17 +380,17 @@
     | INT_CONST
     {
         SET_NODELOC(@1);
-        int_const($1);
+        $$ = int_const($1);
     }
     | STR_CONST
     {
         SET_NODELOC(@1);
-        string_const($1);
+        $$ = string_const($1);
     }
     | BOOL_CONST
     {
         SET_NODELOC(@1);
-        bool_const($1);
+        $$ = bool_const($1);
     }
     | LET let_init
     {
