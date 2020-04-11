@@ -273,7 +273,18 @@
        SET_NODELOC(@1);
        $$ = static_dispatch($1, $3, $5, $7); 
     }
-    
+    /*If expression*/ 
+    | IF expr THEN expr ELSE expr FI
+    {
+        SET_NODELOC(@1);
+        $$ = cond($2, $4, $6);
+    }
+    /*while loop expression*/
+    | WHILE expr LOOP expr POOL 
+    {
+        SET_NODELOC(@1);
+        $$ = loop($2, $4);   
+    }
     
     
     /*list of comma separated expressions*/
