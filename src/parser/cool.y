@@ -145,8 +145,20 @@
     
     
     %type <expression> expr
-    /* Precedence declarations go here. */
     
+    %type <expressions> expr_list
+    %type <expressions> expr_listc
+    
+    /* Precedence declarations go here. */
+    %right '.'
+    %right '@'
+    %right '~'
+    %right ISVOID
+    %right '*' '/'
+    %right '+' '-'
+    %right LE '<' '='
+    %right NOT
+    %right ASSIGN
     
     %%
     /* 
@@ -232,10 +244,58 @@
     }
     
     
-    expr : 
+    /*
+     * Expression (expr) Non-Terminal
+     */
+    expr : OBJECTID ASSIGN expr 
     {
-    
+        SET_NODELOC(@1);
+        $$ = assign($1, $3);
     }
+    /*
+     * dispatch expr
+     * Generates the list of expressions (function argument) and uses it directly 
+     */
+    | expr '.' OBJECTID '(' expr_list ')'
+    {
+        SET_NODELOC(@1);
+        $$ = dispatch($1, $3, $5);
+    }
+    | OBJECTID '(' expr_list ')'
+    {
+        SET_NODELOC(@1);
+
+        $$ = dispatch(object(idtable.add_string("self")), $1, $3); /*need to add self keyword when shorthand is used*/
+    }
+    /* static dispatch expr */
+    | expr '@' TYPEID '.' OBJECTID '(' expr_list ')'
+    {
+       SET_NODELOC(@1);
+       $$ = static_dispatch($1, $3, $5, $7); 
+    }
+    
+    
+    
+    /*list of comma separated expressions*/
+    expr_list : expr expr_listc
+    {
+       SET_NODELOC(@1);
+       $$ = append_Expressions(single_Expressions($1), $2);
+    }
+    |
+    {
+        $$ = nil_Expressions();
+    }
+    
+    expr_listc : expr_listc ',' expr
+    {
+       $$ = append_Expressions($1, single_Expressions($3));
+    }
+    | 
+    {
+        $$ = nil_Expressions();
+    }
+     
     /* end of grammar */
     %%
     
