@@ -155,6 +155,9 @@
     
     %type <cases> case_stmts
     
+    %type <expression> let_init
+    %type <expression> let_initc
+    
     /* Precedence declarations go here. */
     %right '.'
     %right '@'
@@ -303,7 +306,96 @@
         SET_NODELOC(@1);
         $$ = typcase($2, $4);
     }
-    
+    /*new expression*/
+    | NEW TYPEID
+    {
+        SET_NODELOC(@1);
+        $$ = new_($2);
+    }
+    | ISVOID expr
+    {
+       SET_NODELOC(@1); 
+       $$ = isvoid($2);
+    }
+    /*arithmetics*/
+    | expr '+' expr
+    {
+        SET_NODELOC(@1); 
+        $$ = plus($1, $3);
+    }
+    | expr '-' expr
+    {
+        SET_NODELOC(@1);
+        $$ = sub($1, $3);
+    }
+    | expr '*' expr
+    {
+       SET_NODELOC(@1); 
+       $$ = mul($1, $3);
+    }
+    | expr '/' expr
+    {
+       SET_NODELOC(@1); 
+       $$ = divide($1, $3);
+    }
+    | '~' expr
+    {
+        SET_NODELOC(@1);  
+        $$ = neg($2);
+    }
+    /*comparisons*/
+    | expr '<' expr
+    {
+        SET_NODELOC(@1);
+        $$ = lt($1, $3);
+    }
+    | expr LE expr
+    {
+        SET_NODELOC(@1);      
+        $$ = leq($1, $3);
+    }
+    | expr '=' expr
+    {
+       SET_NODELOC(@1);
+       $$ = eq($1, $3);  
+    }
+    | NOT expr
+    {
+       SET_NODELOC(@1);
+       $$ = comp($2); 
+    }
+    /*In brackets*/
+    | '(' expr ')'
+    {
+        SET_NODELOC(@2);
+        $$ = $2; 
+    }
+    /*Atoms*/
+    | OBJECTID
+    {
+        SET_NODELOC(@1);
+        $$ = object($1);   
+    }
+    | INT_CONST
+    {
+        SET_NODELOC(@1);
+        int_const($1);
+    }
+    | STR_CONST
+    {
+        SET_NODELOC(@1);
+        string_const($1);
+    }
+    | BOOL_CONST
+    {
+        SET_NODELOC(@1);
+        bool_const($1);
+    }
+    | LET let_init
+    {
+        SET_NODELOC(@1);
+        $$ = $2;
+    }
     /*list of comma separated expressions*/
     expr_list : expr expr_listc
     {
@@ -336,6 +428,7 @@
        SET_NODELOC(@1);
        $$ = single_Expressions($1);
     }
+    
      
      
     /*case statements (cases)*/
@@ -352,7 +445,49 @@
         $$ = single_Cases(branch($1, $3, $5));   
     }
     
-     
+    /*let expression*/
+    
+    /**
+      * let_initc there are two possible cases that let_initc will match:
+      * 1. It will match another <OBJECTID>:<TYPEID>[<- expr]. In this case
+      *    it creates a new let expression and this let expression will be the body
+      *    of the parent let expression.
+      * 2. It will match <IN><expr>. In this case it just returns the expr that will be
+      *    the body of the last let expression created. 
+      * In the two cases the final expression created by let_initc will act as the body of the let 
+      * expression matched by let_init.
+      */ 
+    
+    /*The the declared variable is not initialized*/
+    let_init : OBJECTID ':' TYPEID let_initc
+    {
+        SET_NODELOC(@1);
+        $$ = let($1, $3, no_expr(), $4); 
+    }
+    /*The declared type is initialized with expr*/  
+    | OBJECTID ':' TYPEID ASSIGN expr let_initc
+    {
+         SET_NODELOC(@1);
+         $$ = let($1, $3, $5, $6);
+    }
+    
+    let_initc : ',' OBJECTID ':' TYPEID let_initc
+    {
+        SET_NODELOC(@2);
+        $$ = let($2, $4, no_expr(), $5);
+    }
+    | ',' OBJECTID ':' TYPEID ASSIGN expr let_initc
+    {
+        SET_NODELOC(@2);
+        $$ = let($2, $4, $6, $7);
+    }
+    | IN expr
+    {
+        SET_NODELOC(@1);
+        $$ = $2; // the return type is still expr
+    }
+    
+    
     /* end of grammar */
     %%
     
