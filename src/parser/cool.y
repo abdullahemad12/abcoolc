@@ -122,12 +122,14 @@
     %token <symbol>  TYPEID 278 OBJECTID 279 
     %token ASSIGN 280 NOT 281 LE 282 ERROR 283
     
-    /*  DON'T CHANGE ANYTHING ABOVE THIS LINE, OR YOUR PARSER WONT WORK       */
+    /*  DON'T CHANGE ANYTHING ABOVE THIS LINE, OR THE PARSER WONT WORK       */
     /**************************************************************************/
     
-    /* Complete the nonterminal list below, giving a type for the semantic
-    value of each non terminal. (See section 3.6 in the bison 
-    documentation for details). */
+    /*
+     * consult the README for explanation of the role of each non-terminal
+     * (See section 3.6 in the bison documentation for details). 
+     */
+
     
     /* Declare types for the grammar's non-terminals. */
     %type <program> program
@@ -150,6 +152,8 @@
     %type <expressions> expr_listc
     
     %type <expressions> expr_stmts
+    
+    %type <cases> case_stmts
     
     /* Precedence declarations go here. */
     %right '.'
@@ -293,7 +297,12 @@
         SET_NODELOC(@1);
         $$ = block($2);
     }
-    
+    /*Case statement expression*/
+    | CASE expr OF case_stmts ESAC
+    {
+        SET_NODELOC(@1);
+        $$ = typcase($2, $4);
+    }
     
     /*list of comma separated expressions*/
     expr_list : expr expr_listc
@@ -308,6 +317,7 @@
     
     expr_listc : expr_listc ',' expr
     {
+       SET_NODELOC(@3);
        $$ = append_Expressions($1, single_Expressions($3));
     }
     | 
@@ -318,7 +328,7 @@
     /*expression  seperated by a ';'*/
     expr_stmts : expr_stmts expr ';'
     {
-        SET_NODELOC(@1);
+        SET_NODELOC(@2);
         $$ = append_Expressions($1, single_Expressions($2));
     }
     | expr ';' 
@@ -326,6 +336,22 @@
        SET_NODELOC(@1);
        $$ = single_Expressions($1);
     }
+     
+     
+    /*case statements (cases)*/
+    case_stmts  : case_stmts OBJECTID ':' TYPEID DARROW expr ';'
+    {
+        SET_NODELOC(@2);
+        // create a branch, use it to create a list of single case
+        // and append the list to the list matched by case_stmts, i.e $1
+        $$ = append_Cases($1, single_Cases(branch($2, $4, $6)));
+    }
+    | OBJECTID ':' TYPEID DARROW expr ';'
+    {
+        SET_NODELOC(@1);
+        $$ = single_Cases(branch($1, $3, $5));   
+    }
+    
      
     /* end of grammar */
     %%
