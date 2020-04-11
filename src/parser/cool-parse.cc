@@ -678,12 +678,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   176,   176,   180,   184,   191,   195,   201,   206,   210,
-     215,   220,   228,   234,   238,   244,   249,   259,   268,   273,
-     280,   286,   292,   298,   304,   310,   315,   321,   326,   331,
-     336,   341,   347,   352,   357,   362,   368,   374,   379,   384,
-     389,   394,   400,   406,   410,   416,   421,   426,   435,   442,
-     462,   468,   474,   479,   484
+       0,   177,   177,   181,   185,   192,   196,   202,   207,   211,
+     216,   221,   229,   235,   239,   245,   250,   260,   269,   274,
+     281,   287,   293,   299,   305,   311,   316,   322,   327,   332,
+     337,   342,   348,   353,   358,   363,   369,   375,   380,   385,
+     390,   395,   401,   407,   411,   417,   422,   427,   436,   443,
+     463,   469,   475,   480,   485
 };
 #endif
 
@@ -1690,13 +1690,13 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 176 "cool.y"
+#line 177 "cool.y"
                                 { SET_NODELOC((yylsp[0])); (yyloc) = (yylsp[0]); ast_root = program((yyvsp[0].classes)); }
 #line 1696 "cool.tab.c"
     break;
 
   case 3:
-#line 181 "cool.y"
+#line 182 "cool.y"
     { SET_NODELOC((yylsp[0])); 
     (yyval.classes) = single_Classes((yyvsp[0].class_));
     parse_results = (yyval.classes); }
@@ -1704,7 +1704,7 @@ yyreduce:
     break;
 
   case 4:
-#line 185 "cool.y"
+#line 186 "cool.y"
     { SET_NODELOC((yylsp[-1]));
      (yyval.classes) = append_Classes((yyvsp[-1].classes),single_Classes((yyvsp[0].class_))); 
     parse_results = (yyval.classes); }
@@ -1712,7 +1712,7 @@ yyreduce:
     break;
 
   case 5:
-#line 192 "cool.y"
+#line 193 "cool.y"
     { SET_NODELOC((yylsp[-5]));
      (yyval.class_) = class_((yyvsp[-4].symbol),idtable.add_string("Object"),(yyvsp[-2].features),
     stringtable.add_string(curr_filename)); }
@@ -1720,14 +1720,14 @@ yyreduce:
     break;
 
   case 6:
-#line 196 "cool.y"
+#line 197 "cool.y"
     { SET_NODELOC((yylsp[-7])); 
     (yyval.class_) = class_((yyvsp[-6].symbol),(yyvsp[-4].symbol),(yyvsp[-2].features),stringtable.add_string(curr_filename)); }
 #line 1727 "cool.tab.c"
     break;
 
   case 7:
-#line 202 "cool.y"
+#line 203 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));
         (yyval.features) = append_Features((yyvsp[-1].features), single_Features((yyvsp[0].feature)));
@@ -1736,13 +1736,13 @@ yyreduce:
     break;
 
   case 8:
-#line 206 "cool.y"
+#line 207 "cool.y"
       { (yyval.features) = nil_Features(); }
 #line 1742 "cool.tab.c"
     break;
 
   case 9:
-#line 211 "cool.y"
+#line 212 "cool.y"
     {
         SET_NODELOC((yylsp[-9]));
         (yyval.feature) = method((yyvsp[-9].symbol), (yyvsp[-7].formals), (yyvsp[-4].symbol), (yyvsp[-2].expression));
@@ -1751,7 +1751,7 @@ yyreduce:
     break;
 
   case 10:
-#line 216 "cool.y"
+#line 217 "cool.y"
     {
         SET_NODELOC((yylsp[-3]));
         (yyval.feature) = attr((yyvsp[-3].symbol), (yyvsp[-1].symbol), no_expr());
@@ -1760,7 +1760,7 @@ yyreduce:
     break;
 
   case 11:
-#line 221 "cool.y"
+#line 222 "cool.y"
     {
         SET_NODELOC((yylsp[-5]));
         (yyval.feature) = attr((yyvsp[-5].symbol), (yyvsp[-3].symbol), (yyvsp[-1].expression));
@@ -1769,7 +1769,7 @@ yyreduce:
     break;
 
   case 12:
-#line 229 "cool.y"
+#line 230 "cool.y"
     {
        SET_NODELOC((yylsp[-1]));
        (yyval.formals) = append_Formals(single_Formals((yyvsp[-1].formal)), (yyvsp[0].formals));
@@ -1778,7 +1778,7 @@ yyreduce:
     break;
 
   case 13:
-#line 234 "cool.y"
+#line 235 "cool.y"
     {
        (yyval.formals) = nil_Formals(); 
     }
@@ -1786,7 +1786,7 @@ yyreduce:
     break;
 
   case 14:
-#line 239 "cool.y"
+#line 240 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));
         (yyval.formals) = append_Formals((yyvsp[-2].formals), single_Formals((yyvsp[0].formal)));
@@ -1795,7 +1795,7 @@ yyreduce:
     break;
 
   case 15:
-#line 244 "cool.y"
+#line 245 "cool.y"
     {
        (yyval.formals) = nil_Formals(); 
     }
@@ -1803,7 +1803,7 @@ yyreduce:
     break;
 
   case 16:
-#line 250 "cool.y"
+#line 251 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));
         (yyval.formal) = formal((yyvsp[-2].symbol), (yyvsp[0].symbol));
@@ -1812,7 +1812,7 @@ yyreduce:
     break;
 
   case 17:
-#line 260 "cool.y"
+#line 261 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));
         (yyval.expression) = assign((yyvsp[-2].symbol), (yyvsp[0].expression));
@@ -1821,7 +1821,7 @@ yyreduce:
     break;
 
   case 18:
-#line 269 "cool.y"
+#line 270 "cool.y"
     {
         SET_NODELOC((yylsp[-5]));
         (yyval.expression) = dispatch((yyvsp[-5].expression), (yyvsp[-3].symbol), (yyvsp[-1].expressions));
@@ -1830,7 +1830,7 @@ yyreduce:
     break;
 
   case 19:
-#line 274 "cool.y"
+#line 275 "cool.y"
     {
         SET_NODELOC((yylsp[-3]));
 
@@ -1840,7 +1840,7 @@ yyreduce:
     break;
 
   case 20:
-#line 281 "cool.y"
+#line 282 "cool.y"
     {
        SET_NODELOC((yylsp[-7]));
        (yyval.expression) = static_dispatch((yyvsp[-7].expression), (yyvsp[-5].symbol), (yyvsp[-3].symbol), (yyvsp[-1].expressions)); 
@@ -1849,7 +1849,7 @@ yyreduce:
     break;
 
   case 21:
-#line 287 "cool.y"
+#line 288 "cool.y"
     {
         SET_NODELOC((yylsp[-6]));
         (yyval.expression) = cond((yyvsp[-5].expression), (yyvsp[-3].expression), (yyvsp[-1].expression));
@@ -1858,7 +1858,7 @@ yyreduce:
     break;
 
   case 22:
-#line 293 "cool.y"
+#line 294 "cool.y"
     {
         SET_NODELOC((yylsp[-4]));
         (yyval.expression) = loop((yyvsp[-3].expression), (yyvsp[-1].expression));   
@@ -1867,7 +1867,7 @@ yyreduce:
     break;
 
   case 23:
-#line 299 "cool.y"
+#line 300 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));
         (yyval.expression) = block((yyvsp[-1].expressions));
@@ -1876,7 +1876,7 @@ yyreduce:
     break;
 
   case 24:
-#line 305 "cool.y"
+#line 306 "cool.y"
     {
         SET_NODELOC((yylsp[-4]));
         (yyval.expression) = typcase((yyvsp[-3].expression), (yyvsp[-1].cases));
@@ -1885,7 +1885,7 @@ yyreduce:
     break;
 
   case 25:
-#line 311 "cool.y"
+#line 312 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));
         (yyval.expression) = new_((yyvsp[0].symbol));
@@ -1894,7 +1894,7 @@ yyreduce:
     break;
 
   case 26:
-#line 316 "cool.y"
+#line 317 "cool.y"
     {
        SET_NODELOC((yylsp[-1])); 
        (yyval.expression) = isvoid((yyvsp[0].expression));
@@ -1903,7 +1903,7 @@ yyreduce:
     break;
 
   case 27:
-#line 322 "cool.y"
+#line 323 "cool.y"
     {
         SET_NODELOC((yylsp[-2])); 
         (yyval.expression) = plus((yyvsp[-2].expression), (yyvsp[0].expression));
@@ -1912,7 +1912,7 @@ yyreduce:
     break;
 
   case 28:
-#line 327 "cool.y"
+#line 328 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));
         (yyval.expression) = sub((yyvsp[-2].expression), (yyvsp[0].expression));
@@ -1921,7 +1921,7 @@ yyreduce:
     break;
 
   case 29:
-#line 332 "cool.y"
+#line 333 "cool.y"
     {
        SET_NODELOC((yylsp[-2])); 
        (yyval.expression) = mul((yyvsp[-2].expression), (yyvsp[0].expression));
@@ -1930,7 +1930,7 @@ yyreduce:
     break;
 
   case 30:
-#line 337 "cool.y"
+#line 338 "cool.y"
     {
        SET_NODELOC((yylsp[-2])); 
        (yyval.expression) = divide((yyvsp[-2].expression), (yyvsp[0].expression));
@@ -1939,7 +1939,7 @@ yyreduce:
     break;
 
   case 31:
-#line 342 "cool.y"
+#line 343 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));  
         (yyval.expression) = neg((yyvsp[0].expression));
@@ -1948,7 +1948,7 @@ yyreduce:
     break;
 
   case 32:
-#line 348 "cool.y"
+#line 349 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));
         (yyval.expression) = lt((yyvsp[-2].expression), (yyvsp[0].expression));
@@ -1957,7 +1957,7 @@ yyreduce:
     break;
 
   case 33:
-#line 353 "cool.y"
+#line 354 "cool.y"
     {
         SET_NODELOC((yylsp[-2]));      
         (yyval.expression) = leq((yyvsp[-2].expression), (yyvsp[0].expression));
@@ -1966,7 +1966,7 @@ yyreduce:
     break;
 
   case 34:
-#line 358 "cool.y"
+#line 359 "cool.y"
     {
        SET_NODELOC((yylsp[-2]));
        (yyval.expression) = eq((yyvsp[-2].expression), (yyvsp[0].expression));  
@@ -1975,7 +1975,7 @@ yyreduce:
     break;
 
   case 35:
-#line 363 "cool.y"
+#line 364 "cool.y"
     {
        SET_NODELOC((yylsp[-1]));
        (yyval.expression) = comp((yyvsp[0].expression)); 
@@ -1984,7 +1984,7 @@ yyreduce:
     break;
 
   case 36:
-#line 369 "cool.y"
+#line 370 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));
         (yyval.expression) = (yyvsp[-1].expression); 
@@ -1993,7 +1993,7 @@ yyreduce:
     break;
 
   case 37:
-#line 375 "cool.y"
+#line 376 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
         (yyval.expression) = object((yyvsp[0].symbol));   
@@ -2002,7 +2002,7 @@ yyreduce:
     break;
 
   case 38:
-#line 380 "cool.y"
+#line 381 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
         int_const((yyvsp[0].symbol));
@@ -2011,7 +2011,7 @@ yyreduce:
     break;
 
   case 39:
-#line 385 "cool.y"
+#line 386 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
         string_const((yyvsp[0].symbol));
@@ -2020,7 +2020,7 @@ yyreduce:
     break;
 
   case 40:
-#line 390 "cool.y"
+#line 391 "cool.y"
     {
         SET_NODELOC((yylsp[0]));
         bool_const((yyvsp[0].boolean));
@@ -2029,7 +2029,7 @@ yyreduce:
     break;
 
   case 41:
-#line 395 "cool.y"
+#line 396 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));
         (yyval.expression) = (yyvsp[0].expression);
@@ -2038,7 +2038,7 @@ yyreduce:
     break;
 
   case 42:
-#line 401 "cool.y"
+#line 402 "cool.y"
     {
        SET_NODELOC((yylsp[-1]));
        (yyval.expressions) = append_Expressions(single_Expressions((yyvsp[-1].expression)), (yyvsp[0].expressions));
@@ -2047,7 +2047,7 @@ yyreduce:
     break;
 
   case 43:
-#line 406 "cool.y"
+#line 407 "cool.y"
     {
         (yyval.expressions) = nil_Expressions();
     }
@@ -2055,7 +2055,7 @@ yyreduce:
     break;
 
   case 44:
-#line 411 "cool.y"
+#line 412 "cool.y"
     {
        SET_NODELOC((yylsp[0]));
        (yyval.expressions) = append_Expressions((yyvsp[-2].expressions), single_Expressions((yyvsp[0].expression)));
@@ -2064,7 +2064,7 @@ yyreduce:
     break;
 
   case 45:
-#line 416 "cool.y"
+#line 417 "cool.y"
     {
         (yyval.expressions) = nil_Expressions();
     }
@@ -2072,7 +2072,7 @@ yyreduce:
     break;
 
   case 46:
-#line 422 "cool.y"
+#line 423 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));
         (yyval.expressions) = append_Expressions((yyvsp[-2].expressions), single_Expressions((yyvsp[-1].expression)));
@@ -2081,7 +2081,7 @@ yyreduce:
     break;
 
   case 47:
-#line 427 "cool.y"
+#line 428 "cool.y"
     {
        SET_NODELOC((yylsp[-1]));
        (yyval.expressions) = single_Expressions((yyvsp[-1].expression));
@@ -2090,7 +2090,7 @@ yyreduce:
     break;
 
   case 48:
-#line 436 "cool.y"
+#line 437 "cool.y"
     {
         SET_NODELOC((yylsp[-5]));
         // create a branch, use it to create a list of single case
@@ -2101,7 +2101,7 @@ yyreduce:
     break;
 
   case 49:
-#line 443 "cool.y"
+#line 444 "cool.y"
     {
         SET_NODELOC((yylsp[-5]));
         (yyval.cases) = single_Cases(branch((yyvsp[-5].symbol), (yyvsp[-3].symbol), (yyvsp[-1].expression)));   
@@ -2110,7 +2110,7 @@ yyreduce:
     break;
 
   case 50:
-#line 463 "cool.y"
+#line 464 "cool.y"
     {
         SET_NODELOC((yylsp[-3]));
         (yyval.expression) = let((yyvsp[-3].symbol), (yyvsp[-1].symbol), no_expr(), (yyvsp[0].expression)); 
@@ -2119,7 +2119,7 @@ yyreduce:
     break;
 
   case 51:
-#line 469 "cool.y"
+#line 470 "cool.y"
     {
          SET_NODELOC((yylsp[-5]));
          (yyval.expression) = let((yyvsp[-5].symbol), (yyvsp[-3].symbol), (yyvsp[-1].expression), (yyvsp[0].expression));
@@ -2128,7 +2128,7 @@ yyreduce:
     break;
 
   case 52:
-#line 475 "cool.y"
+#line 476 "cool.y"
     {
         SET_NODELOC((yylsp[-3]));
         (yyval.expression) = let((yyvsp[-3].symbol), (yyvsp[-1].symbol), no_expr(), (yyvsp[0].expression));
@@ -2137,7 +2137,7 @@ yyreduce:
     break;
 
   case 53:
-#line 480 "cool.y"
+#line 481 "cool.y"
     {
         SET_NODELOC((yylsp[-5]));
         (yyval.expression) = let((yyvsp[-5].symbol), (yyvsp[-3].symbol), (yyvsp[-1].expression), (yyvsp[0].expression));
@@ -2146,7 +2146,7 @@ yyreduce:
     break;
 
   case 54:
-#line 485 "cool.y"
+#line 486 "cool.y"
     {
         SET_NODELOC((yylsp[-1]));
         (yyval.expression) = (yyvsp[0].expression); // the return type is still expr
@@ -2393,7 +2393,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 492 "cool.y"
+#line 493 "cool.y"
 
     
     /* This function is called automatically when Bison detects a parse error. */

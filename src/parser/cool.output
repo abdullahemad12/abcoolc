@@ -3,9 +3,6 @@ Terminals unused in grammar
     ERROR
 
 
-State 122 conflicts: 9 shift/reduce
-
-
 Grammar
 
     0 $accept: program $end
@@ -1907,15 +1904,6 @@ State 122
     '<'  shift, and go to state 72
     '='  shift, and go to state 73
 
-    LE        [reduce using rule 53 (let_initc)]
-    '.'       [reduce using rule 53 (let_initc)]
-    '@'       [reduce using rule 53 (let_initc)]
-    '*'       [reduce using rule 53 (let_initc)]
-    '/'       [reduce using rule 53 (let_initc)]
-    '+'       [reduce using rule 53 (let_initc)]
-    '-'       [reduce using rule 53 (let_initc)]
-    '<'       [reduce using rule 53 (let_initc)]
-    '='       [reduce using rule 53 (let_initc)]
     $default  reduce using rule 53 (let_initc)
 
 

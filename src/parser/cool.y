@@ -159,6 +159,7 @@
     %type <expression> let_initc
     
     /* Precedence declarations go here. */
+    %right IN
     %right '.'
     %right '@'
     %right '~'
