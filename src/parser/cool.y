@@ -149,6 +149,8 @@
     %type <expressions> expr_list
     %type <expressions> expr_listc
     
+    %type <expressions> expr_stmts
+    
     /* Precedence declarations go here. */
     %right '.'
     %right '@'
@@ -285,6 +287,12 @@
         SET_NODELOC(@1);
         $$ = loop($2, $4);   
     }
+    /*block of multiple expressions*/
+    | '{' expr_stmts '}'
+    {
+        SET_NODELOC(@1);
+        $$ = block($2);
+    }
     
     
     /*list of comma separated expressions*/
@@ -305,6 +313,18 @@
     | 
     {
         $$ = nil_Expressions();
+    }
+    
+    /*expression  seperated by a ';'*/
+    expr_stmts : expr_stmts expr ';'
+    {
+        SET_NODELOC(@1);
+        $$ = append_Expressions($1, single_Expressions($2));
+    }
+    | expr ';' 
+    {
+       SET_NODELOC(@1);
+       $$ = single_Expressions($1);
     }
      
     /* end of grammar */
