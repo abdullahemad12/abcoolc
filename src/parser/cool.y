@@ -159,16 +159,16 @@
     %type <expression> let_initc
     
     /* Precedence declarations go here. */
-    %right IN
-    %right '.'
-    %right '@'
-    %right '~'
-    %right ISVOID
-    %right '*' '/'
-    %right '+' '-'
-    %right LE '<' '='
-    %right NOT
-    %right ASSIGN
+    %nonassoc IN
+    %nonassoc ASSIGN
+    %nonassoc NOT
+    %nonassoc LE '<' '='
+    %left '+' '-'
+    %left '*' '/'
+    %nonassoc ISVOID
+    %nonassoc '~'
+    %nonassoc '@'
+    %nonassoc '.'
     
     %%
     /* 
@@ -181,11 +181,14 @@
     : class			/* single class */
     { SET_NODELOC(@1); 
     $$ = single_Classes($1);
-    parse_results = $$; }
+    parse_results = $$; 
+    }
     | class_list class	/* several classes */
     { SET_NODELOC(@1);
      $$ = append_Classes($1,single_Classes($2)); 
-    parse_results = $$; }
+    parse_results = $$; 
+    }
+    | class_list error ';' { yyerrok; }
     ;
     
     /* If no parent is specified, the class inherits from the Object class. */
@@ -195,7 +198,11 @@
     stringtable.add_string(curr_filename)); }
     | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
     { SET_NODELOC(@1); 
-    $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
+    $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); 
+    }
+    /*error recovery*/
+    | CLASS TYPEID error '{' feature_list '}' ';' { yyerrok; }
+    | CLASS TYPEID error '}' ';' { yyerrok; }
     ;
     
     /* Feature list may be empty, but no empty features in list. */
@@ -204,7 +211,7 @@
         SET_NODELOC(@2);
         $$ = append_Features($1, single_Features($2));
     }  
-    | { $$ = nil_Features(); }
+    | { $$ = nil_Features(); };
    
     
     /* Feature definition */
@@ -223,6 +230,20 @@
         SET_NODELOC(@1);
         $$ = attr($1, $3, $5);
     }
+    /*Error recovery*/
+    | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' { yyerrok; }
+    | error '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }
+    | error '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }
+    | error '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }
+    | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }
+    | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }
+    | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }
+    | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' { yyerrok; }
+    | error ':' TYPEID ';' { yyerrok; }
+    | OBJECTID error TYPEID ';' { yyerrok; }
+    | OBJECTID ':' error ';' { yyerrok; }
+    | OBJECTID ':' TYPEID error { yyerrok; }      
+    ;
     
     
     /* formal list */
@@ -234,7 +255,7 @@
     | 
     {
        $$ = nil_Formals(); 
-    }
+    };
     
     formalsc : formalsc ',' formal
     {
@@ -244,7 +265,7 @@
     |
     {
        $$ = nil_Formals(); 
-    }
+    };
     
     /*formal*/
     formal : OBJECTID ':' TYPEID 
@@ -252,6 +273,7 @@
         SET_NODELOC(@1);
         $$ = formal($1, $3);
     }
+    ;
     
     
     /*
@@ -397,6 +419,12 @@
         SET_NODELOC(@1);
         $$ = $2;
     }
+    /*Error recovery*/
+    | '{' error '}' { yyerrok; }
+    | CASE error ';'{ yyerrok; }
+    ;
+    
+    
     /*list of comma separated expressions*/
     expr_list : expr expr_listc
     {
@@ -406,7 +434,7 @@
     |
     {
         $$ = nil_Expressions();
-    }
+    };
     
     expr_listc : expr_listc ',' expr
     {
@@ -429,6 +457,8 @@
        SET_NODELOC(@1);
        $$ = single_Expressions($1);
     }
+    | expr_stmts error ';' { yyerrok; }
+    ;
     
      
      
@@ -445,6 +475,9 @@
         SET_NODELOC(@1);
         $$ = single_Cases(branch($1, $3, $5));   
     }
+    /*Error recovery*/
+    | error ';' { yyerrok; }
+    ;
     
     /*let expression*/
     
@@ -471,6 +504,8 @@
          SET_NODELOC(@1);
          $$ = let($1, $3, $5, $6);
     }
+    | error let_initc { yyerrok; } 
+    ;
     
     let_initc : ',' OBJECTID ':' TYPEID let_initc
     {
@@ -487,6 +522,7 @@
         SET_NODELOC(@1);
         $$ = $2; // the return type is still expr
     }
+    | ',' error let_initc { yyerrok; };
     
     
     /* end of grammar */
