@@ -2,7 +2,7 @@
 
 abcoolc is a compiler for the COOL programming language (an acronym for Classroom Object Oriented Language). I built this compiler during the compilers course I was taking offered by stanford on EDX.org
 
-#### Language Overview 
+## Language Overview 
 
 Cool is a small language that can be implemented with reasonable eﬀort. Still, Cool retains many of the features of modern programming languages including objects, static typing, and automatic memory management.
 
@@ -21,14 +21,15 @@ For more information refer to the COOL [manual](docs/cool-manual.pdf)
 Example programs can be found in the examples [folder](examples)
 
 
-#### Building the compiler
+## Building the compiler
 
+To be filled in 
 
+## Using the compiler
 
-#### Using the compiler
+To be filled in 
 
-
-#### Source code Tour 
+## Source code Tour 
 
 Find documentation for each component at the following locations
 
