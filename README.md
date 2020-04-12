@@ -1,4 +1,4 @@
-# ABCOOLC
+<h1><img src ="docs/cranberries_white_small.png" alt = "cranberries" width="12%">ABCOOLC</h1>
 
 abcoolc is a compiler for the COOL programming language (an acronym for Classroom Object Oriented Language). I built this compiler during the compilers course I was taking offered by stanford on EDX.org
 
