@@ -131,136 +131,136 @@ Instructions
 ## Parser Design
 ----------------------
 
-This section contains the design of the grammar and a summary of the actions.The Error recovery is explained seperate from the actual grammar although in practice they are considered the same. Moreover, the section highlights the proof of correctness for each rule noting that some rules are exactly the same as in figure 1 of the manual; for these rules I will not be proving their correctness. Finally, precedence declarations and shift/reduce conflicts will be discussed.
-
+This section contains the design of the grammar and a summary of the actions.The Error recovery is explained seperate from the actual grammar although in practice they are considered the same. Moreover, the section highlights the proof of correctness for each rule noting that some rules are exactly the same as in figure 1 of the manual; for these rules I will not be proving their correctness. Finally, precedence declarations and shift/reduce conflicts will be discussed.  
+  
 **Notes:** 
-- all-upper-case-letters strings are terminals while lower-case ones are non-terminals
-- the only special characters I will be using below is -> , | and e where e denotes epsilon. all the other characters are part of the grammar
+- all-upper-case-letters strings are terminals while lower-case ones are non-terminals  
+- the only special characters I will be using below is -> , | and e where e denotes epsilon. all the other characters are part of the grammar  
 
 ##### Grammar
 
-1. program -> class_list
-
-2. class_list -> class | class_list class
-
-3. class -> CLASS TYPEID { feature_list };
-            | CLASS TYPEID INHERITS TYPEID { feature_list };
-            
-4. feature_list -> feature_list feature | e
-
-5. feature -> OBJECTID(formal_list) : TYPEID { expr };
-              | OBJECTID:TYPEID; | OBJECTID:TYPEID <- expr;
+1. program -> class_list  
+   
+2. class_list -> class | class_list class  
+  
+3. class -> CLASS TYPEID { feature_list };   
+            | CLASS TYPEID INHERITS TYPEID { feature_list };  
+               
+4. feature_list -> feature_list feature | e   
+  
+5. feature -> OBJECTID(formal_list) : TYPEID { expr };  
+              | OBJECTID:TYPEID; | OBJECTID:TYPEID <- expr;  
               
-6. formal_list -> formal formalc | e
-
-7. formalc -> formalc , formal | e
-
-8. formal -> ID: TPYE
-
-9. expr -> expr . OBJECTID ( expr_list )
-         | OBJECTID <- expr
-         | expr@TYPEID.OBJECTID(expr_list)
-         | OBJECTID(expr_list)
-         | IF expr THEN expr ELSE expr FI
-         | WHILE expr LOOP expr POOL 
-         | { expr_stmts }
-         | CASE expr OF case_stmts ESAC
-         | NEW TPYEID
-         | ISVOID expr
-         | expr + expr
-         | expr - expr 
-         | expr * expr 
-         | expr / expr
-         | ~ expr 
-         | expr < expr
-         | expr <= expr 
-         | expr = expr 
-         | not expr 
-         | ( expr )
-         | OBJECTID
-         | INTEGER
-         | STRING
-         | BOOLEAN
-         | LET let_init
-
-10. expr_list -> expr expr_listc | e
-
-11. expr_listc -> expr_listc , expr | e
-
-12. expr_stmts -> expr_stmts expr ; | expr ;
-
-13. case_stmts -> case_stmts OBJECTID : TYPEID => expr; 
-                  | OBJECTID:TYPEID => expr;
+6. formal_list -> formal formalc | e  
+    
+7. formalc -> formalc , formal | e   
+  
+8. formal -> ID: TYPE   
+  
+9. expr -> expr . OBJECTID ( expr_list )   
+         | OBJECTID <- expr   
+         | expr@TYPEID.OBJECTID(expr_list)   
+         | OBJECTID(expr_list)  
+         | IF expr THEN expr ELSE expr FI  
+         | WHILE expr LOOP expr POOL   
+         | { expr_stmts }    
+         | CASE expr OF case_stmts ESAC    
+         | NEW TPYEID   
+         | ISVOID expr   
+         | expr + expr   
+         | expr - expr   
+         | expr * expr   
+         | expr / expr  
+         | ~ expr    
+         | expr < expr  
+         | expr <= expr   
+         | expr = expr    
+         | not expr    
+         | ( expr )  
+         | OBJECTID  
+         | INTEGER  
+         | STRING  
+         | BOOLEAN  
+         | LET let_init  
+  
+10. expr_list -> expr expr_listc | e  
+  
+11. expr_listc -> expr_listc , expr | e  
+  
+12. expr_stmts -> expr_stmts expr ; | expr ;  
+  
+13. case_stmts -> case_stmts OBJECTID : TYPEID => expr;   
+                  | OBJECTID:TYPEID => expr;  
+                    
+14. let_init ->   OBJECTID : TYPEID let_initc  
+                | OBJECTID : TYPEID <- expr let_initc   
                   
-14. let_init ->   OBJECTID : TYPEID let_initc
-                | OBJECTID : TYPEID <- expr let_initc 
+                  
+15. let_initc -> , OBJECTID : TYPEID let_initc  
+                | , OBJECTID : TYPEID <- expr let_initc  
+                | IN expr  
                 
-                
-15. let_initc -> , OBJECTID : TYPEID let_initc
-                | , OBJECTID : TYPEID <- expr let_initc
-                | IN expr
-                
-The type of each non terminal can be found in the declarations section of the 'cool.y' file.
+The type of each non terminal can be found in the declarations section of the 'cool.y' file.  
 
 
 #### Actions 
 
 Nothing fancy actually happens in any of the actions of the rules. I depend solely on the grammar definition, with the power of recursion, to handle the somewhat complex tasks such as nesting the let expressions. The main objectives of the actions can be summarized as follows: recording the line number of the matched expression and return a node in the abstract syntax tree that represents the reduced substring. For recording the line number, the SET_NODELOC() macro is used. I choose the line number of the first matched Terminal if there is any terminal, or the line number of the first nonterminal otherwise. For example, if `case_stmts -> case_stmts OBJECTID : TYPEID => expr;` was matched, I would choose `$2` since OBJECTID is the first terminal. On the otherhand, if `expr_stmts -> expr_stmts expr ;` was matched, I would use `$1`.
+   
+According, to the language construct being matched, I would create a tree node using the appropriate constructor and return this tree node. There are two main types of tree nodes: “normal” phyla and list phyla. list nodes stores multiple normal nodes of the same type. For more information on this visit section 6 of the [COOL Tour Document](../../docs/cool-tour.pdf). For normal constructs, the action would call the appropriate constructor with the correct arguments. For list constructs, the action would create a single-item list of the currently matched item and append it to the list of items matched so far. If the action belonged to an epsilon rule, a nil list is returned.   
+  
+   
+#### Lists and Correctness  
+  
+The correctness will be discussed in this section because lists are the complicated rules of the grammar. Other rules are very simple, do not include any form of recursion, which means proving their correctness is a trivial matter of just proving the base case, and they are identical to the rules in figure 1 of the [COOL Manual](../../docs/cool-tour.pdf). The cool language has different types of lists. Those that are simply seperated by semicolumns include lists of: classes, features (functions and attributes), statements in the body of the case expressions and expressions in a block. Other lists are seperated by commas include lists of: formals (function arguments), expressions as arguments to a function call and the list of identifiers in the let expressions.   
+  
+  
+Rules for lists of items seperated by semicolumns are simpler because each valid item is garaunteed end with a semicolumn. They take the following form:  
 
-According, to the language construct being matched, I would create a tree node using the appropriate constructor and return this tree node. There are two main types of tree nodes: “normal” phyla and list phyla. list nodes stores multiple normal nodes of the same type. For more information on this visit section 6 of the [COOL Tour Document](../../docs/cool-tour.pdf). For normal constructs, the action would call the appropriate constructor with the correct arguments. For list constructs, the action would create a single-item list of the currently matched item and append it to the list of items matched so far. If the action belonged to an epsilon rule, a nil list is returned. 
-
-
-#### Lists and Correctness
-
-The correctness will be discussed in this section because lists are the complicated rules of the grammar. Other rules are very simple, do not include any form of recursion, which means proving their correctness is a trivial matter of just proving the base case, and they are identical to the rules in figure 1 of the [COOL Manual](../../docs/cool-tour.pdf). The cool language has different types of lists. Those that are simply seperated by semicolumns include lists of: classes, features (functions and attributes), statements in the body of the case expressions and expressions in a block. Other lists are seperated by commas include lists of: formals (function arguments), expressions as arguments to a function call and the list of identifiers in the let expressions. 
-
-
-Rules for lists of items seperated by semicolumns are simpler because each valid item is garaunteed end with a semicolumn. They take the following form:
-
-
-atom_list -> atom_list atom; | c 
-
-Where c = epsilon or "atom;" depending on whether the list can be empty or not. Proving that this rule will only match valid lists is easy and can be done by induction on the lists produced assuming the atom matched is correct which could also be easily proved on the atom itself. 
-
+  
+atom_list -> atom_list atom; | c   
+  
+Where c = epsilon or "atom;" depending on whether the list can be empty or not. Proving that this rule will only match valid lists is easy and can be done by induction on the lists produced assuming the atom matched is correct which could also be easily proved on the atom itself.   
+  
 Assume we are building the list from bottom to top (which what actaully happens in the compiler). 
+  
+Base case: if the list could be empty than epsilon is produced matching the empty list. In the other case, "atom;" is produced which matches a list of single item.   
+   
+Inductive hypthosis: list l matched at step i is always a correct list where every item is terminated by a ';'  
+  
+Inductive step: assume we obtained list l at step i so far and we see atom; as our next item. Because list l is a correct list by the inductive hypothesis, concatenating "atom;" to it will still produce a valid list at step i+1. Note there is no way for any other string to match according to the rules.  
 
-Base case: if the list could be empty than epsilon is produced matching the empty list. In the other case, "atom;" is produced which matches a list of single item. 
-
-Inductive hypthosis: list l matched at step i is always a correct list where every item is terminated by a ';'
-
-Inductive step: assume we obtained list l at step i so far and we see atom; as our next item. Because list l is a correct list by the inductive hypothesis, concatenating "atom;" to it will still produce a valid list at step i+1. Note there is no way for any other string to match according to the rules.
 
 
+Rules for lists of items separated by commas are slightly more complex because the first item should not have a comma prepended to it, while the other items must do. They take the following form:   
 
-Rules for lists of items separated by commas are slightly more complex because the first item should not have a comma prepended to it, while the other items must do. They take the following form:
+atom_list -> atom atomsc | c  
+atomc -> atomc , atom | e   
 
-atom_list -> atom atomsc | c
-atomc -> atomc , atom | e
+where c is epsilon or atom.   
 
-where c is epsilon or atom.
-
-The correctness of the first rule depends on the second rule. Since the first rule does not have recursion, it is easy to see that it is correct. As for the second rule, it can be easily proved by a simple induction similar to the one above.
+The correctness of the first rule depends on the second rule. Since the first rule does not have recursion, it is easy to see that it is correct. As for the second rule, it can be easily proved by a simple induction similar to the one above.   
 
 In a similar fashion, by induction we can see that the rules for the expressions are correct as well. 
 
 
 #### Let expression
 
-Let expressions are treated a little bit differently because they are not actaully represented the same way in the AST as they are represented in the program. When the user defines multiple identifiers within a let expression those identifiers are transformed each into its own let expression and let expressions are nested with in each other. If for instance, if the user writes the following expression `let ID1:TYPE1, ID2:TYPE2, ..., IDN:TYPEN in x` Then each IDi is defined as it is own let expression where the let expression of IDi+1 is actually the body of IDi with the exception of IDN which has x as its body. The following is the grammar for the let expression: 
+Let expressions are treated a little bit differently because they are not actaully represented the same way in the AST as they are represented in the program. When the user defines multiple identifiers within a let expression those identifiers are transformed each into its own let expression and let expressions are nested with in each other. If for instance, if the user writes the following expression `let ID1:TYPE1, ID2:TYPE2, ..., IDN:TYPEN in x` Then each IDi is defined as it is own let expression where the let expression of IDi+1 is actually the body of IDi with the exception of IDN which has x as its body. The following is the grammar for the let expression:    
+   
+expr -> LET let_init   
+let_init -> OBJECTID:TYPEID let_initc | OBJECTID:TYPEID <- expr let_initc   
+let_initc -> ,OBJECTID:TYPEID let_initc | ,OBJECTID:TYPEID <- expr let_initc | IN expr  
 
-expr -> LET let_init
-let_init -> OBJECTID:TYPEID let_initc | OBJECTID:TYPEID <- expr let_initc
-let_initc -> ,OBJECTID:TYPEID let_initc | ,OBJECTID:TYPEID <- expr let_initc | IN expr
-
-For the following proof I assume the correctness of expr. 
-
-Base case: the let expression has only one identifier definition and a body. let_init will match this one identifier while let_initc will match the body. Note that if the number of identifiers is zero or it does not have a body that matches expr, than none of the following rules will ever match this let expression. 
-
+For the following proof I assume the correctness of expr.    
+   
+Base case: the let expression has only one identifier definition and a body. let_init will match this one identifier while let_initc will match the body. Note that if the number of identifiers is zero or it does not have a body that matches expr, than none of the following rules will ever match this let expression.    
+  
 Inductive hypothesis: identifier matched at step i has correct form
-
-
-Inductive step: note let_init does not have any recursive cases so it only suffice to mention it in the base case. On the other hand, we have three cases of the input that we can see at step i+1. We could see another definition starting with a comma, we could see a definition with initialization starting with a comma or this could be the end of the let expression so the body is expected. Because the input we have seen uptil step i is correct, if any of the tree cases is matched at step i + 1, then the input is still correct. 
-
+   
+   
+Inductive step: note let_init does not have any recursive cases so it only suffice to mention it in the base case. On the other hand, we have three cases of the input that we can see at step i+1. We could see another definition starting with a comma, we could see a definition with initialization starting with a comma or this could be the end of the let expression so the body is expected. Because the input we have seen uptil step i is correct, if any of the tree cases is matched at step i + 1, then the input is still correct.   
+   
 This design was chosen to capture the natural recursive structure of the produced let expressions. let_init will match and produce the parent let expression and will use the node produced by let_initc as its body. Note, let expressions are still expressions with the same type of expr. let_initc on the other hand, will match the rest of the identifiers one by one. Ror each identifier matched at step i, it will create a new node and will set its body to the identifier matched by the recursive let_initc. If the current input that is matched is IN expr, the it simply returns expr. 
 
 
@@ -288,33 +288,33 @@ finally I set the IN token to have the lowest precedence declaration to fix the 
 
 In order to allow the program to resume parsing after a fatal error occurs to catch as many errors as possible, I used the 'error' special pseudoterminal. For each nonterminal, I added different permutations of the expression with the error terminal occuring at a specific position in it where I expect the error to be. The idea here is, according to the error, I try to match the rest of the expression related to the error, so that when the compiler resumes, it starts from a new expression, while trying to keep this matching as atomic as possible so that the parser does not skip a huge chunck of the input. 
 
-class -> error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' 
-        | error '(' formal_list ')' ':' error '{' expr '}' ';' 
-        | error '(' formal_list ')' ':' error '{' expr '}' error
-        | error '(' formal_list ')' ':' TYPEID '{' expr '}' error
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'
-        | error ':' TYPEID ';'
-        | OBJECTID error TYPEID ';'
-        | OBJECTID ':' error ';'
-        | OBJECTID ':' TYPEID error
+class -> error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'   
+        | error '(' formal_list ')' ':' error '{' expr '}' ';'   
+        | error '(' formal_list ')' ':' error '{' expr '}' error  
+        | error '(' formal_list ')' ':' TYPEID '{' expr '}' error  
+        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'  
+        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error    
+        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error  
+        | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'  
+        | error ':' TYPEID ';'  
+        | OBJECTID error TYPEID ';'  
+        | OBJECTID ':' error ';'  
+        | OBJECTID ':' TYPEID error  
   
-feature ->  error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' { yyerrok; }
-        | error '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }
-        | error '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }
-        | error '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' { yyerrok; }
-        | error ':' TYPEID ';' { yyerrok; }
-        | OBJECTID error TYPEID ';' { yyerrok; }
-        | OBJECTID ':' error ';' { yyerrok; }
-        | OBJECTID ':' TYPEID error { yyerrok; }     
-        
-        
-expr ->  '{' error '}' { yyerrok; }
-    | CASE error ';'{ yyerrok; } 
+feature ->  error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' { yyerrok; }  
+        | error '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }  
+        | error '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }  
+        | error '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }  
+        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }  
+        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }  
+        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }  
+        | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' { yyerrok; }  
+        | error ':' TYPEID ';' { yyerrok; }  
+        | OBJECTID error TYPEID ';' { yyerrok; }  
+        | OBJECTID ':' error ';' { yyerrok; }  
+        | OBJECTID ':' TYPEID error { yyerrok; }       
+           
+          
+expr ->  '{' error '}' { yyerrok; }  
+    | CASE error ';'{ yyerrok; }   
   
