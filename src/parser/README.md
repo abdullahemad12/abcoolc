@@ -3,23 +3,23 @@ README file for Programming Assignment 3 (C++ edition)
 
 Your directory should now contain the following files:
 
- Makefile
- README
- cool.y
- bad.cl
- good.cl
- cool-tree.handcode.h
- cool-tree.cc		  -> [cool root]/src/PA3/cool-tree.cc
- cool-tree.aps		  -> [cool root]/src/PA3/cool-tree.aps
- dumptype.cc		  -> [cool root]/src/PA3/dumptype.cc
- handle_flags.c           -> [cool root]/src/PA3/handle_flags.cc
- parser-phase.cc	  -> [cool root]/src/PA3/parser-phase.cc
- stringtab.cc		  -> [cool root]/src/PA3/stringtab.cc
- tokens-lex.cc		  -> [cool root]/src/PA3/tokens-lex.cc
- tree.cc		  -> [cool root]/src/PA3/tree.cc
- utilities.cc		  -> [cool root]/src/PA3/utilities.cc
- *.d			  dependency files
- *.*			  other generated files
+ Makefile  
+ README  
+ cool.y  
+ bad.cl  
+ good.cl  
+ cool-tree.handcode.h  
+ cool-tree.cc		  -> [cool root]/src/PA3/cool-tree.cc  
+ cool-tree.aps		  -> [cool root]/src/PA3/cool-tree.aps  
+ dumptype.cc		  -> [cool root]/src/PA3/dumptype.cc  
+ handle_flags.c           -> [cool root]/src/PA3/handle_flags.cc  
+ parser-phase.cc	  -> [cool root]/src/PA3/parser-phase.cc  
+ stringtab.cc		  -> [cool root]/src/PA3/stringtab.cc  
+ tokens-lex.cc		  -> [cool root]/src/PA3/tokens-lex.cc  
+ tree.cc		  -> [cool root]/src/PA3/tree.cc  
+ utilities.cc		  -> [cool root]/src/PA3/utilities.cc  
+ *.d			  dependency files  
+ *.*			  other generated files  
 
 The include (.h) files for this assignment can be found in 
 [cool root]/include/PA3
@@ -144,12 +144,12 @@ This section contains the design of the grammar and a summary of the actions.The
 2. class_list -> class | class_list class  
   
 3. class -> CLASS TYPEID { feature_list };   
-            | CLASS TYPEID INHERITS TYPEID { feature_list };  
+			| CLASS TYPEID INHERITS TYPEID { feature_list };  
                
 4. feature_list -> feature_list feature | e   
   
 5. feature -> OBJECTID(formal_list) : TYPEID { expr };  
-              | OBJECTID:TYPEID; | OBJECTID:TYPEID <- expr;  
+			| OBJECTID:TYPEID; | OBJECTID:TYPEID <- expr;  
               
 6. formal_list -> formal formalc | e  
     
@@ -158,30 +158,30 @@ This section contains the design of the grammar and a summary of the actions.The
 8. formal -> ID: TYPE   
   
 9. expr -> expr . OBJECTID ( expr_list )   
-         | OBJECTID <- expr   
-         | expr@TYPEID.OBJECTID(expr_list)   
-         | OBJECTID(expr_list)  
-         | IF expr THEN expr ELSE expr FI  
-         | WHILE expr LOOP expr POOL   
-         | { expr_stmts }    
-         | CASE expr OF case_stmts ESAC    
-         | NEW TPYEID   
-         | ISVOID expr   
-         | expr + expr   
-         | expr - expr   
-         | expr * expr   
-         | expr / expr  
-         | ~ expr    
-         | expr < expr  
-         | expr <= expr   
-         | expr = expr    
-         | not expr    
-         | ( expr )  
-         | OBJECTID  
-         | INTEGER  
-         | STRING  
-         | BOOLEAN  
-         | LET let_init  
+		 | OBJECTID <- expr   
+		 | expr@TYPEID.OBJECTID(expr_list)   
+		 | OBJECTID(expr_list)  
+		 | IF expr THEN expr ELSE expr FI  
+		 | WHILE expr LOOP expr POOL   
+		 | { expr_stmts }    
+		 | CASE expr OF case_stmts ESAC    
+		 | NEW TPYEID   
+		 | ISVOID expr   
+		 | expr + expr   
+		 | expr - expr   
+		 | expr * expr   
+		 | expr / expr  
+		 | ~ expr    
+		 | expr < expr  
+		 | expr <= expr   
+		 | expr = expr    
+		 | not expr    
+		 | ( expr )  
+		 | OBJECTID  
+		 | INTEGER  
+		 | STRING  
+		 | BOOLEAN  
+		 | LET let_init  
   
 10. expr_list -> expr expr_listc | e  
   
@@ -190,15 +190,15 @@ This section contains the design of the grammar and a summary of the actions.The
 12. expr_stmts -> expr_stmts expr ; | expr ;  
   
 13. case_stmts -> case_stmts OBJECTID : TYPEID => expr;   
-                  | OBJECTID:TYPEID => expr;  
+				| OBJECTID:TYPEID => expr;  
                     
 14. let_init ->   OBJECTID : TYPEID let_initc  
-                | OBJECTID : TYPEID <- expr let_initc   
+				| OBJECTID : TYPEID <- expr let_initc   
                   
                   
 15. let_initc -> , OBJECTID : TYPEID let_initc  
-                | , OBJECTID : TYPEID <- expr let_initc  
-                | IN expr  
+				| , OBJECTID : TYPEID <- expr let_initc  
+				| IN expr  
                 
 The type of each non terminal can be found in the declarations section of the 'cool.y' file.  
 
@@ -289,32 +289,32 @@ finally I set the IN token to have the lowest precedence declaration to fix the 
 In order to allow the program to resume parsing after a fatal error occurs to catch as many errors as possible, I used the 'error' special pseudoterminal. For each nonterminal, I added different permutations of the expression with the error terminal occuring at a specific position in it where I expect the error to be. The idea here is, according to the error, I try to match the rest of the expression related to the error, so that when the compiler resumes, it starts from a new expression, while trying to keep this matching as atomic as possible so that the parser does not skip a huge chunck of the input. 
 
 class -> error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'   
-        | error '(' formal_list ')' ':' error '{' expr '}' ';'   
-        | error '(' formal_list ')' ':' error '{' expr '}' error  
-        | error '(' formal_list ')' ':' TYPEID '{' expr '}' error  
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'  
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error    
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error  
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'  
-        | error ':' TYPEID ';'  
-        | OBJECTID error TYPEID ';'  
-        | OBJECTID ':' error ';'  
-        | OBJECTID ':' TYPEID error  
+		| error '(' formal_list ')' ':' error '{' expr '}' ';'   
+		| error '(' formal_list ')' ':' error '{' expr '}' error  
+		| error '(' formal_list ')' ':' TYPEID '{' expr '}' error  
+		| OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'  
+		| OBJECTID '(' formal_list ')' ':' error '{' expr '}' error    
+		| OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error  
+		| OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'  
+		| error ':' TYPEID ';'  
+		| OBJECTID error TYPEID ';'  
+		| OBJECTID ':' error ';'  
+		| OBJECTID ':' TYPEID error  
   
 feature ->  error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' { yyerrok; }  
-        | error '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }  
-        | error '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }  
-        | error '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }  
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }  
-        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }  
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }  
-        | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' { yyerrok; }  
-        | error ':' TYPEID ';' { yyerrok; }  
-        | OBJECTID error TYPEID ';' { yyerrok; }  
-        | OBJECTID ':' error ';' { yyerrok; }  
-        | OBJECTID ':' TYPEID error { yyerrok; }       
+		| error '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }  
+		| error '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }  
+		| error '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }  
+		| OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' { yyerrok; }  
+		| OBJECTID '(' formal_list ')' ':' error '{' expr '}' error { yyerrok; }  
+		| OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error { yyerrok; }  
+		| OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' { yyerrok; }  
+		| error ':' TYPEID ';' { yyerrok; }  
+		| OBJECTID error TYPEID ';' { yyerrok; }  
+		| OBJECTID ':' error ';' { yyerrok; }  
+		| OBJECTID ':' TYPEID error { yyerrok; }       
            
           
 expr ->  '{' error '}' { yyerrok; }  
-    | CASE error ';'{ yyerrok; }   
+	| CASE error ';'{ yyerrok; }   
   
