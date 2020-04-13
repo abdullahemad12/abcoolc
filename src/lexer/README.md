@@ -122,7 +122,7 @@ Action: Since no value associated with it, the action is to simply return the co
   
 **ASSIGN**  
   
-This represent the "<-" input token.  
+This represents the "<-" input token.  
   
 Action: Returns the code associated with this token.  
   
@@ -170,7 +170,7 @@ Action: Add it to the stringtable, set its value and return the code.
   
 **OBJECTID**
   
-the represents an object id. An Object ID must begin with a lower case letter concatenated with any letters and underscores.  
+This represents an object id. An Object ID must begin with a lower case letter concatenated with any letters and underscores.  
   
 Action: Add it to the stringtable, set its value and return the code.  
   
@@ -191,8 +191,7 @@ Action: do nothing
 
 represents a block comment opening "(*".  
   
-ACTION: skip all the following input, including any nested comments, until the matching closing *) is encountered, or EOF has been reached. If EOF was reached before seeing 
-a closing tag, an ERROR token is returned.  
+ACTION: skip all the following input, including any nested comments, until the matching closing *) is encountered, or EOF has been reached. If EOF was reached before seeing a closing tag, an ERROR token is returned.  
   
   
 **CLOSECOMMENT**
@@ -203,7 +202,7 @@ ACTION: return an ERROR token, because there is no way for this to match except 
   
 **ONELINECOMMENT**
 
-Represents a single line comment "--". Matches any character after "--" until a new line is encountered. If no new line is encountered, this means this must be the last line in the file and EOF was reached and hence after trying to match any character concatenated with a new line, it will try to match any character. 
+Represents a single line comment "--". Matches any character after "--" until a new line is encountered. If no newline is encountered, this means this must be the last line in the file and EOF was reached and hence after trying to match any character concatenated with a new line, it will try to match any character. 
    
 ACTION: do nothing  
 
@@ -214,48 +213,48 @@ Represents a cool string (array of characters). The following rules, encoded in 
   
 1. They start and end with quotations
 2. characters in the string can be any except for \0 (The null terminator ASCII code) 
-3. \n character is only allowed if it follows a escape character \
-4. \ character is only allowed if it perceeds any other allowed character including itself
+3. \n character is only allowed if it follows an escape character \
+4. \ character is only allowed if it precedes any other allowed character including itself
 
-Any character not satisfying this criteria is invalid.  
+Any character not satisfying these criteria is invalid.  
   
 the associated regex, \"(\\\n|\\[^\0]|[^\0\n\"\\])*\", can be explained as follows:   
   
 It begins and ends with a quotation mark. In the middle it accepts any number of concatenations of the following characters:   
 
-1. an escaped new line. i.e a new line preceeded with a '\' character
-2. Any possible escaped character except the null terminator. Any character preceeded with a '\' character.
-3. Any character That is not one of the following four: a null terminator, a new line, a double quotation, a backslack. Note that any of these characters except the null terminator is valid if it was escaped. Thus, if they dont match the first two cases, than it must be the case that they are not escaped and they should not match this case.
+1. an escaped newline. i.e a new line preceded with a '\' character
+2. Any possible escaped character except the null terminator. Any character preceded with a '\' character.
+3. Any character That is not one of the following four: a null terminator, a new line, a double quotation, a back slack. Note that any of these characters except the null terminator is valid if it was escaped. Thus, if they don't match the first two cases, then it must be the case that they are not escaped and they should not match this case.
   
-The following sections covers the possible format errors of a string.
-   
+The following sections cover the possible format errors of a string.  
+     
   
-Action: if the string is matched successfully with this regular expression, the next step is escaping all the escaped characters and represent them as a single ASCII character. The first thing it does is it replaces any character c preceeded with a backslach with the character c, i.e it replace \c with c. The following characters are exceptions: n, b, f, t, 0. If any of these characters are escaped, the will be replaced by \n, \b, \f, \t, \0 where \n denotes a single character (a new line) and \b denotes a single character (a backslash) and so on. It then stores them, character by character, in a buffer of a fixed size. If the size of the string is too large for the buffer, it simply returns an Error token.
+Action: if the string is matched successfully with this regular expression, the next step is escaping all the escaped characters and represent them as a single ASCII character. The first thing it does is it replaces any character c preceded with a backslash with the character c, i.e it replace \c with c. The following characters are exceptions: n, b, f, t, 0. If any of these characters are escaped, the will be replaced by \n, \b, \f, \t, \0 where \n denotes a single character (a new line) and \b denotes a single character (a backslash) and so on. It then stores them, character by character, in a buffer of a fixed size. If the size of the string is too large for the buffer, it simply returns an Error token.  
 
 **NULSTR**
 
-This is possibly a valid string that starts with a quotation and ends with a quotation; however, it contains a null character somewhere. Hence, it should report this as an error. 
-  
-Action: return an ERROR token.
+This is possibly a valid string that starts with a quotation and ends with a quotation; however, it contains a null character somewhere. Hence, it should report this as an error.   
+    
+Action: return an ERROR token.  
 
 **ESCAPEDNULSTR**
 
-This is possibly a valid string that starts with a quotation and ends with a quotation; however, it contains an escaped null character somewhere. Hence, it should report this as an error. 
+This is possibly a valid string that starts with a quotation and ends with a quotation; however, it contains an escaped null character somewhere. Hence, it should report this as an error.    
+   
 
-
-Action: return an ERROR token.
+Action: return an ERROR token.  
 
 **UNMATCHEDSTR**
 
-The construction of this regular expression depends on the fact that any valid string is matched with the STRING regex, otherwise this wont work correctly. Because an invalid string, is one that contains a null character, an escaped null character or missing a closing quotation, the string will match with this regex only if it does not match with the above Regex given that the lexical analyzer always tries to match the largest string.
+The construction of this regular expression depends on the fact that any valid string is matched with the STRING regex, otherwise, this won't work correctly. Because an invalid string, is one that contains a null character, an escaped null character or missing a closing quotation, the string will match with this regex only if it does not match with the above Regex given that the lexical analyzer always tries to match the largest string.  
 
-
-Action: return an ERROR token.
+  
+Action: return an ERROR token.  
 
 
 **Keywords**
 
-Because the keywords have almost the same definition, they are all explained and listed in this section. A keyword is case insensitive that are represented as discussed in the design notes section. 
+Because the keywords have almost the same definition, they are all explained and listed in this section. A keyword is case insensitive that is represented as discussed in the design notes section.   
 
 1. TBOOLEAN
 2. FBOOLEAN 
@@ -275,16 +274,16 @@ Because the keywords have almost the same definition, they are all explained and
 16. OF
 17. NEW
 18. ISVOID
-
-
+  
+  
 Action: all of them simply returns the code of the keyword.
-
+  
 
 
 **Single characters**
 
 All single characters are represented in this section 
-
+  
 1. {
 2. }
 3. (
@@ -302,33 +301,33 @@ All single characters are represented in this section
 15. <
 16. =
 
-
-Action: simply return the ASCII code of each character
-
+  
+Action: simply return the ASCII code of each character  
+  
 
 **Testing the Lexical Analyzer**
 
-For testing, I run diff to compute the difference between running my lexer on a test file and running the sample lexer on the same text file. If the output of diff is empty, then my lexer passes the test. Otherwise, there is an error. To make things easier, I wrote a script that runs the diff command on both lexers and compare the output of diff. By default, the make file runs the diff command on the file "mytest.cl". The file can be changed by changing the value of the variable MYTEST
-
-To run the test on "mytest.cl"
+For testing, I run diff to compute the difference between running my lexer on a test file and running the sample lexer on the same text file. If the output of diff is empty, then my lexer passes the test. Otherwise, there is an error. To make things easier, I wrote a script that runs the diff command on both lexers and compares the output of diff. By default, the make file runs the diff command on the file "mytest.cl". The file can be changed by changing the value of the variable MYTEST  
+  
+To run the test on "mytest.cl"  
 
 `make mytest`
 
-To run the test on any different cool file (path/to/file.cl)
-
-`make mytest MYTEST=path/to/file.cl`
+To run the test on any different cool file (path/to/file.cl)  
+  
+`make mytest MYTEST=path/to/file.cl`  
 
 To run the tests provided by the online class run:
-
+  
 `make test`
 
-This command was run on all the sample programs provided in examples and it passed. Additionally, the mytest.cl is a comprehensive set of valid and invalid strings including user strings, integers, type identifiers, object identifiers, case insensitive keywords, comments and white spaces. An all the special cases I could think of. Additionally, it tests for invalid programs, such as: 
+This command was run on all the sample programs provided in examples and it passed. Additionally, the mytest.cl is a comprehensive set of valid and invalid strings including user strings, integers, type identifiers, object identifiers, case insensitive keywords, comments, and white spaces. All the special cases I could think of. Additionally, it tests for invalid programs, such as: 
 
 1. A string with no matching closing quotation, possibly because it contains a non-escaped new line character
 2. A string with a null terminator character in between.
-3. A string with an escaped nul terminator character
+3. A string with an escaped null terminator character
 4. An EOF in the middle of the string
 5. An unmatched comment block 
-6. A nested comment block with it's nested comments unmatched 
+6. A nested comment block with its nested comments unmatched 
 7. A comment that has EOF
 8. Special Characters That are not part of the cool program
