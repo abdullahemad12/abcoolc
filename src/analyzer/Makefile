@@ -62,6 +62,14 @@ dotest:	semant good.cl bad.cl
 	@echo "\nRunning semantic checker on bad.cl\n"
 	-./mysemant bad.cl
 
+
+## unit testing 	
+TEST_OBJ := ${filter-out symtab_example.o semant-phase.o,${OBJS}} test.o
+test: ${TEST_OBJ}
+	${CC} ${CFLAGS} ${TEST_OBJ} ${LIB} -o ds_test ${CPPINCLUDE}	 
+utest: test
+	./ds_test
+
 ${LIBS}:
 	${CLASSDIR}/etc/link-object analyzer $@
 
