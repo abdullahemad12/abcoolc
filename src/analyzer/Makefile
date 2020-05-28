@@ -2,13 +2,13 @@
 ASSN = 4
 CLASS= cs143
 CLASSDIR= ../..
-LIB= -L/usr/pubsw/lib -lfl 
+LIB= -L/usr/pubsw/lib
 AR= gar
 ARCHIVE_NEW= -cr
 RANLIB= gar -qs
 
 SRC= semant.cc semant.h cool-tree.h cool-tree.handcode.h good.cl bad.cl README
-CSRC= semant-phase.cc symtab_example.cc  handle_flags.cc  ast-lex.cc ast-parse.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc
+CSRC= semant-phase.cc symtab_example.cc  handle_flags.cc  ast-lex.cc ast-parse.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc inheritance-tree.cc
 TSRC= mycoolc mysemant cool-tree.aps
 CGEN=
 HGEN=
@@ -19,7 +19,7 @@ OBJS= ${CFIL:.cc=.o}
 OUTPUT= good.output bad.output
 
 
-CPPINCLUDE= -I. -I${CLASSDIR}/include/PA${ASSN} -I${CLASSDIR}/src/PA${ASSN}
+CPPINCLUDE= -I. -I${CLASSDIR}/include/analyzer -I${CLASSDIR}/src/analyzer
 
 FFLAGS = -d8 -ocool-lex.cc
 BFLAGS = -d -v -y -b cool --debug -p cool_yy
@@ -63,13 +63,13 @@ dotest:	semant good.cl bad.cl
 	-./mysemant bad.cl
 
 ${LIBS}:
-	${CLASSDIR}/etc/link-object ${ASSN} $@
+	${CLASSDIR}/etc/link-object analyzer $@
 
 ${TSRC} ${CSRC}:
-	-ln -s ${CLASSDIR}/src/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/src/analyzer/$@ $@
 
 ${HSRC}:
-	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/include/analyzer/$@ $@
 
 clean :
 	-rm -f ${OUTPUT} *.s core ${OBJS} semant cgen symtab_example parser lexer *~ *.a *.o

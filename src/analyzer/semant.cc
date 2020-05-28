@@ -84,11 +84,13 @@ static void initialize_constants(void)
 
 
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
-
+    
     /* Fill this in */
 
 }
 
+
+// use this to initialize the inheritence tree
 void ClassTable::install_basic_classes() {
 
     // The tree package uses these globals to annotate the classes built below.
