@@ -8,7 +8,7 @@
 using namespace std;
 
 // MACRO to calculate the node with minimum depth
-#define MIN_DEPTH_NODE(ln, rn) ((ln->get_node_depth())<(rn->get_node_depth()))?(ln):(rn)
+#define MIN_DEPTH_NODE(ln, rn) ((ln->get_depth())<(rn->get_depth()))?(ln):(rn)
 
 
 /**
@@ -20,17 +20,17 @@ using namespace std;
 class union_find
 {
     private:
-        int n;
-        int* parents; 
-        int* rank;
-        int find(int i);
+        unsigned int n;
+        unsigned int* parents; 
+        unsigned int* rank;
+        unsigned int find(unsigned int i);
     public:
         /**
           * EFFECTS: constructor for the union find 
           * PARAMETERS: 
           * - int n: the number of elements in the unionfind +
           */
-        union_find(int n);
+        union_find(unsigned int n);
         ~union_find();
         
         /**
@@ -41,7 +41,7 @@ class union_find
           *  - int i: the first component
           *  - int j: the second component
           */  
-        bool disjoint(int i, int j);
+        bool disjoint(unsigned int i, unsigned int j);
         
         /**
           * EFFECTS: merge two components together 
@@ -51,7 +51,7 @@ class union_find
           * - int i: the first element
           * - int j: the second element
           */
-        void union_components(int i, int j); 
+        void union_components(unsigned int i, unsigned int j); 
 
 };
 
@@ -70,21 +70,21 @@ class inheritance_tree
         {
             private:
                 Class_ class_obj;
-                unsigned int class_id;
-                unsigned int node_depth;
+                unsigned int depth;
+                vector<Class_> children;
             public:
-                node(Class_ class_obj, unsigned int class_id, unsigned int node_depth) : 
-                class_obj(class_obj), class_id(class_id), node_depth(node_depth) {};
+                node(Class_ class_obj, unsigned int depth) : 
+                class_obj(class_obj), depth(depth) {};
                 Class_ get_class() { return class_obj; }
-                unsigned int get_class_id() { return class_id; }
-                unsigned int get_node_depth() { return node_depth; } 
+                unsigned int get_depth() { return depth; }
+                void add_child(Class_ child) { children.push_back(child); }
         };
      private:
         Classes classes;
         unordered_map<Class_, int> classes_ids;
         vector<vector<int>> tree; // I use this representation because the inheritence tree 
                                    // is of fixed size
-                                   
+                               
         vector<node*> euler_vector; // constructed using euler walk and used for LCA calculation 
         vector<int> first_euler_vector; // used to keep track of the index of the first occurance of nodes
 };
@@ -101,8 +101,7 @@ class inheritance_tree
 class segment_tree
 {
     private:
-        int n; // the number of nodes in the tree 
-        vector<inheritance_tree::node*> nodes;
+        unsigned int n; // the number of nodes in the tree 
         inheritance_tree::node** tree;
         /**
           * Helper for the query function
@@ -117,7 +116,8 @@ class segment_tree
           *  RETURNS:
           *  - the node with the minimum depth in the range
           */ 
-        inheritance_tree::node* query(int curnode, int l, int r, int tl, int tr);
+        inheritance_tree::node* query(unsigned int curnode, unsigned int l, 
+        			      unsigned int r, unsigned int tl, unsigned int tr);
         
         /**
           * called from the constructor to construct the tree
@@ -129,9 +129,11 @@ class segment_tree
           * - int l: the left range of the current node
           * - int r: the right range of the current node
           */
-        void construct_tree(int curnode, int l, int r);
+        void construct_tree(vector<inheritance_tree::node*> nodes, unsigned int curnode, 
+        		    unsigned int l, unsigned int r);
     public:
         segment_tree(vector<inheritance_tree::node*> nodes);
+        ~segment_tree(); // node pointers wont be deleted
         
         /**
           * EFFECTS: calculates the node with minimum depth in the given range
@@ -143,7 +145,7 @@ class segment_tree
           * RETURNS:
           * - the node with the minimum depth in the range
           */ 
-        inheritance_tree::node* query(int l, int r);
+        inheritance_tree::node* query(unsigned int l, unsigned int r);
         
 };
 
