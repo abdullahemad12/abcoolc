@@ -2,5 +2,14 @@ docs/PA*
 docs/extra-credit.pdf
 examples/*.s
 src/*/grading/*
-**/.o
-**/.s
+src/*/.o
+src/*/.s
+src/*/.a
+src/*/cgen
+src/*/good.output
+src/*/bad.output
+src/*/core
+src/*/semant
+src/*/symtab_example
+src/*/parser
+src/*/lexer
