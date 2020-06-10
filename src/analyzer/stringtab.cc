@@ -4,9 +4,11 @@
 //
 #include "copyright.h"
 
+#include <string.h>
 #include <assert.h>
 #include "stringtab_functions.h"
 #include "stringtab.h"
+
 
 extern char *pad(int n);
 
@@ -42,17 +44,27 @@ ostream& operator<<(ostream& s, const Entry& sym)
 
 ostream& operator<<(ostream& s, Symbol sym)
 {
-  return s << *sym;
+    return s << *sym;
 }
 
 char *Entry::get_string() const
 {
-  return str;
+    return str;
 }
 
 int Entry::get_len() const
 {
-  return len;
+    return len;
+}
+
+bool Entry::operator==(Entry& sym) 
+{
+    return (this == &sym) || (strcmp(this->str, sym.get_string()) == 0); 
+}
+
+bool Entry::operator!=(Entry& sym)
+{
+    return (this != &sym) && (strcmp(this->str, sym.get_string()) != 0);
 }
 
 // A Symbol is a pointer to an Entry.  Symbols are stored directly
