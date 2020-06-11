@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 #include "stringtab_functions.h"
-#include "stringtab.h"
+#include <stringtab.h>
 
 
 extern char *pad(int n);
@@ -57,14 +57,14 @@ int Entry::get_len() const
     return len;
 }
 
-bool Entry::operator==(Entry& sym) 
+bool operator==(Entry& arg1, Entry& arg2) 
 {
-    return (this == &sym) || (strcmp(this->str, sym.get_string()) == 0); 
+    return (&arg1 == &arg2) || (strcmp(arg1.get_string(), arg2.get_string()) == 0); 
 }
 
-bool Entry::operator!=(Entry& sym)
+bool operator!=(Entry& arg1, Entry& arg2)
 {
-    return (this != &sym) && (strcmp(this->str, sym.get_string()) != 0);
+    return (&arg1 != &arg2) && (strcmp(arg1.get_string(), arg2.get_string()) != 0);
 }
 
 // A Symbol is a pointer to an Entry.  Symbols are stored directly

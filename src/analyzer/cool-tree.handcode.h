@@ -108,4 +108,10 @@ Expression_class() { type = (Symbol) NULL; }
 #define Expression_SHARED_EXTRAS           \
 void dump_with_types(ostream&,int); 
 
+#define method_EXTRAS			  \
+Symbol get_name() { return name; } 	  \
+Formals get_formals() { return formals; } \
+Symbol get_return_type() { return return_type; } \
+Expression get_expression() { return expr; }
+
 #endif

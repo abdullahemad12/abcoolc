@@ -30,9 +30,9 @@
  *  happened on an empty stack or nonexisting entry than I am certainly doing something wrong.
  *  I am using the stack and hashtable from the std c++ library
  ****************************************************************************************************/
-# include <stringtab.h>
-# include <unordered_map>
-# include <stack>
+#include <stringtab.h>
+#include <unordered_map>
+#include <stack>
 
 
 class object_environement {

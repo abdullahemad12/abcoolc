@@ -19,6 +19,8 @@ typedef Entry* Symbol;
 
 extern ostream& operator<<(ostream& s, const Entry& sym);
 extern ostream& operator<<(ostream& s, Symbol sym);
+extern bool operator==(Entry& arg1, Entry& arg2);
+extern bool operator!=(Entry& arg1, Entry& arg2);
 
 /////////////////////////////////////////////////////////////////////////
 //
@@ -46,9 +48,6 @@ public:
   char *get_string() const;
   int get_len() const;
   
-  //override == and != operators for map
-  bool operator==(Entry& sym);
-  bool operator!=(Entry& sym);
 };
 
 //
