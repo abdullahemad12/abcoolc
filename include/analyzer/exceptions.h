@@ -139,3 +139,12 @@ class method_redefinition : public scope_exception
     }
 };
 
+class inconsistent_signature_exception : public scope_exception
+{
+    inconsistent_signature_exception(Class_ faulty_class, tree_node* faulty_node, Symbol method) :
+                                     scope_exception(faulty_class, faulty_node)
+    {   
+        semant_exception::msg << "cannot override method " << method << " with a different signature";
+    }  
+};
+
