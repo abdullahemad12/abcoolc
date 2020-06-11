@@ -13,3 +13,4 @@ src/*/semant
 src/*/symtab_example
 src/*/parser
 src/*/lexer
+.vscode
