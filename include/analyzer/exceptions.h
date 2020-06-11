@@ -11,12 +11,12 @@
  *  Class_ faulty_class: the class at which the error occured  *
  *  msg: the error message accessible through what() method    *
  ***************************************************************/
-class semant_exception : std::exception
+class SemantException : std::exception
 {
     Class_ faulty_class;
     protected:
         std::stringstream msg;
-        semant_exception(Class_ faulty_class) : faulty_class (faulty_class) { }
+        SemantException(Class_ faulty_class) : faulty_class (faulty_class) { }
     public:
         Class_ get_faulty_class(void) { return faulty_class; }
         const char* what(void) { return msg.str().c_str(); }
@@ -31,30 +31,30 @@ class semant_exception : std::exception
  *  3) A class was referenced as a parent but  *
  *     was not actually defined                * 
  ***********************************************/
-class graph_exception : public semant_exception
+class GraphException : public SemantException
 {
     protected:
-        graph_exception(Class_ faulty_class) : semant_exception(faulty_class) { }   
+        GraphException(Class_ faulty_class) : SemantException(faulty_class) { }   
 };
 
-class class_redefinition_exception : public graph_exception 
+class ClassRedefinitionException : public GraphException 
 {
-    class_redefinition_exception(Class_ faulty_class) : graph_exception(faulty_class) { 
-        semant_exception::msg << "class " << faulty_class->get_name() << " is redefined multiple times";
+    ClassRedefinitionException(Class_ faulty_class) : GraphException(faulty_class) { 
+        ClassRedefinitionException::msg << "class " << faulty_class->get_name() << " is redefined multiple times";
     }
 };
 
-class cyclic_class_exception : public graph_exception
+class CyclicClassException : public GraphException
 {
-    cyclic_class_exception(Class_ faulty_class) : graph_exception(faulty_class) { 
-        semant_exception::msg << "class " << faulty_class->get_name() << " causes a dependency cycle";
+    CyclicClassException(Class_ faulty_class) : GraphException(faulty_class) { 
+        SemantException::msg << "class " << faulty_class->get_name() << " causes a dependency cycle";
     }   
 };
 
-class undefined_class_exception : public graph_exception
+class UndefinedClassException : public GraphException
 {
-    undefined_class_exception(Class_ faulty_class) : graph_exception(faulty_class) {
-        semant_exception::msg << "class " << faulty_class->get_name() << " is undefined";
+    UndefinedClassException(Class_ faulty_class) : GraphException(faulty_class) {
+        SemantException::msg << "class " << faulty_class->get_name() << " is undefined";
     }
 };
 
@@ -71,13 +71,13 @@ class undefined_class_exception : public graph_exception
  *  4) a method referenced but not defined  *
  *  5) a type mismatch                      *
  ********************************************/
-class analysis_exception : public semant_exception
+class AnalysisException : public SemantException
 {   
     private:
         tree_node* faulty_node;
     
     protected:
-        analysis_exception(Class_ faulty_exception, tree_node* faulty_node) : semant_exception(faulty_exception) 
+        AnalysisException(Class_ faulty_exception, tree_node* faulty_node) : SemantException(faulty_exception) 
         { 
             this->faulty_node = faulty_node;
         }
@@ -86,65 +86,65 @@ class analysis_exception : public semant_exception
         tree_node* get_faulty_node(void) { return faulty_node; }
 };
 
-class scope_exception : public analysis_exception
+class ScopeException : public AnalysisException
 {
     protected:
-        scope_exception(Class_ faulty_class, tree_node* faulty_node) : analysis_exception(faulty_class, faulty_node) {  }
+        ScopeException(Class_ faulty_class, tree_node* faulty_node) : AnalysisException(faulty_class, faulty_node) {  }
         
 };
 
-class type_exception : public analysis_exception
+class TypeException : public AnalysisException
 {
-    type_exception(Class_ faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
-                   analysis_exception(faulty_class, faulty_node) 
+    TypeException(Class_ faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
+                   AnalysisException(faulty_class, faulty_node) 
     {
-       semant_exception::msg <<  "expected type " << expected_symbol << " but got " << faulty_symbol;
+       SemantException::msg <<  "expected type " << expected_symbol << " but got " << faulty_symbol;
     }
 };
 
-class undefined_attribute_exception : public scope_exception
+class UndefinedAttributeException : public ScopeException
 {
-        undefined_attribute_exception(Class_ faulty_class, tree_node* faulty_node, Symbol identifier) :    
-                                        scope_exception(faulty_class, faulty_node)
+        UndefinedAttributeException(Class_ faulty_class, tree_node* faulty_node, Symbol identifier) :    
+                                        ScopeException(faulty_class, faulty_node)
         {
-            semant_exception::msg << "attribute " << identifier << " is not defined in this context";
+            SemantException::msg << "attribute " << identifier << " is not defined in this context";
         }
 };
 
 
-class undefined_method_exception : public scope_exception
+class UndefinedMethodException : public ScopeException
 {
-    undefined_method_exception(Class_ faulty_class, tree_node* faulty_node, Symbol method) :
-                              scope_exception(faulty_class, faulty_node)
+    UndefinedMethodException(Class_ faulty_class, tree_node* faulty_node, Symbol method) :
+                              ScopeException(faulty_class, faulty_node)
     {
-        semant_exception::msg << "method " << method << " is not defined in this context";
+        SemantException::msg << "method " << method << " is not defined in this context";
     }
 };
 
-class attribute_redefinition_exception : public scope_exception
+class attribute_redefinition_exception : public ScopeException
 {
     attribute_redefinition_exception(Class_ faulty_class, tree_node* faulty_node, Symbol identifier) : 
-                                     scope_exception(faulty_class, faulty_node)
+                                     ScopeException(faulty_class, faulty_node)
     {
-        semant_exception::msg << "attribute " << identifier << "is defined multiple times";
+        SemantException::msg << "attribute " << identifier << "is defined multiple times";
     }
 };
 
-class method_redefinition : public scope_exception
+class MethodRedefinition : public ScopeException
 {
-    method_redefinition(Class_ faulty_class, tree_node* faulty_node, Symbol method) : 
-                                     scope_exception(faulty_class, faulty_node)
+    MethodRedefinition(Class_ faulty_class, tree_node* faulty_node, Symbol method) : 
+                                     ScopeException(faulty_class, faulty_node)
     {
-        semant_exception::msg << "method " << method << "is defined multiple times";
+        SemantException::msg << "method " << method << "is defined multiple times";
     }
 };
 
-class inconsistent_signature_exception : public scope_exception
+class InconsistentSignatureException : public ScopeException
 {
-    inconsistent_signature_exception(Class_ faulty_class, tree_node* faulty_node, Symbol method) :
-                                     scope_exception(faulty_class, faulty_node)
+    InconsistentSignatureException(Class_ faulty_class, tree_node* faulty_node, Symbol method) :
+                                     ScopeException(faulty_class, faulty_node)
     {   
-        semant_exception::msg << "cannot override method " << method << " with a different signature";
+        SemantException::msg << "cannot override method " << method << " with a different signature";
     }  
 };
 

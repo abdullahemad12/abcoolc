@@ -66,9 +66,9 @@ dotest:	semant good.cl bad.cl
 ## unit testing 	
 TEST_OBJ := ${filter-out symtab_example.o semant-phase.o,${OBJS}} test.o
 test: ${TEST_OBJ}
-	${CC} ${CFLAGS} ${TEST_OBJ} ${LIB} -o ds_test ${CPPINCLUDE}	 
+	${CC} ${CFLAGS} ${TEST_OBJ} ${LIB} -o utest ${CPPINCLUDE}	 
 utest: test
-	./ds_test
+	./utest
 
 ${LIBS}:
 	${CLASSDIR}/etc/link-object analyzer $@

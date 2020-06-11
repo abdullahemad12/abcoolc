@@ -2,13 +2,20 @@
 #define CLASS_TREE_H_
 
 #include <cool-tree.h>
+#include <exceptions.h>
+#include <method-environment.h>
+#include <object-environment.h>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
+#include <utility>
 
 
 // MACRO to calculate the node with minimum depth
 #define MIN_DEPTH_NODE(ln, rn) ((ln->get_depth())<(rn->get_depth()))?(ln):(rn)
 
+// prototypes
+class SegmentTree;
 
 /**
   * This class contains the implementation of a union find datastructure with the support of two main operations 
@@ -16,7 +23,7 @@
   * This is mainly used to quickly check for cycles in the Abstract syntax tree
   */
    
-class union_find
+class UnionFind
 {
     private:
         unsigned int n;
@@ -29,8 +36,8 @@ class union_find
           * PARAMETERS: 
           * - int n: the number of elements in the unionfind +
           */
-        union_find(unsigned int n);
-        ~union_find();
+        UnionFind(unsigned int n);
+        ~UnionFind();
         
         /**
           * EFFECTS: checks if two components belong to the same component 
@@ -58,34 +65,75 @@ class union_find
 /**
   * Main class that represents the CLASS tree of the program
   */ 
-class class_tree
+class ClassTree
 {
     /**
       * Represents a Node in the CLASS tree
       * Holds extra information other than class_ class
       */
      public: 
-        class node
+        class Node
         {
             private:
                 Class_ class_obj;
                 unsigned int depth;
                 std::vector<Class_> children;
             public:
-                node(Class_ class_obj, unsigned int depth) : 
+                Node(Class_ class_obj, unsigned int depth) : 
                 class_obj(class_obj), depth(depth) {};
                 Class_ get_class() { return class_obj; }
                 unsigned int get_depth() { return depth; }
                 void add_child(Class_ child) { children.push_back(child); }
         };
      private:
-        Classes classes;
-        std::unordered_map<Class_, int> classes_ids;
-        std::vector<std::vector<int>> tree; // I use this representation because the inheritence tree 
-                                   // is of fixed size
-                               
-        std::vector<node*> euler_vector; // constructed using euler walk and used for LCA calculation 
-        std::vector<int> first_euler_vector; // used to keep track of the index of the first occurance of nodes
+        std::unordered_set<Symbol> classes;
+        Node* root; 
+        // the first occurance in an euler walk
+        std::unordered_map<Symbol, unsigned int> eurler_first;
+        SegmentTree* lubtree;
+
+        // private functions
+        /*does not return any thing but might throw a fatal exception*/
+        void check_for_invalid_inheritance(void);
+        void check_for_redefinitions(void);
+        void construct_graph(Classes classes);
+        void check_for_cycles(void);
+        void install_basic_classes(void);
+        ClassTree::Node** euler_walk(void);
+        void compute_first_occurance(ClassTree::Node** euler_array);
+        void analyze_dfs_helper(Node* node, std::vector<SemantException*>& err_container, 
+                                MethodEnvironment& global_env, 
+                                std::pair<ObjectEnvironement, MethodEnvironment>& local_env);
+
+        public:
+          /**
+            * EFFECTS: least upper bound (lub) operation as defined in the manual
+            *          basically, it calculates the Least common ancestor of the 
+            *          given two classes
+            * REQUIRES: the given two classes to be defined in the ClassTree
+            * PARAMETERS:
+            *  1. Symbol type1: the first class symbol from idtable
+            *  2. Symbol type2: the second class symbol from idtable
+            * RETURNS:
+            *  the LUB of these two classes
+            */
+          Symbol lub(Symbol type1, Symbol type2);
+
+          /**
+           * EFFECTS: performs semantic analysis on all the classes in the program
+           * REQUIRES: correct initialization of the trees
+           * RETURNS: a vector of exceptions thrown due to semantic errors.
+           * POSTCONDITIONS: the SemantExcpetions must be deleted to avoid leaks
+           */ 
+          std::vector<SemantException*> analyze();
+
+          ClassTree(Classes classes);
+          ~ClassTree();
+
+
+
+        
+                  
 };
 
 /**
@@ -97,11 +145,11 @@ class class_tree
   * so this will only support range queries
   */
   
-class lub_tree
+class SegmentTree
 {
     private:
         unsigned int n; // the number of nodes in the tree 
-        class_tree::node** tree;
+        ClassTree::Node** tree;
         /**
           * Helper for the query function
           * EFFECTS: recursively calculates the minimum in the given range l-r (inclusive)
@@ -115,7 +163,7 @@ class lub_tree
           *  RETURNS:
           *  - the node with the minimum depth in the range
           */ 
-        class_tree::node* query(unsigned int curnode, unsigned int l, 
+        ClassTree::Node* query(unsigned int curnode, unsigned int l, 
         			      unsigned int r, unsigned int tl, unsigned int tr);
         
         /**
@@ -128,11 +176,11 @@ class lub_tree
           * - int l: the left range of the current node
           * - int r: the right range of the current node
           */
-        void construct_tree(std::vector<class_tree::node*> nodes, unsigned int curnode, 
+        void construct_tree(std::vector<ClassTree::Node*> nodes, unsigned int curnode, 
         		    unsigned int l, unsigned int r);
     public:
-        lub_tree(std::vector<class_tree::node*> nodes);
-        ~lub_tree(); // node pointers wont be deleted
+        SegmentTree(std::vector<ClassTree::Node*> nodes);
+        ~SegmentTree(); // node pointers wont be deleted
         
         /**
           * EFFECTS: calculates the node with minimum depth in the given range
@@ -144,7 +192,7 @@ class lub_tree
           * RETURNS:
           * - the node with the minimum depth in the range
           */ 
-        class_tree::node* query(unsigned int l, unsigned int r);
+        ClassTree::Node* query(unsigned int l, unsigned int r);
         
 };
 

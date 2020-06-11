@@ -1,8 +1,8 @@
 #include <cassert>  
-#include "class-tree.h"
+#include <class-tree.h>
 
 
-union_find::union_find(unsigned int n) : n(n)
+UnionFind::UnionFind(unsigned int n) : n(n)
 {
     parents = new unsigned int[n];
     rank = new unsigned int[n];
@@ -13,13 +13,13 @@ union_find::union_find(unsigned int n) : n(n)
     }
 }
 
-union_find::~union_find()
+UnionFind::~UnionFind()
 {
     delete[] parents;
     delete[] rank;
 }
 
-unsigned int union_find::find(unsigned int i)
+unsigned int UnionFind::find(unsigned int i)
 {
     unsigned int cur_parent = i;
     while(parents[cur_parent] != cur_parent)
@@ -32,12 +32,12 @@ unsigned int union_find::find(unsigned int i)
     return cur_parent;
 }
 
-bool union_find::disjoint(unsigned int i, unsigned int j)
+bool UnionFind::disjoint(unsigned int i, unsigned int j)
 {
     return find(i) != find(j);
 }
 
-void union_find::union_components(unsigned int i, unsigned int j)
+void UnionFind::union_components(unsigned int i, unsigned int j)
 {
     if(!disjoint(i, j))
     {
@@ -64,7 +64,7 @@ void union_find::union_components(unsigned int i, unsigned int j)
 }
 
 
-lub_tree::lub_tree(std::vector<class_tree::node*> nodes) : n(nodes.size())
+SegmentTree::SegmentTree(std::vector<ClassTree::Node*> nodes) : n(nodes.size())
 {
     // to be on the safe side, I will check that none of the nodes is NULL
     // this should not hurt the performance a lot
@@ -73,7 +73,7 @@ lub_tree::lub_tree(std::vector<class_tree::node*> nodes) : n(nodes.size())
         assert(nodes[i] != NULL);
     }
     
-    tree = new class_tree::node*[4 * n];
+    tree = new ClassTree::Node*[4 * n];
     for(unsigned int i = 0, m = 4 * n; i < m; i++)
     {
         tree[i] = NULL;
@@ -81,7 +81,7 @@ lub_tree::lub_tree(std::vector<class_tree::node*> nodes) : n(nodes.size())
     construct_tree(nodes, 1, 0, n-1);
 }
 
-void lub_tree::construct_tree(std::vector<class_tree::node*> nodes, unsigned int curnode, 
+void SegmentTree::construct_tree(std::vector<ClassTree::Node*> nodes, unsigned int curnode, 
 				  unsigned int l, unsigned int r)
 {
     if(l == r)
@@ -96,18 +96,18 @@ void lub_tree::construct_tree(std::vector<class_tree::node*> nodes, unsigned int
 
     assert(tree[lchild] != NULL);
     assert(tree[rchild] != NULL);    
-    class_tree::node* min = MIN_DEPTH_NODE(tree[lchild], tree[rchild]);
+    ClassTree::Node* min = MIN_DEPTH_NODE(tree[lchild], tree[rchild]);
     tree[curnode] = min;
 }
 
-class_tree::node* lub_tree::query(unsigned int l, unsigned int r)
+ClassTree::Node* SegmentTree::query(unsigned int l, unsigned int r)
 {
     assert(l >= 0);
     assert(r < n);
     return query(1, l, r, 0, n-1);
 }
 
-class_tree::node* lub_tree::query(unsigned int curnode, unsigned int l, unsigned int r, unsigned int tl, unsigned int tr)
+ClassTree::Node* SegmentTree::query(unsigned int curnode, unsigned int l, unsigned int r, unsigned int tl, unsigned int tr)
 {
     if(tl >= l && tr <= r)
     {
@@ -118,8 +118,8 @@ class_tree::node* lub_tree::query(unsigned int curnode, unsigned int l, unsigned
         return NULL;
     }
     unsigned int leftnode = 2 * curnode, rightnode = leftnode + 1, mid = (tl + tr) / 2;
-    class_tree::node* ml = query(leftnode, l, r, tl, mid);
-    class_tree::node* rl = query(rightnode, l, r, mid + 1, tr);
+    ClassTree::Node* ml = query(leftnode, l, r, tl, mid);
+    ClassTree::Node* rl = query(rightnode, l, r, mid + 1, tr);
     assert(ml || rl); // one of them must not be NULL, otherwise a bug
     if(!ml)
     {
@@ -135,7 +135,7 @@ class_tree::node* lub_tree::query(unsigned int curnode, unsigned int l, unsigned
     }
 }
 
-lub_tree::~lub_tree()
+SegmentTree::~SegmentTree()
 {
 	delete[] tree;
 }
