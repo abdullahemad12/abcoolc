@@ -2,9 +2,9 @@ docs/PA*
 docs/extra-credit.pdf
 examples/*.s
 src/*/grading/*
-src/*/.o
-src/*/.s
-src/*/.a
+src/*/*.o
+src/*/*.s
+src/*/*.a
 src/*/cgen
 src/*/good.output
 src/*/bad.output
