@@ -1,7 +1,6 @@
 #include <cassert>  
-#include "inheritance-tree.h"
+#include "class-tree.h"
 
-using namespace std;
 
 union_find::union_find(unsigned int n) : n(n)
 {
@@ -65,7 +64,7 @@ void union_find::union_components(unsigned int i, unsigned int j)
 }
 
 
-segment_tree::segment_tree(vector<inheritance_tree::node*> nodes) : n(nodes.size())
+lub_tree::lub_tree(std::vector<class_tree::node*> nodes) : n(nodes.size())
 {
     // to be on the safe side, I will check that none of the nodes is NULL
     // this should not hurt the performance a lot
@@ -74,7 +73,7 @@ segment_tree::segment_tree(vector<inheritance_tree::node*> nodes) : n(nodes.size
         assert(nodes[i] != NULL);
     }
     
-    tree = new inheritance_tree::node*[4 * n];
+    tree = new class_tree::node*[4 * n];
     for(unsigned int i = 0, m = 4 * n; i < m; i++)
     {
         tree[i] = NULL;
@@ -82,7 +81,7 @@ segment_tree::segment_tree(vector<inheritance_tree::node*> nodes) : n(nodes.size
     construct_tree(nodes, 1, 0, n-1);
 }
 
-void segment_tree::construct_tree(vector<inheritance_tree::node*> nodes, unsigned int curnode, 
+void lub_tree::construct_tree(std::vector<class_tree::node*> nodes, unsigned int curnode, 
 				  unsigned int l, unsigned int r)
 {
     if(l == r)
@@ -97,18 +96,18 @@ void segment_tree::construct_tree(vector<inheritance_tree::node*> nodes, unsigne
 
     assert(tree[lchild] != NULL);
     assert(tree[rchild] != NULL);    
-    inheritance_tree::node* min = MIN_DEPTH_NODE(tree[lchild], tree[rchild]);
+    class_tree::node* min = MIN_DEPTH_NODE(tree[lchild], tree[rchild]);
     tree[curnode] = min;
 }
 
-inheritance_tree::node* segment_tree::query(unsigned int l, unsigned int r)
+class_tree::node* lub_tree::query(unsigned int l, unsigned int r)
 {
     assert(l >= 0);
     assert(r < n);
     return query(1, l, r, 0, n-1);
 }
 
-inheritance_tree::node* segment_tree::query(unsigned int curnode, unsigned int l, unsigned int r, unsigned int tl, unsigned int tr)
+class_tree::node* lub_tree::query(unsigned int curnode, unsigned int l, unsigned int r, unsigned int tl, unsigned int tr)
 {
     if(tl >= l && tr <= r)
     {
@@ -119,8 +118,8 @@ inheritance_tree::node* segment_tree::query(unsigned int curnode, unsigned int l
         return NULL;
     }
     unsigned int leftnode = 2 * curnode, rightnode = leftnode + 1, mid = (tl + tr) / 2;
-    inheritance_tree::node* ml = query(leftnode, l, r, tl, mid);
-    inheritance_tree::node* rl = query(rightnode, l, r, mid + 1, tr);
+    class_tree::node* ml = query(leftnode, l, r, tl, mid);
+    class_tree::node* rl = query(rightnode, l, r, mid + 1, tr);
     assert(ml || rl); // one of them must not be NULL, otherwise a bug
     if(!ml)
     {
@@ -136,7 +135,7 @@ inheritance_tree::node* segment_tree::query(unsigned int curnode, unsigned int l
     }
 }
 
-segment_tree::~segment_tree()
+lub_tree::~lub_tree()
 {
 	delete[] tree;
 }

@@ -1,11 +1,10 @@
-#ifndef INHERITANCE_TREE_H_
-#define INHERITANCE_TREE_H_
+#ifndef CLASS_TREE_H_
+#define CLASS_TREE_H_
 
 #include <cool-tree.h>
 #include <unordered_map>
 #include <vector>
 
-using namespace std;
 
 // MACRO to calculate the node with minimum depth
 #define MIN_DEPTH_NODE(ln, rn) ((ln->get_depth())<(rn->get_depth()))?(ln):(rn)
@@ -57,12 +56,12 @@ class union_find
 
 
 /**
-  * Main class that represents the inheritance tree of the program
+  * Main class that represents the CLASS tree of the program
   */ 
-class inheritance_tree
+class class_tree
 {
     /**
-      * Represents a Node in the inheritance tree
+      * Represents a Node in the CLASS tree
       * Holds extra information other than class_ class
       */
      public: 
@@ -71,7 +70,7 @@ class inheritance_tree
             private:
                 Class_ class_obj;
                 unsigned int depth;
-                vector<Class_> children;
+                std::vector<Class_> children;
             public:
                 node(Class_ class_obj, unsigned int depth) : 
                 class_obj(class_obj), depth(depth) {};
@@ -81,28 +80,28 @@ class inheritance_tree
         };
      private:
         Classes classes;
-        unordered_map<Class_, int> classes_ids;
-        vector<vector<int>> tree; // I use this representation because the inheritence tree 
+        std::unordered_map<Class_, int> classes_ids;
+        std::vector<std::vector<int>> tree; // I use this representation because the inheritence tree 
                                    // is of fixed size
                                
-        vector<node*> euler_vector; // constructed using euler walk and used for LCA calculation 
-        vector<int> first_euler_vector; // used to keep track of the index of the first occurance of nodes
+        std::vector<node*> euler_vector; // constructed using euler walk and used for LCA calculation 
+        std::vector<int> first_euler_vector; // used to keep track of the index of the first occurance of nodes
 };
 
 /**
   * segment_tree class 
-  * used to query the minimum by the inheritance tree
+  * used to query the minimum by the class tree
   * for calculating the LCA (LUB operation). As I am not expecting to use
   * it for something else in this project, it only stores Vector<Node*>
   * Also there is no need for insertion as the size of the tree is fixed,
   * so this will only support range queries
   */
   
-class segment_tree
+class lub_tree
 {
     private:
         unsigned int n; // the number of nodes in the tree 
-        inheritance_tree::node** tree;
+        class_tree::node** tree;
         /**
           * Helper for the query function
           * EFFECTS: recursively calculates the minimum in the given range l-r (inclusive)
@@ -116,7 +115,7 @@ class segment_tree
           *  RETURNS:
           *  - the node with the minimum depth in the range
           */ 
-        inheritance_tree::node* query(unsigned int curnode, unsigned int l, 
+        class_tree::node* query(unsigned int curnode, unsigned int l, 
         			      unsigned int r, unsigned int tl, unsigned int tr);
         
         /**
@@ -129,11 +128,11 @@ class segment_tree
           * - int l: the left range of the current node
           * - int r: the right range of the current node
           */
-        void construct_tree(vector<inheritance_tree::node*> nodes, unsigned int curnode, 
+        void construct_tree(std::vector<class_tree::node*> nodes, unsigned int curnode, 
         		    unsigned int l, unsigned int r);
     public:
-        segment_tree(vector<inheritance_tree::node*> nodes);
-        ~segment_tree(); // node pointers wont be deleted
+        lub_tree(std::vector<class_tree::node*> nodes);
+        ~lub_tree(); // node pointers wont be deleted
         
         /**
           * EFFECTS: calculates the node with minimum depth in the given range
@@ -145,8 +144,8 @@ class segment_tree
           * RETURNS:
           * - the node with the minimum depth in the range
           */ 
-        inheritance_tree::node* query(unsigned int l, unsigned int r);
+        class_tree::node* query(unsigned int l, unsigned int r);
         
 };
 
-#endif /*INHERITANCE_TREE_H*/
+#endif /*CLASS_TREE_H*/
