@@ -6,6 +6,8 @@
 #include "cool-tree.h"
 #include "class-tree.h"
 #include <cstdlib>
+#include <string>
+#include <utility>
 
 extern Program ast_root;      // root of the abstract syntax tree
 FILE *ast_file = stdin;       // we read the AST from standard input
@@ -43,8 +45,26 @@ ClassTree::Node* get_min_in_range(vector<ClassTree::Node*> vec, int start, int e
     }
     return min;
 }
+string gen_random(const int len) {
+    string str = "";
+    str.reserve(len+1);
+    
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
 
+    for (int i = 0; i < len; ++i) {
+        str += (alphanum[rand() % (sizeof(alphanum) - 1)]);
+    }
+    return str;
+}
 
+char* const_to_var_charptr(const char* in, const int len) {
+    char* out = new char[len + 1];
+    strcpy(out, in);
+    return out;
+}
 TEST_CASE( "Insert and Query of Segment Tree", "[segment_tree]" ) {
 	vector<ClassTree::Node*> nodes = generate_random_nodes(500);
 	SegmentTree seg(nodes);
@@ -63,4 +83,50 @@ TEST_CASE( "Insert and Query of Segment Tree", "[segment_tree]" ) {
 	    nodes.pop_back();
 	    delete node;
 	}
+}
+int random(int min, int max) {
+    return min + (rand() % (max - min + 1));
+}
+
+TEST_CASE("Object Environment") {
+    int t = 1000;
+    int n_names = 100;
+    vector<pair<Symbol, Symbol>> identifiers;
+    vector<Symbol> names;
+    vector<Symbol> types;
+    for(int i = 0; i < n_names; i++) {
+        string tmp = gen_random(i + 10).c_str();
+        char* namestr = const_to_var_charptr(tmp.c_str(), tmp.length());
+        Symbol name = idtable.add_string(namestr);
+        delete[] namestr;
+        names.push_back(name);
+        
+        tmp = gen_random(i + 10).c_str();
+        char* typestr = const_to_var_charptr(tmp.c_str(), tmp.length());
+        Symbol type = idtable.add_string(typestr);
+        delete[] typestr;
+        types.push_back(type);
+    }
+    ObjectEnvironement objenv;
+    for(int i = 0; i < t; i++) {
+        int rand1 = random(0, names.size());
+        int rand2 = random(0, types.size());
+        pair<Symbol, Symbol> p(names[rand1], types[rand2]);
+        identifiers.push_back(p);
+        objenv.add(p.first, p.second);
+    }
+    for(pair<Symbol, Symbol> id : identifiers) {
+        REQUIRE(objenv.contains(id.first));
+    }
+
+    for(int i = identifiers.size() - 1; i >= 0; i--) {
+        REQUIRE(objenv.lookup(identifiers[i].first) == identifiers[i].second);
+        objenv.remove(identifiers[i].first);
+    }
+
+    for(pair<Symbol, Symbol> id : identifiers) {
+        REQUIRE(!objenv.contains(id.first));
+        REQUIRE(objenv.lookup(id.first) == NULL);
+    }
+
 }

@@ -279,10 +279,10 @@ innerclass}
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>540</x>
-      <y>342</y>
+      <x>228</x>
+      <y>378</y>
       <w>114</w>
-      <h>12</h>
+      <h>24</h>
     </coordinates>
     <panel_attributes>ClassTable
 </panel_attributes>
@@ -311,10 +311,10 @@ innerclass}
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>264</x>
-      <y>246</y>
-      <w>384</w>
-      <h>78</h>
+      <x>120</x>
+      <y>258</y>
+      <w>516</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>/tree_node/
 --
@@ -331,26 +331,26 @@ innerclass}
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>600</x>
+      <x>552</x>
       <y>192</y>
-      <w>174</w>
-      <h>66</h>
+      <w>222</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>270.0;10.0;10.0;90.0</additional_attributes>
+    <additional_attributes>350.0;10.0;10.0;110.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>222</x>
+      <x>198</x>
       <y>192</y>
-      <w>90</w>
-      <h>66</h>
+      <w>66</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;130.0;90.0</additional_attributes>
+    <additional_attributes>50.0;10.0;10.0;110.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -470,14 +470,14 @@ m1=2</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>360</x>
+      <x>270</x>
       <y>192</y>
-      <w>60</w>
-      <h>66</h>
+      <w>108</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;30.0;90.0</additional_attributes>
+    <additional_attributes>160.0;10.0;10.0;110.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
@@ -587,7 +587,7 @@ create_nodes()</panel_attributes>
     <coordinates>
       <x>864</x>
       <y>1188</y>
-      <w>168</w>
+      <w>174</w>
       <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -748,7 +748,7 @@ node.add_to_environment()</panel_attributes>
     <coordinates>
       <x>864</x>
       <y>1452</y>
-      <w>108</w>
+      <w>114</w>
       <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -1040,7 +1040,7 @@ send_child()</panel_attributes>
     <coordinates>
       <x>756</x>
       <y>1836</y>
-      <w>126</w>
+      <w>132</w>
       <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -1277,7 +1277,7 @@ send_class()</panel_attributes>
     <coordinates>
       <x>756</x>
       <y>2214</y>
-      <w>138</w>
+      <w>144</w>
       <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -1387,26 +1387,26 @@ map[class.parent].add_child(class)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>612</x>
+      <x>486</x>
       <y>192</y>
-      <w>72</w>
-      <h>60</h>
+      <w>174</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>60.0;10.0;10.0;80.0</additional_attributes>
+    <additional_attributes>270.0;10.0;10.0;110.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>492</x>
+      <x>348</x>
       <y>192</y>
-      <w>60</w>
-      <h>66</h>
+      <w>174</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>30.0;10.0;10.0;90.0</additional_attributes>
+    <additional_attributes>270.0;10.0;10.0;110.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -1457,12 +1457,12 @@ map[class.parent].add_child(class)</panel_attributes>
     <coordinates>
       <x>60</x>
       <y>192</y>
-      <w>216</w>
-      <h>108</h>
+      <w>96</w>
+      <h>78</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;340.0;160.0</additional_attributes>
+    <additional_attributes>10.0;10.0;140.0;110.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
