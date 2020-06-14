@@ -28,11 +28,10 @@
 
 class MethodEnvironment
 {
-    private:
-        std::unordered_map<Symbol, std::unordered_map<Symbol, Symbol>> env;
     public:
         class Signature 
         {
+            friend class MethodEnvironment;
             private:
                 std::vector<Symbol> params;
                 Symbol ret_type;
@@ -41,7 +40,10 @@ class MethodEnvironment
                 std::vector<Symbol> get_params();
                 Symbol get_return_type();
         };
-
+      private:
+        std::unordered_map<Symbol, std::unordered_map<Symbol, Signature>> env;
+        
+      public:
         /**
           * @brief adds a method signature to the given class
           * @modifies: this 
@@ -57,16 +59,17 @@ class MethodEnvironment
           * @param Symbol the class name from the idtable
           * @param Symbol the method's name from the idtable
           */ 
-        void remove(Symbol class_name, Symbol fun_name);
+        void remove(Symbol class_name, Symbol method_name);
 
         /**
           * @brief looks up a method signature in a class 
           * @param Symbol the class name from the idtable
           * @param Symbol the method's name from the idtable
           * @return the method signature, or NULL if no matching method
+          * @throw unde
           * @note   DO NOT delete the method returned signature
           */   
-        Signature* lookup(Symbol class_name, Symbol fun_name);
+        Signature* lookup(Symbol class_name, Symbol fun_name) throw (); 
 
         /**
           * @brief checks if the environment contains a given method in a given class

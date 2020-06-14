@@ -246,6 +246,11 @@ void program_class::semant()
     /* ClassTable constructor may do some semantic analysis */
     ClassTable *classtable = new ClassTable(classes);
 
+	
+	/*Initialize the singletons*/
+
+    /*Add classes and methods to the envirnment*/
+    
     /* some semantic analysis code may go here */
 
     if (classtable->errors()) {
