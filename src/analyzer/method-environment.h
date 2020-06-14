@@ -43,44 +43,39 @@ class MethodEnvironment
         };
 
         /**
-          * EFFECTS: adds a method signature to the given class
-          * MODIFIES: this 
-          * REQUIRES: (class_name, fun_name) pair not to be in the environment
-          * PARAMETERS: 
-          *  - Symbol class_name: the class name from the idtable
-          *  - Symbol fun_name: the method's name from the idtable
-          *  - Formals formal: the methods parameters 
-          *  - Symbol ret_type: the return type of the method
+          * @brief adds a method signature to the given class
+          * @modifies: this 
+          * @requires: (class_name, fun_name) pair not to be in the environment
+          * @param Symbol the class that contains this method
+          * @param method the method_class to be stored
           */
-        void add(Symbol class_name, Symbol fun_name, Formals formal, Symbol ret_type);
+        void add(Symbol class_name, method_class method);
         /**
-          * EFFECTS: removes a method signature from a given class 
-          * MODIFIES: this
-          * REQUIRES: method signature to be added previously to the given class 
-          * PARAMETERS: 
-          *  - Symbol class_name: the class name from the idtable
-          *  - Symbol fun_name: the method's name from the idtable
+          * @brief removes a method signature from a given class 
+          * @modifies: this
+          * @requires: method signature to be added previously to the given class 
+          * @param Symbol the class name from the idtable
+          * @param Symbol the method's name from the idtable
           */ 
         void remove(Symbol class_name, Symbol fun_name);
 
         /**
-          * EFFECTS: looks up a method signature in a class 
-          * PARAMETERS: 
-          *  - Symbol class_name: the class name from the idtable
-          *  - Symbol fun_name: the method's name from the idtable
-          * RETURNS: the method signature, or NULL if no matching method
+          * @brief looks up a method signature in a class 
+          * @param Symbol the class name from the idtable
+          * @param Symbol the method's name from the idtable
+          * @return the method signature, or NULL if no matching method
+          * @note   DO NOT delete the method returned signature
           */   
-        Signature& lookup(Symbol class_name, Symbol fun_name);
+        Signature* lookup(Symbol class_name, Symbol fun_name);
 
         /**
-          * EFFECTS: checks if the environment contains a given method 
-          *          in a given class
-          * PARAMETERS:
-          *  - Symbol class_name: the class name from the idtable
-          *  - Symbol fun_name: the method's name from the idtable
-          * RETURNS: true if the method was found, false otherwise
+          * @brief checks if the environment contains a given method in a given class
+          * @param Symbol the class name from the idtable
+          * @param Symbol the method's name from the idtable
+          * @returns true if the method was found, false otherwise
           */
         bool contains(Symbol class_name, Symbol fun_name);
+
 };
 
 /*overloading comparison operators*/

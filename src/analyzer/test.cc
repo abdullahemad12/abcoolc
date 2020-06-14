@@ -20,6 +20,9 @@ void handle_flags(int argc, char *argv[]);
 
 using namespace std;
 
+/*************************************************
+ *  Helper functions
+ * ***********************************************/
 vector<ClassTree::Node*> generate_random_nodes(long n)
 {
     vector<ClassTree::Node*> vec;
@@ -45,27 +48,35 @@ ClassTree::Node* get_min_in_range(vector<ClassTree::Node*> vec, int start, int e
     }
     return min;
 }
-string gen_random(const int len) {
-    string str = "";
-    str.reserve(len+1);
-    
+void gen_random(char* str, const int len) 
+{    
     static const char alphanum[] =
         "0123456789"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
 
     for (int i = 0; i < len; ++i) {
-        str += (alphanum[rand() % (sizeof(alphanum) - 1)]);
+        str[i] = (alphanum[rand() % (sizeof(alphanum) - 1)]);
     }
-    return str;
+    str[len] = '\0';
 }
 
-char* const_to_var_charptr(const char* in, const int len) {
+char* const_to_var_charptr(const char* in, const int len) 
+{
     char* out = new char[len + 1];
     strcpy(out, in);
     return out;
 }
-TEST_CASE( "Insert and Query of Segment Tree", "[segment_tree]" ) {
+int random(int min, int max) 
+{
+    return min + (rand() % (max - min + 1));
+}
+
+/*************************************************************************************/
+/*************************************Tests*******************************************/
+/*************************************************************************************/
+TEST_CASE( "Insert and Query of Segment Tree", "[segment_tree]" ) 
+{
 	vector<ClassTree::Node*> nodes = generate_random_nodes(500);
 	SegmentTree seg(nodes);
 	// query all the possible ranges
@@ -84,9 +95,7 @@ TEST_CASE( "Insert and Query of Segment Tree", "[segment_tree]" ) {
 	    delete node;
 	}
 }
-int random(int min, int max) {
-    return min + (rand() % (max - min + 1));
-}
+
 
 TEST_CASE("Object Environment") {
     int t = 1000;
@@ -95,19 +104,17 @@ TEST_CASE("Object Environment") {
     vector<Symbol> names;
     vector<Symbol> types;
     for(int i = 0; i < n_names; i++) {
-        string tmp = gen_random(i + 10).c_str();
-        char* namestr = const_to_var_charptr(tmp.c_str(), tmp.length());
+        char namestr[i+10+1];
+        gen_random(namestr, i + 10);
         Symbol name = idtable.add_string(namestr);
-        delete[] namestr;
         names.push_back(name);
         
-        tmp = gen_random(i + 10).c_str();
-        char* typestr = const_to_var_charptr(tmp.c_str(), tmp.length());
+        char typestr[i+10+1];
+        gen_random(namestr, i + 10);
         Symbol type = idtable.add_string(typestr);
-        delete[] typestr;
         types.push_back(type);
     }
-    ObjectEnvironement objenv;
+    ObjectEnvironment objenv;
     for(int i = 0; i < t; i++) {
         int rand1 = random(0, names.size());
         int rand2 = random(0, types.size());
@@ -127,6 +134,74 @@ TEST_CASE("Object Environment") {
     for(pair<Symbol, Symbol> id : identifiers) {
         REQUIRE(!objenv.contains(id.first));
         REQUIRE(objenv.lookup(id.first) == NULL);
+    }
+
+}
+
+
+TEST_CASE("Method Environment") 
+{
+
+    const int n_classes = 10;
+    const int n_names = 100;
+    const int n_methods = 10000;
+    vector<Symbol> classes;
+    vector<Symbol> classes_of_ith_method;
+    vector<Symbol> ret_type_of_ith_method;
+    vector<pair<Symbol, Formals>> methods;
+    vector<Symbol> names;
+    Formals types;
+
+    for(int i = 0; i < n_classes; i++) 
+    {
+        char namestr[i+10+1];
+        gen_random(namestr, i + 10);
+        Symbol name = idtable.add_string(namestr);
+        classes.push_back(name);
+    }
+    MethodEnvironment env;
+    for(int i = 0; i < n_names; i++) 
+    {
+        char namestr[i+10+1];
+        gen_random(namestr, i + 10);
+        Symbol name = idtable.add_string(namestr);
+        names.push_back(name);
+        Formals formals = nil_Formals();
+        const int n_formals = random(0, 20);
+        for(int j = 0; j < n_formals; j++) 
+        {  
+            int random1 = random(0, classes.size());
+            char namestr1[i+10+1];
+            gen_random(namestr, i + 10);
+            Symbol name1 = idtable.add_string(namestr1);
+            Formals f = single_Formals(formal(name1, classes[random1]));
+            formals = append_Formals(f, formals);
+        }
+        int random1 = random(0, classes.size());
+        int random2 = random(0, classes.size());
+
+        pair<Symbol, Formals> p(name, formals);
+        methods.push_back(p);
+        classes_of_ith_method.push_back(classes[random1]);
+        ret_type_of_ith_method.push_back(classes[random2]);
+        Feature methf = method(name, formals, classes[random2], no_expr());
+        method_class* meth = (method_class*) &methf;
+        env.add(classes[random1], *meth);
+    }
+    for(unsigned int i = 0; i < methods.size(); i++)
+    {
+        MethodEnvironment::Signature* sig = env.lookup(classes_of_ith_method[i], methods[i].first);
+        REQUIRE((int)sig->get_params().size() == methods[i].second->len());
+        for(unsigned int i = 0; i < sig->get_params().size(); i++) 
+        {
+            REQUIRE(sig->get_params()[i] == methods[i].second->nth(i)->get_type_decl());
+        }
+        REQUIRE(sig->get_return_type() == ret_type_of_ith_method[i]);
+    }
+
+    for(unsigned int i = 0; i < methods.size(); i++) 
+    {
+
     }
 
 }

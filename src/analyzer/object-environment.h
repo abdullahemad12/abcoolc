@@ -35,47 +35,43 @@
 #include <stack>
 
 
-class ObjectEnvironement {
+class ObjectEnvironment {
     private:
         std::unordered_map<Symbol, std::stack<Symbol>> env;
     
     public:
 
     /**
-      * EFFECTS: adds a (identifier, type) pair to the environment 
-      * MODIFIES: this 
-      * PARAMETERS:
-      * - Symbol id: the identifier symbol from idtable
-      * - Symbol type: type of the identifier from idtable
+      * @brief adds a (identifier, type) pair to the environment 
+      * @modifies: this 
+      * @param Symbol the identifier symbol from idtable
+      * @param Symbol the type of the identifier from idtable
      */ 
     void add(Symbol id, Symbol type);
 
     /**
-      * EFFECTS: removes one (identifier, type) entry from the environment
+      * @brief removes one (identifier, type) entry from the environment
       *          in FIFO order
-      * MODIFIES: this
-      * PARAMETERS:
-      *  - Symbol id: the identifier symbol from the idtable 
+      * @modifies: this
+      * @param Symbol the identifier symbol from the idtable 
       */
     void remove(Symbol id);
 
     /**
-      * EFFECTS: looks up the type from the symbol table by id. if the 
+      * @brief looks up the type from the symbol table by id. if the 
       *          same id has more than one type, the most recently
-      *          added one is returned.
-      * PARAMETERS: 
-      *  - Symbol id: the identifier symbol from the idtable 
-      * RETURNS: the most recently added type symbol, or NULL if no 
+      *          added one is returned. 
+      * @param Symbol the identifier symbol from the idtable 
+      * @returns the most recently added type symbol, or NULL if no 
       *          entry for identifier was found
       */ 
     Symbol lookup(Symbol id);
 
     /**
-      * EFFECTS: checks if the there exists at least one entry
+      * @brief: checks if the there exists at least one entry
       *          for the given identifier
-      * PARAMETERS: 
-      *  - Symbol id: the identifier symbol from the idtable 
-      * RETURNS: true if at least one entry was found
+      * @param Symbol the identifier symbol from the idtable 
+      * @returns true if at least one entry was found
       */
      bool contains(Symbol id);
 

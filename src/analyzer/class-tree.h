@@ -103,7 +103,7 @@ class ClassTree
         void compute_first_occurance(ClassTree::Node** euler_array);
         void analyze_dfs_helper(Node* node, std::vector<SemantException*>& err_container, 
                                 MethodEnvironment& global_env, 
-                                std::pair<ObjectEnvironement, MethodEnvironment>& local_env);
+                                std::pair<ObjectEnvironment, MethodEnvironment>& local_env);
 
         public:
           /**
