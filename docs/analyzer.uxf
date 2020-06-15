@@ -254,7 +254,7 @@ Signature
 - signature(params : Formals, return_type : Symbol)
 + operator==(sign : Signature) : bool
 + operator!=(sign : Signature) : bool
-+ get_params() : vector&lt;Symbol&gt;
++ get_param_types() : vector&lt;Symbol&gt;
 + get_return_type() : Symbol
 innerclass}
 - env : unordered_map&lt;Symbol, unodered_map&lt;Symbol, Signature&gt;&gt;
@@ -425,11 +425,11 @@ innerclass}
       <x>720</x>
       <y>380</y>
       <w>400</w>
-      <h>470</h>
+      <h>180</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>380.0;10.0;10.0;450.0</additional_attributes>
+    <additional_attributes>380.0;10.0;10.0;160.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
@@ -798,14 +798,14 @@ map[class.parent].add_child(class)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1020</x>
+      <x>770</x>
       <y>380</y>
-      <w>350</w>
-      <h>480</h>
+      <w>600</w>
+      <h>210</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>330.0;10.0;10.0;460.0</additional_attributes>
+    <additional_attributes>580.0;10.0;10.0;190.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
