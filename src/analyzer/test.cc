@@ -133,7 +133,6 @@ TEST_CASE("Object Environment") {
 
     for(pair<Symbol, Symbol> id : identifiers) {
         REQUIRE(!objenv.contains(id.first));
-        REQUIRE(objenv.lookup(id.first) == NULL);
     }
 
 }
@@ -148,7 +147,7 @@ TEST_CASE("Method Environment")
     vector<Symbol> classes;
     vector<Symbol> classes_of_ith_method;
     vector<Symbol> ret_type_of_ith_method;
-    vector<pair<Symbol, Formals>> methods;
+    vector<pair<Symbol, vector<Symbol>>> methods;
     vector<Symbol> names;
     Formals types;
 
@@ -166,42 +165,37 @@ TEST_CASE("Method Environment")
         gen_random(namestr, i + 10);
         Symbol name = idtable.add_string(namestr);
         names.push_back(name);
-        Formals formals = nil_Formals();
         const int n_formals = random(0, 20);
+        vector<Symbol> formals;
         for(int j = 0; j < n_formals; j++) 
         {  
             int random1 = random(0, classes.size());
             char namestr1[i+10+1];
-            gen_random(namestr, i + 10);
+            gen_random(namestr1, i + 10);
             Symbol name1 = idtable.add_string(namestr1);
-            Formals f = single_Formals(formal(name1, classes[random1]));
-            formals = append_Formals(f, formals);
+            formals.push_back(name1);
         }
+
         int random1 = random(0, classes.size());
         int random2 = random(0, classes.size());
 
-        pair<Symbol, Formals> p(name, formals);
+        pair<Symbol, vector<Symbol>> p(name, formals);
         methods.push_back(p);
         classes_of_ith_method.push_back(classes[random1]);
         ret_type_of_ith_method.push_back(classes[random2]);
-        Feature methf = method(name, formals, classes[random2], no_expr());
-        method_class* meth = (method_class*) &methf;
-        env.add(classes[random1], *meth);
+        env.add(classes[random1], name, formals, classes[random2]);
     }
     for(unsigned int i = 0; i < methods.size(); i++)
     {
-        MethodEnvironment::Signature* sig = env.lookup(classes_of_ith_method[i], methods[i].first);
-        REQUIRE((int)sig->get_params().size() == methods[i].second->len());
-        for(unsigned int i = 0; i < sig->get_params().size(); i++) 
-        {
-            REQUIRE(sig->get_params()[i] == methods[i].second->nth(i)->get_type_decl());
-        }
-        REQUIRE(sig->get_return_type() == ret_type_of_ith_method[i]);
+        MethodEnvironment::Signature& sig = env.lookup(classes_of_ith_method[i], methods[i].first);
+        REQUIRE(sig.get_param_types() == methods[i].second);
+        REQUIRE(sig.get_return_type() == ret_type_of_ith_method[i]);
     }
 
     for(unsigned int i = 0; i < methods.size(); i++) 
     {
-
+        env.remove(classes_of_ith_method[i], methods[i].first);
+        REQUIRE(!env.contains(classes_of_ith_method[i], methods[i].first));
     }
 
 }

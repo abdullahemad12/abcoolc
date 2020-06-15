@@ -65,6 +65,7 @@ class ObjectEnvironment {
       *          same id has more than one type, the most recently
       *          added one is returned. 
       * @param Symbol the identifier symbol from the idtable 
+      * @requires: id to be in the environment (bug otherwise)  
       * @returns the most recently added type symbol, or NULL if no 
       *          entry for identifier was found
       */ 

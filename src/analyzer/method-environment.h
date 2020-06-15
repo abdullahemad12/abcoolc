@@ -28,6 +28,7 @@
 #include <unordered_map>
 
 
+using namespace std;
 
 class MethodEnvironment
 {
@@ -36,15 +37,15 @@ class MethodEnvironment
         {
             friend class MethodEnvironment;
             private:
-                std::vector<Symbol> params;
+                vector<Symbol> params;
                 Symbol ret_type;
-                Signature(Formals& formals, Symbol ret_type);
+                Signature(Symbol name, vector<Symbol> params, Symbol ret_type);
             public:
-                std::vector<Symbol> get_params();
+                vector<Symbol> get_param_types();
                 Symbol get_return_type();
         };
       private:
-        std::unordered_map<Symbol, std::unordered_map<Symbol, Signature*>> env;
+        unordered_map<Symbol, unordered_map<Symbol, Signature*>> env;
         
       public:
         /*destructor*/
@@ -55,9 +56,11 @@ class MethodEnvironment
           * @modifies: this 
           * @requires: (class_name, fun_name) pair not to be in the environment
           * @param Symbol the class that contains this method
-          * @param method the method_class to be stored
+          * @param name the name
+          * @param params a vector of the function parameter types in order
+          * @param return_type the return type of the function
           */
-        void add(Symbol class_name, method_class& method);
+        void add(Symbol class_name, Symbol name, vector<Symbol> params, Symbol return_type);
         /**
           * @brief removes a method signature from a given class 
           * @modifies: this
@@ -71,7 +74,7 @@ class MethodEnvironment
           * @brief looks up a method signature in a class 
           * @param Symbol the class name from the idtable
           * @param Symbol the method's name from the idtable
-          * @requires: class 'class_name' to be defined  
+          * @requires: class 'class_name' to be defined, fun_name to be defined (bug otherwise)  
           * @return the method signature, or NULL if no matching method
           * @note   DO NOT delete the method returned signature
           */   
@@ -90,8 +93,6 @@ class MethodEnvironment
 };
 
 typedef MethodEnvironment::Signature MethodSignature;
-/*overloading comparison operators*/
-extern  bool operator==(MethodEnvironment::Signature& arg1, MethodEnvironment::Signature& arg2);
-extern  bool operator!=(MethodEnvironment::Signature& arg1, MethodEnvironment::Signature& arg2);
+
 
 #endif /*METHOD_ENVIRONMENT_H*/

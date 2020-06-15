@@ -27,9 +27,7 @@ void ObjectEnvironment::remove(Symbol id)
 
 Symbol ObjectEnvironment::lookup(Symbol id) 
 {
-    if(!contains(id)){
-       return NULL; 
-    }
+    assert(contains(id));
     return env[id].top();
 
 }
