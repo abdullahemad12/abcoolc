@@ -31,7 +31,7 @@ fontsize=10
       <x>1710</x>
       <y>650</y>
       <w>420</w>
-      <h>330</h>
+      <h>350</h>
     </coordinates>
     <panel_attributes>ClassTree
 --
@@ -41,6 +41,7 @@ Node
 - class_symb : Symbol
 - depth: unsigned int
 - children : vector&lt;node&gt;
+- is_init : bool
 --
 + node(class_symb : Class_ , depth : unsigned int, children : vector&lt;Class_&gt;)
 + get_class() : Class_
@@ -50,12 +51,13 @@ innerclass}
 - root : node*
 - first : unordered_map&lt;Symbol, unsigned int&gt;
 - euler_trip : vector&lt;Symbol&gt;
+- lub_tree : SegmentTree
+- is_init : bool
 --
 - ClassTree()
 - ~ClassTree()
 - construct_graph(Classes classes) : void
 - check_for_cycles() : void
-- install_basic_classes() : void
 - euler_walk() : ClassTree::Nodes**
 - compute_first_occurance(ClassTree::Nodes** : node) : void
 + lub(type1 : Symbol, type2 : Symbol) : Symbol
@@ -177,12 +179,12 @@ throws</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1670</x>
-      <y>970</y>
+      <y>990</y>
       <w>270</w>
-      <h>240</h>
+      <h>220</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>250.0;10.0;10.0;220.0</additional_attributes>
+    <additional_attributes>250.0;10.0;10.0;200.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -218,8 +220,8 @@ m1=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>300</x>
-      <y>840</y>
+      <x>450</x>
+      <y>830</y>
       <w>370</w>
       <h>120</h>
     </coordinates>
@@ -236,8 +238,8 @@ m1=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>700</x>
-      <y>830</y>
+      <x>830</x>
+      <y>840</y>
       <w>390</w>
       <h>220</h>
     </coordinates>
@@ -409,7 +411,7 @@ innerclass}
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1210</x>
+      <x>1000</x>
       <y>360</y>
       <w>220</w>
       <h>30</h>
@@ -420,14 +422,14 @@ innerclass}
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>770</x>
+      <x>720</x>
       <y>380</y>
-      <w>560</w>
-      <h>180</h>
+      <w>400</w>
+      <h>470</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>540.0;10.0;10.0;160.0</additional_attributes>
+    <additional_attributes>380.0;10.0;10.0;450.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
@@ -730,13 +732,13 @@ map[class.parent].add_child(class)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>940</x>
-      <y>240</y>
-      <w>430</w>
-      <h>140</h>
+      <x>890</x>
+      <y>250</y>
+      <w>270</w>
+      <h>130</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;410.0;120.0</additional_attributes>
+    <additional_attributes>10.0;10.0;250.0;110.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -752,7 +754,7 @@ map[class.parent].add_child(class)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>980</x>
+      <x>1230</x>
       <y>360</y>
       <w>220</w>
       <h>30</h>
@@ -763,13 +765,13 @@ map[class.parent].add_child(class)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>910</x>
-      <y>250</y>
-      <w>230</w>
-      <h>130</h>
+      <x>940</x>
+      <y>240</y>
+      <w>450</w>
+      <h>140</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;210.0;110.0</additional_attributes>
+    <additional_attributes>10.0;10.0;430.0;120.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -796,14 +798,14 @@ map[class.parent].add_child(class)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>660</x>
+      <x>1020</x>
       <y>380</y>
-      <w>460</w>
-      <h>180</h>
+      <w>350</w>
+      <h>480</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>440.0;10.0;10.0;160.0</additional_attributes>
+    <additional_attributes>330.0;10.0;10.0;460.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -951,7 +953,7 @@ delete[] first_occurance_arr</panel_attributes>
       <x>1380</x>
       <y>640</y>
       <w>280</w>
-      <h>160</h>
+      <h>180</h>
     </coordinates>
     <panel_attributes>ClassTable
 --
@@ -961,10 +963,11 @@ innerclass}
 --
 - classes : unordered_map&lt;Class_&gt;
 --
-
 - class_table()
 - check_for_invalid_inheritance() : void
 - check_for_redefinitions() : void
+- install_basic_classes(classes : Classes_*) : void
++ init(classes : Classes_)
 + static instance()
 + begin()
 + end()</panel_attributes>
@@ -980,18 +983,6 @@ innerclass}
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>870</x>
-      <y>440</y>
-      <w>710</w>
-      <h>410</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.
-&lt;&lt;throw&gt;&gt;</panel_attributes>
-    <additional_attributes>690.0;10.0;10.0;390.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -1032,13 +1023,16 @@ singletone</panel_attributes>
       <w>250</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>ExceptionContainer
+    <panel_attributes>SemantExceptionHandler
 --
-- container : vector&lt;SemantException&gt;
+- container : vector&lt;AnalysisException&gt;
+- line_number
 --
+
 + static instance(void) : &amp;ErrorContainer
-+ throw(SemantException&amp; except) : void
-</panel_attributes>
++ throw(AnalysisException&amp; except) : void
++ report_all(void) : void
++ report_one(excpetion : GraphException) : void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -1104,24 +1098,24 @@ singleton</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>440</x>
-      <y>950</y>
-      <w>220</w>
-      <h>280</h>
+      <x>590</x>
+      <y>940</y>
+      <w>70</w>
+      <h>290</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;200.0;260.0</additional_attributes>
+    <additional_attributes>10.0;10.0;50.0;270.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>710</x>
-      <y>1040</y>
-      <w>140</w>
-      <h>190</h>
+      <y>1050</y>
+      <w>270</w>
+      <h>180</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>120.0;10.0;10.0;170.0</additional_attributes>
+    <additional_attributes>250.0;10.0;10.0;160.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>

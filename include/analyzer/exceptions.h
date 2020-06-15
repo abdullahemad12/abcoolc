@@ -1,9 +1,3 @@
-#include <exception>
-#include <string>
-#include <sstream>
-#include <tree.h>
-#include <cool-tree.h>
-
 /***************************************************************
  *  Any exception thrown by the semantic anaylzer              *
  *  must inherit this class. It contians two main              *
@@ -11,6 +5,18 @@
  *  Class_ faulty_class: the class at which the error occured  *
  *  msg: the error message accessible through what() method    *
  ***************************************************************/
+#ifndef EXCEPTIONS_H_
+#define EXCEPTIONS_H_
+
+#include <exception>
+#include <string>
+#include <sstream>
+#include <tree.h>
+#include <cool-tree.h>
+#include <vector>
+#include <singleton.h>
+
+
 class SemantException : std::exception
 {
     Class_ faulty_class;
@@ -148,3 +154,40 @@ class InconsistentSignatureException : public ScopeException
     }  
 };
 
+
+
+/*********************************************************************************************
+ * SemantExceptionHandler                                                                *
+ * This singleton class serves as a container for the exceptions thrown. Any analysis        *
+ * Exception Must be thrown through this Other exceptions are to be thrown normally          *
+ * The reason being that traversing the tree should not be halted after hitting an error to  *
+ * catch as many errors as possible. Moreover, errors must be store some where so it can     *
+ * be reported later on.                                                                     *
+ *                                                                                           *
+ * For other semantic errors, it is okay to halt the execution after hitting on of them      *
+ *********************************************************************************************/
+class SemantExceptionHandler : Singleton
+{
+    private:
+        std::vector<AnalysisException*> container;
+        SemantExceptionHandler(void) { }
+    public:
+        void raise(AnalysisException* exception) { container.push_back(exception); }
+        auto begin() { return container.begin(); }
+        auto end() { return container.end(); }
+        /**
+          * @brief reports all the excptions that were passed to the raise method
+          * @modifies: this (clears all the exceptions that were raised)
+          * @effects:terminates the program if any errors were raised 
+          *          after writing all the errors
+          */
+        void report_all_if_any(void);
+        /**
+          * @brief reports a single exception. Typically used for reporting 
+          *        graph errors because they are fatal
+          * @effects: terminates the program after reporting the error
+          * @param GraphException the graph exception to be reported
+          */
+        void report_one(GraphException& exception);
+};
+#endif /*EXCEPTIONS_H_*/

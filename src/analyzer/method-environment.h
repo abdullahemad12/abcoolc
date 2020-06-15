@@ -18,6 +18,9 @@
  *   The second unordered_map is indexed by the method's name and stores the method's
  *   signature.
  *****************************************************************************************/
+#ifndef METHOD_ENVIRONMENT_H_
+#define METHOD_ENVIRONMENT_H_
+
 
 #include <stringtab.h>
 #include <cool-tree.h>
@@ -35,15 +38,18 @@ class MethodEnvironment
             private:
                 std::vector<Symbol> params;
                 Symbol ret_type;
-                Signature(Formals formals, Symbol ret_type);
+                Signature(Formals& formals, Symbol ret_type);
             public:
                 std::vector<Symbol> get_params();
                 Symbol get_return_type();
         };
       private:
-        std::unordered_map<Symbol, std::unordered_map<Symbol, Signature>> env;
+        std::unordered_map<Symbol, std::unordered_map<Symbol, Signature*>> env;
         
       public:
+        /*destructor*/
+        ~MethodEnvironment();
+
         /**
           * @brief adds a method signature to the given class
           * @modifies: this 
@@ -51,7 +57,7 @@ class MethodEnvironment
           * @param Symbol the class that contains this method
           * @param method the method_class to be stored
           */
-        void add(Symbol class_name, method_class method);
+        void add(Symbol class_name, method_class& method);
         /**
           * @brief removes a method signature from a given class 
           * @modifies: this
@@ -65,23 +71,27 @@ class MethodEnvironment
           * @brief looks up a method signature in a class 
           * @param Symbol the class name from the idtable
           * @param Symbol the method's name from the idtable
+          * @requires: class 'class_name' to be defined  
           * @return the method signature, or NULL if no matching method
-          * @throw unde
           * @note   DO NOT delete the method returned signature
           */   
-        Signature* lookup(Symbol class_name, Symbol fun_name) throw (); 
+        Signature& lookup(Symbol class_name, Symbol fun_name); 
 
         /**
           * @brief checks if the environment contains a given method in a given class
           * @param Symbol the class name from the idtable
           * @param Symbol the method's name from the idtable
+          * @requires: class 'class_name' to be defined 
           * @returns true if the method was found, false otherwise
           */
         bool contains(Symbol class_name, Symbol fun_name);
 
+
 };
 
+typedef MethodEnvironment::Signature MethodSignature;
 /*overloading comparison operators*/
 extern  bool operator==(MethodEnvironment::Signature& arg1, MethodEnvironment::Signature& arg2);
 extern  bool operator!=(MethodEnvironment::Signature& arg1, MethodEnvironment::Signature& arg2);
 
+#endif /*METHOD_ENVIRONMENT_H*/

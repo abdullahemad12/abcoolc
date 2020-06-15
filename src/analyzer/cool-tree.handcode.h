@@ -58,7 +58,7 @@ void dump_with_types(ostream&, int);
 virtual Symbol get_filename() = 0;      \
 virtual Symbol get_name() = 0;		\
 virtual Symbol get_parent() = 0;		\
-virtual Features get_features() = 0;	\
+virtual Features& get_features() = 0;	\
 virtual void dump_with_types(ostream&,int) = 0; 
 
 
@@ -66,7 +66,7 @@ virtual void dump_with_types(ostream&,int) = 0;
 Symbol get_filename() { return filename; }           \
 Symbol get_name() { return name; }                    \
 Symbol get_parent() { return parent; }                 \
-Features get_features() { return features; }            \
+Features& get_features() { return features; }            \
 void dump_with_types(ostream&,int);                    
 
 
@@ -114,8 +114,8 @@ void dump_with_types(ostream&,int);
 
 #define method_EXTRAS			  \
 Symbol get_name() { return name; } 	  \
-Formals get_formals() { return formals; } \
+Formals& get_formals() { return formals; } \
 Symbol get_return_type() { return return_type; } \
-Expression get_expression() { return expr; }
+Expression& get_expression() { return expr; }
 
 #endif

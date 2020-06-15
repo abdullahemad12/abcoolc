@@ -30,6 +30,9 @@
  *  happened on an empty stack or nonexisting entry than I am certainly doing something wrong.
  *  I am using the stack and hashtable from the std c++ library
  ****************************************************************************************************/
+#ifndef OBJECT_ENVIRONMENT_H_
+#define OBJECT_ENVIRONMENT_H_
+
 #include <stringtab.h>
 #include <unordered_map>
 #include <stack>
@@ -76,3 +79,5 @@ class ObjectEnvironment {
      bool contains(Symbol id);
 
 };
+
+#endif /*OBJECT_ENVIRONEMNT_H_*/

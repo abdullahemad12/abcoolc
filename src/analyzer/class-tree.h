@@ -9,7 +9,9 @@
 #include <unordered_set>
 #include <vector>
 #include <utility>
+#include <singleton.h>
 
+using namespace std;
 
 // MACRO to calculate the node with minimum depth
 #define MIN_DEPTH_NODE(ln, rn) ((ln->get_depth())<(rn->get_depth()))?(ln):(rn)
@@ -32,30 +34,27 @@ class UnionFind
         unsigned int find(unsigned int i);
     public:
         /**
-          * EFFECTS: constructor for the union find 
-          * PARAMETERS: 
-          * - int n: the number of elements in the unionfind +
+          * @brief constructor for the union find 
+          * @param int the number of elements in the unionfind +
           */
         UnionFind(unsigned int n);
         ~UnionFind();
         
         /**
-          * EFFECTS: checks if two components belong to the same component 
-          * REQUIRES: 0 <= i, j < n
-          * RETURNS: true if the two components are disjoint, false if overlapping
-          * PARAMETERS: 
-          *  - int i: the first component
-          *  - int j: the second component
+          * @brief checks if two components belong to the same component 
+          * @requires: 0 <= i, j < n
+          * @returns true if the two components are disjoint, false if overlapping
+          * @param int the first component
+          * @param int the second component
           */  
         bool disjoint(unsigned int i, unsigned int j);
         
         /**
-          * EFFECTS: merge two components together 
-          * REQUIRES: 0 <= i, j < n
-          * MODIFIES: this 
-          * PARAMETERS: 
-          * - int i: the first element
-          * - int j: the second element
+          * @brief merge two components together 
+          * @requires: 0 <= i, j < n
+          * @modifies: this  
+          * @param unsigned int the first element
+          * @param unsigned int the second element
           */
         void union_components(unsigned int i, unsigned int j); 
 
@@ -65,7 +64,7 @@ class UnionFind
 /**
   * Main class that represents the CLASS tree of the program
   */ 
-class ClassTree
+class ClassTree : Singleton
 {
     /**
       * Represents a Node in the CLASS tree
@@ -77,7 +76,7 @@ class ClassTree
             private:
                 Class_ class_obj;
                 unsigned int depth;
-                std::vector<Class_> children;
+                vector<Class_> children;
             public:
                 Node(Class_ class_obj, unsigned int depth) : 
                 class_obj(class_obj), depth(depth) {};
@@ -86,54 +85,51 @@ class ClassTree
                 void add_child(Class_ child) { children.push_back(child); }
         };
      private:
-        std::unordered_set<Symbol> classes;
         Node* root; 
         // the first occurance in an euler walk
-        std::unordered_map<Symbol, unsigned int> eurler_first;
+        unordered_map<Symbol, unsigned int> eurler_first;
         SegmentTree* lubtree;
+        vector<Symbol> euler_trip;
+
+        // just used to catch errors 
+        bool is_init = false;
 
         // private functions
         /*does not return any thing but might throw a fatal exception*/
-        void check_for_invalid_inheritance(void);
-        void check_for_redefinitions(void);
         void construct_graph(Classes classes);
         void check_for_cycles(void);
-        void install_basic_classes(void);
         ClassTree::Node** euler_walk(void);
         void compute_first_occurance(ClassTree::Node** euler_array);
-        void analyze_dfs_helper(Node* node, std::vector<SemantException*>& err_container, 
-                                MethodEnvironment& global_env, 
-                                std::pair<ObjectEnvironment, MethodEnvironment>& local_env);
+        ClassTree() { }
+        ~ClassTree();
 
-        public:
-          /**
-            * EFFECTS: least upper bound (lub) operation as defined in the manual
-            *          basically, it calculates the Least common ancestor of the 
-            *          given two classes
-            * REQUIRES: the given two classes to be defined in the ClassTree
-            * PARAMETERS:
-            *  1. Symbol type1: the first class symbol from idtable
-            *  2. Symbol type2: the second class symbol from idtable
-            * RETURNS:
-            *  the LUB of these two classes
-            */
-          Symbol lub(Symbol type1, Symbol type2);
+      public:
+        /**
+          * @brief least upper bound (lub) operation as defined in the manual
+          *          basically, it calculates the Least common ancestor of the 
+          *          given two classes
+          * @requires: the given two classes to be defined in the ClassTree
+          * @param Symbol the first class symbol from idtable
+          * @param Symbol the second class symbol from idtable
+          * @returns: the least upper bound of these two classes
+          */
+        Symbol lub(Symbol type1, Symbol type2);
 
-          /**
-           * EFFECTS: performs semantic analysis on all the classes in the program
-           * REQUIRES: correct initialization of the trees
-           * RETURNS: a vector of exceptions thrown due to semantic errors.
-           * POSTCONDITIONS: the SemantExcpetions must be deleted to avoid leaks
-           */ 
-          std::vector<SemantException*> analyze();
+        /**
+          * @brief gets the euler trip of the nodes
+          * @requires: class tree to be initialized
+          * @returns the euler trip as a vector
+          */ 
+        vector<Symbol> get_euler_trip();
 
-          ClassTree(Classes classes);
-          ~ClassTree();
-
-
-
+        /**
+          * @brief creates the graph using the given classes
+          * @requires: classtable to be initialized 
+          * @modifies: this
+          * @param Classes the classes in the program + basic classes
+          */ 
+        void init(Classes classes);
         
-                  
 };
 
 /**
@@ -152,45 +148,40 @@ class SegmentTree
         ClassTree::Node** tree;
         /**
           * Helper for the query function
-          * EFFECTS: recursively calculates the minimum in the given range l-r (inclusive)
-          * REQUIRES: range to be within the size of the of the array. No exceptions thrown
-          * PARAMETERS: 
-          *  - int curnode: the current node being processed in the tree 
-          *  - int l: the left index of the range being queried 
-          *  - int r: the right index of the range being queried
-          *  - int tl: the left index of the range curnode represents
-          *  - int tr: the right index of the range curnode represents 
-          *  RETURNS:
-          *  - the node with the minimum depth in the range
+          * @brief recursively calculates the minimum in the given range l-r (inclusive)
+          * @requires: range to be within the size of the of the array. No exceptions thrown 
+          * @param int the current node being processed in the tree 
+          * @param int the left index of the range being queried 
+          * @param int the right index of the range being queried
+          * @param int the left index of the range curnode represents
+          * @param int the right index of the range curnode represents 
+          * @returns the node with the minimum depth in the range
           */ 
         ClassTree::Node* query(unsigned int curnode, unsigned int l, 
         			      unsigned int r, unsigned int tl, unsigned int tr);
         
         /**
           * called from the constructor to construct the tree
-          * EFFECTS: constructs the segment tree from the nodes vector
-          * MODIFIES: this->tree
-          * REQUIRES: nodes to be set correctly and tree array to be intialized
-          * PARAMETERS: 
-          * - int curnode: the current node in segment tree being processed 
-          * - int l: the left range of the current node
-          * - int r: the right range of the current node
+          * @brief constructs the segment tree from the nodes vector
+          * @modifies: this
+          * @requires: nodes to be set correctly and tree array to be intialized 
+          * @param curnode: the current node in segment tree being processed 
+          * @param l the left range of the current node
+          * @param r the right range of the current node
           */
-        void construct_tree(std::vector<ClassTree::Node*> nodes, unsigned int curnode, 
+        void construct_tree(vector<ClassTree::Node*> nodes, unsigned int curnode, 
         		    unsigned int l, unsigned int r);
     public:
-        SegmentTree(std::vector<ClassTree::Node*> nodes);
+        SegmentTree(vector<ClassTree::Node*> nodes);
         ~SegmentTree(); // node pointers wont be deleted
         
         /**
-          * EFFECTS: calculates the node with minimum depth in the given range
-          * REQUIRES: range to be within the size of the array. No exceptions thrown
-          * PARAMETERS: 
-          * - int curnode: the current node being processed in the tree
-          * - int l: the left index of the range being queried
-          * - int r: the right index of the range being queried
-          * RETURNS:
-          * - the node with the minimum depth in the range
+          * @brief calculates the node with minimum depth in the given range
+          * @requires: range to be within the size of the array. No exceptions thrown
+          * @param int the current node being processed in the tree
+          * @param int the left index of the range being queried
+          * @param r the right index of the range being queried
+          * @returns the node with the minimum depth in the range
           */ 
         ClassTree::Node* query(unsigned int l, unsigned int r);
         
