@@ -64,8 +64,9 @@ class UnionFind
 /**
   * Main class that represents the CLASS tree of the program
   */ 
-class ClassTree : Singleton
+class ClassTree : public Singleton<ClassTree>
 {
+    friend Singleton<ClassTree>;
     /**
       * Represents a Node in the CLASS tree
       * Holds extra information other than class_ class
@@ -74,15 +75,16 @@ class ClassTree : Singleton
         class Node
         {
             private:
-                Class_ class_obj;
+                Symbol class_symbol;
                 unsigned int depth;
-                vector<Class_> children;
+                vector<Node*> children;
             public:
-                Node(Class_ class_obj, unsigned int depth) : 
-                class_obj(class_obj), depth(depth) {};
-                Class_ get_class() { return class_obj; }
+                Node(Symbol class_symbol) : 
+                class_symbol(class_symbol){};
+                Symbol get_class() { return class_symbol; }
                 unsigned int get_depth() { return depth; }
-                void add_child(Class_ child) { children.push_back(child); }
+                void add_child(Node* child) { children.push_back(child); }
+                void euler_walk(vector<Symbol>& vector, unsigned int depth);
         };
      private:
         Node* root; 
@@ -98,10 +100,8 @@ class ClassTree : Singleton
         /*does not return any thing but might throw a fatal exception*/
         void construct_graph(Classes classes);
         void check_for_cycles(void);
-        ClassTree::Node** euler_walk(void);
         void compute_first_occurance(ClassTree::Node** euler_array);
         ClassTree() { }
-        ~ClassTree();
 
       public:
         /**
@@ -130,6 +130,8 @@ class ClassTree : Singleton
           */ 
         void init(Classes classes);
         
+        ~ClassTree();
+
 };
 
 /**

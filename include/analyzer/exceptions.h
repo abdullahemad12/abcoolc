@@ -166,8 +166,9 @@ class InconsistentSignatureException : public ScopeException
  *                                                                                           *
  * For other semantic errors, it is okay to halt the execution after hitting on of them      *
  *********************************************************************************************/
-class SemantExceptionHandler : Singleton
+class SemantExceptionHandler : Singleton<SemantExceptionHandler>
 {
+    friend Singleton<SemantExceptionHandler>;
     private:
         std::vector<AnalysisException*> container;
         SemantExceptionHandler(void) { }

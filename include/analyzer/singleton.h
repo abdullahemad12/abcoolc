@@ -7,10 +7,14 @@
 #define SINGLETON_H_
 
 #include <type_traits>
+
+/*Any class extending this must declare it as a friend*/
+template <typename T>
 class Singleton 
 {
     protected:
         Singleton() {}
+        ~Singleton() {}
     public:
     
      /*delete those methods to avoid unwanted errors */
@@ -21,8 +25,7 @@ class Singleton
      * References: https://stackoverflow.com/a/30687399/6548856
      * This is equivalent to the self type in COOL
      */
-    template<typename T, typename std::enable_if<std::is_base_of<Singleton, T>::value>::type* = nullptr>
-    static T instance()
+    static T& instance()
     {
         static T t;
         return t;

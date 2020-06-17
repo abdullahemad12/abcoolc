@@ -31,7 +31,7 @@ fontsize=10
       <x>1710</x>
       <y>650</y>
       <w>420</w>
-      <h>350</h>
+      <h>360</h>
     </coordinates>
     <panel_attributes>ClassTree
 --
@@ -43,10 +43,11 @@ Node
 - children : vector&lt;node&gt;
 - is_init : bool
 --
-+ node(class_symb : Class_ , depth : unsigned int, children : vector&lt;Class_&gt;)
-+ get_class() : Class_
++ node(class_symb : Symbol)
++ get_class() : Symbol
 + get_depth() : unsigned int
-+ add_child(child : node) : void
++ add_child(child : Node*) : void
++ euler_walk(trip : vector&lt;node*&gt;&amp;, depth : unsigned int)
 innerclass}
 - root : node*
 - first : unordered_map&lt;Symbol, unsigned int&gt;
@@ -58,8 +59,7 @@ innerclass}
 - ~ClassTree()
 - construct_graph(Classes classes) : void
 - check_for_cycles() : void
-- euler_walk() : ClassTree::Nodes**
-- compute_first_occurance(ClassTree::Nodes** : node) : void
+- compute_first_occurance(node : vector&lt;ClassTree::node*&gt;) : void
 + lub(type1 : Symbol, type2 : Symbol) : Symbol
 + get_euler_trip() : vector&lt;Symbol&gt;
 + init(classes : Classes_)
@@ -179,12 +179,12 @@ throws</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1670</x>
-      <y>990</y>
+      <y>1000</y>
       <w>270</w>
-      <h>220</h>
+      <h>210</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>250.0;10.0;10.0;200.0</additional_attributes>
+    <additional_attributes>250.0;10.0;10.0;190.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -259,7 +259,7 @@ Signature
 innerclass}
 - env : unordered_map&lt;Symbol, unodered_map&lt;Symbol, Signature&gt;&gt;
 --
-+ add(class_name : Symbol, method : Method) : void
++ add(class_name : Symbol, vector&lt;Symbol&gt; formals, Symbol ret_type) : void
 + remove(class_name : Symbol, fun_name : Symbol) : void
 + lookup(class_name : Symbol, fun_name : Symbol) : signature*
 + contains(class_name : Symbol, fun_name : Symbol) : bool </panel_attributes>
@@ -276,7 +276,7 @@ innerclass}
     <panel_attributes>SegmentTree
 --
 - n : int
-- tree : ClassTree::Node**
+- tree : vector&lt;ClassTree::node*&gt;
 --
 - query(curnode : unsigned int, l : unsigned int, r : 
 		            unsigned int, tl: unsigned int, tr : unsigned int) : node*
