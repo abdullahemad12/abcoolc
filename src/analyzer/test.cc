@@ -9,6 +9,7 @@
 #include <string>
 #include <utility>
 #include <exceptions.h>
+#include <class-table.h>
 
 extern Program ast_root;      // root of the abstract syntax tree
 FILE *ast_file = stdin;       // we read the AST from standard input
@@ -75,6 +76,8 @@ int random(int min, int max)
 
 Classes create_cyclic_classes(void)
 {
+    Symbol Object = idtable.add_string("Object");
+    Symbol No_class = idtable.add_string(no_type);
     Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
@@ -84,6 +87,7 @@ Classes create_cyclic_classes(void)
     Symbol myclass7 = idtable.add_string("myclass7");
     Symbol _no_class = idtable.add_string("_no_class");
     Symbol filename = idtable.add_string("filetable");
+
     Class_ class1 = class_(myclass1, myclass4, nil_Features(), filename);
     Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
     Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
@@ -91,6 +95,8 @@ Classes create_cyclic_classes(void)
     Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
     Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
     Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ Object_class = class_(Object, No_class, nil_Features(), filename);
+
 
     Classes classes1 = single_Classes(class1);
     Classes classes2 = single_Classes(class2);
@@ -99,6 +105,8 @@ Classes create_cyclic_classes(void)
     Classes classes5 = single_Classes(class5);
     Classes classes6 = single_Classes(class6);
     Classes classes7 = single_Classes(class7);
+    Classes object_classes = single_Classes(Object_class);
+
     
     Classes all = append_Classes(classes1, classes2);
     all = append_Classes(all, classes3);
@@ -106,12 +114,16 @@ Classes create_cyclic_classes(void)
     all = append_Classes(all, classes5);
     all = append_Classes(all, classes6);
     all = append_Classes(all, classes7);
+    all = append_Classes(all, object_classes);
+
 
     return all;
 }
 
 Classes create_valid_graph(void)
 {
+    Symbol Object = idtable.add_string("Object");
+    Symbol no_class  = idtable.add_string(no_type);
     Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
@@ -125,7 +137,7 @@ Classes create_valid_graph(void)
     Symbol _no_class = idtable.add_string("_no_class");
     Symbol filename = idtable.add_string("filetable");
 
-    Class_ class1 = class_(myclass1, _no_class, nil_Features(), filename);
+    Class_ class1 = class_(myclass1, Object, nil_Features(), filename);
     Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
     Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
     Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
@@ -135,6 +147,8 @@ Classes create_valid_graph(void)
     Class_ class8 = class_(myclass8, myclass4, nil_Features(), filename);
     Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
     Class_ class10 = class_(myclass10, myclass4, nil_Features(), filename);
+    Class_ Object_class = class_(Object, no_class, nil_Features(), filename);
+	
 
 
     Classes classes1 = single_Classes(class1);
@@ -147,6 +161,7 @@ Classes create_valid_graph(void)
     Classes classes8 = single_Classes(class8);
     Classes classes9 = single_Classes(class9);
     Classes classes10 = single_Classes(class10);
+    Classes object_classes = single_Classes(Object_class);
     
     Classes all = append_Classes(classes1, classes2);
     all = append_Classes(all, classes3);
@@ -157,6 +172,7 @@ Classes create_valid_graph(void)
     all = append_Classes(all, classes8);
     all = append_Classes(all, classes9);
     all = append_Classes(all, classes10);
+    all = append_Classes(all, object_classes);
 
     return all;
 }
@@ -395,7 +411,9 @@ TEST_CASE("get_euler_walk")
     vec.push_back(myclass3);
     vec.push_back(myclass1);
 
-    vector<Symbol> actual = ct.get_euler_trip();
+    vector<Symbol> actual;
+    for(Symbol sym : ct)
+        actual.push_back(sym);
 
     REQUIRE(vec == actual);
 }

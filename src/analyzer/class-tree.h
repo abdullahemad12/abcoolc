@@ -14,7 +14,7 @@
 using namespace std;
 
 // MACRO to calculate the node with minimum depth
-#define MIN_DEPTH_NODE(ln, rn) ((ln->get_depth())<(rn->get_depth()))?(ln):(rn)
+#define MIN_DEPTH_NODE(ln, rn) ((ln->depth)<(rn->depth))?(ln):(rn)
 
 // prototypes
 class SegmentTree;
@@ -74,34 +74,45 @@ class ClassTree : public Singleton<ClassTree>
      public: 
         class Node
         {
+            friend ClassTree;
+            friend SegmentTree;
             private:
                 Symbol class_symbol;
                 unsigned int depth;
                 vector<Node*> children;
+                Node(Symbol class_symbol) : class_symbol(class_symbol) { }
             public:
-                Node(Symbol class_symbol) : 
-                class_symbol(class_symbol){};
-                Symbol get_class() { return class_symbol; }
-                unsigned int get_depth() { return depth; }
-                void add_child(Node* child) { children.push_back(child); }
-                void euler_walk(vector<Symbol>& vector, unsigned int depth);
+                void euler_walk(unsigned int depth, vector<Symbol>& trip, vector<Node*>& nodes_trip);
         };
-     private:
+      private:
         Node* root; 
         // the first occurance in an euler walk
         unordered_map<Symbol, unsigned int> eurler_first;
         SegmentTree* lubtree;
         vector<Symbol> euler_trip;
+        
+        /*the number of nodes in the tree*/
+        int n;
 
         // just used to catch errors 
         bool is_init = false;
 
-        // private functions
-        /*does not return any thing but might throw a fatal exception*/
-        void construct_graph(Classes classes);
-        void check_for_cycles(void);
-        void compute_first_occurance(ClassTree::Node** euler_array);
-        ClassTree() { }
+        /*
+         * returns the edges in the graph for cycle detection represented by their
+         * index in nodes. This is enough for Kruskal algorithm
+         */
+        void create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::Node*>& nodes);
+        void construct_graph(Classes classes, vector<pair<Symbol, Symbol>>& edges);
+        /*
+         * runs Kruskals algorithm
+         * does not return any thing but might throw a fatal exception
+         */
+        void check_for_cycles(vector<pair<Symbol, Symbol>>& edges);
+        void compute_first_occurance(void);
+
+        ClassTree(void);
+        ~ClassTree();
+
 
       public:
         /**
@@ -115,12 +126,6 @@ class ClassTree : public Singleton<ClassTree>
           */
         Symbol lub(Symbol type1, Symbol type2);
 
-        /**
-          * @brief gets the euler trip of the nodes
-          * @requires: class tree to be initialized
-          * @returns the euler trip as a vector
-          */ 
-        vector<Symbol> get_euler_trip();
 
         /**
           * @brief creates the graph using the given classes
@@ -129,9 +134,14 @@ class ClassTree : public Singleton<ClassTree>
           * @param Classes the classes in the program + basic classes
           */ 
         void init(Classes classes);
-        
-        ~ClassTree();
 
+        /**
+          * Iterator functions 
+          * iterates over the the nodes in the tree in an euler walk order
+          * (DFS)
+          */
+         auto begin() { return euler_trip.begin(); }
+         auto end() { return euler_trip.end(); }
 };
 
 /**
@@ -171,10 +181,10 @@ class SegmentTree
           * @param l the left range of the current node
           * @param r the right range of the current node
           */
-        void construct_tree(vector<ClassTree::Node*> nodes, unsigned int curnode, 
+        void construct_tree(vector<ClassTree::Node*>& nodes, unsigned int curnode, 
         		    unsigned int l, unsigned int r);
     public:
-        SegmentTree(vector<ClassTree::Node*> nodes);
+        SegmentTree(vector<ClassTree::Node*>& nodes);
         ~SegmentTree(); // node pointers wont be deleted
         
         /**

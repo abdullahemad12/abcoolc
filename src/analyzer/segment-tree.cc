@@ -2,7 +2,7 @@
 #include <cassert>  
 #include <class-tree.h>
 
-SegmentTree::SegmentTree(std::vector<ClassTree::Node*> nodes) : n(nodes.size())
+SegmentTree::SegmentTree(std::vector<ClassTree::Node*>& nodes) : n(nodes.size())
 {
     // to be on the safe side, I will check that none of the nodes is NULL
     // this should not hurt the performance a lot
@@ -19,7 +19,7 @@ SegmentTree::SegmentTree(std::vector<ClassTree::Node*> nodes) : n(nodes.size())
     construct_tree(nodes, 1, 0, n-1);
 }
 
-void SegmentTree::construct_tree(std::vector<ClassTree::Node*> nodes, unsigned int curnode, 
+void SegmentTree::construct_tree(std::vector<ClassTree::Node*>& nodes, unsigned int curnode, 
 				  unsigned int l, unsigned int r)
 {
     if(l == r)
