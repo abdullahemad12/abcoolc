@@ -4,4 +4,5 @@ class-tree.o class-tree.d : class-tree.cc class-tree.h cool-tree.h \
  ../../include/analyzer/cool-io.h cool-tree.handcode.h \
  ../../include/analyzer/cool.h ../../include/analyzer/stringtab.h \
  ../../include/analyzer/exceptions.h ../../include/analyzer/singleton.h \
- method-environment.h object-environment.h class-table.h
+ method-environment.h object-environment.h class-table.h \
+ ../../include/analyzer/symtab.h

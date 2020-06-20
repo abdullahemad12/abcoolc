@@ -8,7 +8,8 @@
 using namespace std;
 
 #define MAP_CONTAINS(map, element) (map.find(element) != map.end())
-
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define MAX(x, y) (((x) >= (y)) ? (x) : (y))
 
 // prototypes of helpers
 static vector<pair<int, int>> convert_to_int_edges(vector<pair<Symbol, Symbol>>& edges);
@@ -16,32 +17,34 @@ static void create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::Node
 
 
 
-void ClassTree::init(Classes classes)
+void ClassTree::init(Classes classes, Symbol root_symbol)
 {
+
+  assert(!is_init);
   // declarations
   vector<pair<Symbol, Symbol>> edges;
   vector<Node*> euler_trip_nodes;
-
+  
   // initialization
-  construct_graph(classes, edges);
+  construct_graph(classes, root_symbol, edges);
   check_for_cycles(edges);
-  root->euler_walk(0, euler_trip, euler_trip_nodes);
+  root->euler_walk(0, this->euler_trip, euler_trip_nodes);
   lubtree = new SegmentTree(euler_trip_nodes);
+  compute_first_occurance();
+  is_init = true;
 }
 
-void ClassTree::construct_graph(Classes classes, vector<pair<Symbol, Symbol>>& edges)
+void ClassTree::construct_graph(Classes classes, Symbol root_symbol, vector<pair<Symbol, Symbol>>& edges)
 {   
     unordered_map<Symbol, Node*> nodes;
     create_nodes(classes, nodes);
     // set the root and size
-    Symbol obj = idtable.add_string("Object");
-    assert(MAP_CONTAINS(nodes, obj));
-    root = nodes[obj];
-    n = nodes.size();
+    assert(MAP_CONTAINS(nodes, root_symbol));
+    root = nodes[root_symbol];
+    this->n = nodes.size();
 
-    
     // adds child to the parent and creates a new edge
-    for(int i = classes->first(); classes->more(i); i = classes->next(i))
+    for(int i = 0, n = classes->len(); i < n; i++)
     {
       Class_ class_ = classes->nth(i);
       Symbol name = class_->get_name();
@@ -50,12 +53,15 @@ void ClassTree::construct_graph(Classes classes, vector<pair<Symbol, Symbol>>& e
       // catch bugs
       assert(MAP_CONTAINS(nodes, name));
       assert(MAP_CONTAINS(nodes, parent));
+      
+      if(nodes[parent] != NULL)
+      {
+        nodes[parent]->children.push_back(nodes[name]);
+        // create edge
+        pair<Symbol, Symbol> p(parent, name);
+        edges.push_back(p);
+      } 
 
-      nodes[parent]->children.push_back(nodes[name]);
-
-      // create edge
-      pair<Symbol, Symbol> p(parent, name);
-      edges.push_back(p);
     }
 
 }
@@ -90,15 +96,23 @@ void ClassTree::check_for_cycles(vector<pair<Symbol, Symbol>>& edges)
 void ClassTree::compute_first_occurance(void)
 {
   for(int i = euler_trip.size() - 1; i >= 0; i--)
-    eurler_first[euler_trip[i]] = i;
+    euler_first[euler_trip[i]] = i;
 }
 
 Symbol ClassTree::lub(Symbol type1, Symbol type2)
 {
-  Node* node = lubtree->query(eurler_first[type1], eurler_first[type2]);
+  int min = MIN(euler_first[type1], euler_first[type2]);
+  int max = MAX(euler_first[type1], euler_first[type2]);
+
+  Node* node = lubtree->query(min, max);
   return node->class_symbol;
 }
 
+ClassTree::~ClassTree(void)
+{
+  delete root;
+  delete lubtree;
+}
 
 void ClassTree::Node::euler_walk(unsigned int depth, vector<Symbol>& trip, vector<Node*>& nodes_trip)
 {
@@ -111,6 +125,12 @@ void ClassTree::Node::euler_walk(unsigned int depth, vector<Symbol>& trip, vecto
     trip.push_back(this->class_symbol);
     nodes_trip.push_back(this);
   }
+}
+
+ClassTree::Node::~Node(void)
+{
+  for(Node* child : children)
+    delete child;
 }
 
 
@@ -145,7 +165,8 @@ void ClassTree::create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::
   // set this to NULL so the parent of object is NULL
   Symbol no_type_symb = idtable.add_string(no_type);
   nodes[no_type_symb] = NULL;
-  for(int i = classes->first(); classes->more(i); i = classes->next(i))
+  int n = classes->len();
+  for(int i = 0; i < n; i++)
   {
     Class_ cur_class = classes->nth(i);
     Symbol name = cur_class->get_name();

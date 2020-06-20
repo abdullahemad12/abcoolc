@@ -1,5 +1,4 @@
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main()
-
 #include <iostream>
 #include "catch.hpp"
 
@@ -21,6 +20,27 @@ char *curr_filename;
 void handle_flags(int argc, char *argv[]);
 
 using namespace std;
+
+
+
+/***************************************************
+ *       singleton class wrappers                  *
+ * these classes allows instantiating instances    *
+ * of the singleton class just for testing puposes *
+ ***************************************************/
+class ClassTreeWrapper : public ClassTree
+{
+    public:
+        ClassTreeWrapper() { }
+        ~ClassTreeWrapper() { }
+};
+
+class ClassTableWrapper : public ClassTable
+{
+    public:
+        ClassTableWrapper() { }
+        ~ClassTableWrapper() { }
+};
 
 /*************************************************
  *  Helper functions
@@ -177,6 +197,372 @@ Classes create_valid_graph(void)
     return all;
 }
 
+Classes create_valid_graph_without_object(void)
+{
+    Symbol Object = idtable.add_string("Object");
+    Symbol no_class  = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string("myclass9");
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+
+    Class_ class1 = class_(myclass1, Object, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ class8 = class_(myclass8, myclass4, nil_Features(), filename);
+    Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
+    Class_ class10 = class_(myclass10, myclass4, nil_Features(), filename);
+	
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+    Classes classes8 = single_Classes(class8);
+    Classes classes9 = single_Classes(class9);
+    Classes classes10 = single_Classes(class10);
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+    all = append_Classes(all, classes8);
+    all = append_Classes(all, classes9);
+    all = append_Classes(all, classes10);
+
+    return all;
+}
+
+
+
+Classes create_redefinition_graph1(void)
+{
+    Symbol Object = idtable.add_string("Object");
+    Symbol no_class  = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass6");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string("myclass9");
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+
+    Class_ class1 = class_(myclass1, Object, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ class8 = class_(myclass8, myclass4, nil_Features(), filename);
+    Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
+    Class_ class10 = class_(myclass10, myclass4, nil_Features(), filename);
+    Class_ Object_class = class_(Object, no_class, nil_Features(), filename);
+	
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+    Classes classes8 = single_Classes(class8);
+    Classes classes9 = single_Classes(class9);
+    Classes classes10 = single_Classes(class10);
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+    all = append_Classes(all, classes8);
+    all = append_Classes(all, classes9);
+    all = append_Classes(all, classes10);
+
+    return all;
+}
+
+
+Classes create_redefinition_graph2(void)
+{
+    Symbol Object = idtable.add_string("Object");
+    Symbol No_class = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass4");
+    Symbol myclass7 = idtable.add_string("myclass2");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+
+    Class_ class1 = class_(myclass1, myclass4, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+
+
+    return all;
+};
+
+Classes create_invalid_inheritance_classes1(void)
+{
+    Symbol Object = idtable.add_string("Object");
+    Symbol No_class = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+
+    Symbol myclass20 = idtable.add_string("myclass20");
+
+    Class_ class1 = class_(myclass1, myclass4, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass20, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+
+
+    return all;
+}
+
+Classes create_invalid_inheritance_classes2(void)
+{
+    Symbol Object = idtable.add_string("Object");
+    Symbol no_class  = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string("myclass9");
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+
+    Symbol myclass19 = idtable.add_string("myclass19");
+    Symbol myclass20 = idtable.add_string("myclass20");
+
+    Class_ class1 = class_(myclass1, myclass19, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ class8 = class_(myclass8, myclass4, nil_Features(), filename);
+    Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
+    Class_ class10 = class_(myclass10, myclass20, nil_Features(), filename);
+	
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+    Classes classes8 = single_Classes(class8);
+    Classes classes9 = single_Classes(class9);
+    Classes classes10 = single_Classes(class10);
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+    all = append_Classes(all, classes8);
+    all = append_Classes(all, classes9);
+    all = append_Classes(all, classes10);
+
+    return all;
+}
+
+
+Classes create_basic_class_redefinition(char* basic_class)
+{
+    Symbol no_class  = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string(basic_class);
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+    Symbol object_sym = idtable.add_string("Object");
+
+    Class_ class1 = class_(myclass1, object_sym, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ class8 = class_(myclass8, myclass4, nil_Features(), filename);
+    Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
+    Class_ class10 = class_(myclass10, myclass4, nil_Features(), filename);
+	
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+    Classes classes8 = single_Classes(class8);
+    Classes classes9 = single_Classes(class9);
+    Classes classes10 = single_Classes(class10);
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+    all = append_Classes(all, classes8);
+    all = append_Classes(all, classes9);
+    all = append_Classes(all, classes10);
+
+    return all;
+}
+
+Classes create_basic_class_inheritance(char* basic_class)
+{
+    Symbol no_class  = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string("myclass9");
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+    Symbol object_sym = idtable.add_string("Object");
+    Symbol int_sym = idtable.add_string(basic_class);
+
+    Class_ class1 = class_(myclass1, object_sym, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, myclass1, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ class8 = class_(myclass8, int_sym, nil_Features(), filename);
+    Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
+    Class_ class10 = class_(myclass10, myclass4, nil_Features(), filename);
+	
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+    Classes classes8 = single_Classes(class8);
+    Classes classes9 = single_Classes(class9);
+    Classes classes10 = single_Classes(class10);
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+    all = append_Classes(all, classes8);
+    all = append_Classes(all, classes9);
+    all = append_Classes(all, classes10);
+
+    return all;
+}
 
 
 /*************************************************************************************/
@@ -313,11 +699,12 @@ TEST_CASE("Method Environment")
 TEST_CASE("Cyclic graph Test")
 {
     Classes classes = create_cyclic_classes();
-    ClassTree& ct = ClassTree::instance();
-
+    ClassTreeWrapper ct;
+    Symbol object = idtable.add_string("Object");
+    
     try
     {
-        ct.init(classes);
+        ct.init(classes, object);
         REQUIRE(false);
     }
     catch(const CyclicClassException& e)
@@ -334,8 +721,7 @@ TEST_CASE("Cyclic graph Test")
 TEST_CASE("LUB Operation")
 {
     Classes classes = create_valid_graph();
-    ClassTree& ct = ClassTree::instance();
-    ct.init(classes);
+    ClassTreeWrapper ct;
     Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
@@ -346,6 +732,8 @@ TEST_CASE("LUB Operation")
     Symbol myclass8 = idtable.add_string("myclass8");
     Symbol myclass9 = idtable.add_string("myclass9");
     Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol object = idtable.add_string("Object");
+    ct.init(classes, object);
 
     Symbol sym = ct.lub(myclass1, myclass2);
     REQUIRE(sym == myclass1);
@@ -376,8 +764,8 @@ TEST_CASE("LUB Operation")
 TEST_CASE("get_euler_walk")
 {
     Classes classes = create_valid_graph();
-    ClassTree& ct = ClassTree::instance();
-    ct.init(classes);
+    ClassTreeWrapper ct;
+
     Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
@@ -388,32 +776,377 @@ TEST_CASE("get_euler_walk")
     Symbol myclass8 = idtable.add_string("myclass8");
     Symbol myclass9 = idtable.add_string("myclass9");
     Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol object = idtable.add_string("Object");
+    ct.init(classes, object);
 
-    vector<Symbol> vec;
+    vector<Symbol> expected;
 
-    vec.push_back(myclass1);
-    vec.push_back(myclass2);
-    vec.push_back(myclass5);
-    vec.push_back(myclass6);
-    vec.push_back(myclass5);
-    vec.push_back(myclass7);
-    vec.push_back(myclass5);
-    vec.push_back(myclass2);
-    vec.push_back(myclass1);
-    vec.push_back(myclass3);
-    vec.push_back(myclass4);
-    vec.push_back(myclass8);
-    vec.push_back(myclass4);
-    vec.push_back(myclass9);
-    vec.push_back(myclass4);
-    vec.push_back(myclass10);
-    vec.push_back(myclass4);
-    vec.push_back(myclass3);
-    vec.push_back(myclass1);
+    expected.push_back(object);
+    expected.push_back(myclass1);
+    expected.push_back(myclass2);
+    expected.push_back(myclass5);
+    expected.push_back(myclass6);
+    expected.push_back(myclass5);
+    expected.push_back(myclass7);
+    expected.push_back(myclass5);
+    expected.push_back(myclass2);
+    expected.push_back(myclass1);
+    expected.push_back(myclass3);
+    expected.push_back(myclass4);
+    expected.push_back(myclass8);
+    expected.push_back(myclass4);
+    expected.push_back(myclass9);
+    expected.push_back(myclass4);
+    expected.push_back(myclass10);
+    expected.push_back(myclass4);
+    expected.push_back(myclass3);
+    expected.push_back(myclass1);
+    expected.push_back(object);
+
 
     vector<Symbol> actual;
     for(Symbol sym : ct)
         actual.push_back(sym);
 
-    REQUIRE(vec == actual);
+    REQUIRE(expected == actual);
+}
+
+
+TEST_CASE("Class Redefinition detection Test 1")
+{
+   Classes classes = create_redefinition_graph1();
+   ClassTableWrapper ct; 
+   try
+   {
+       ct.init(classes);
+       REQUIRE(false);
+   }
+   catch(ClassRedefinitionException& excep)
+   {
+       Symbol expected = idtable.add_string("myclass6");
+       REQUIRE(excep.get_faulty_class() == expected);
+   }
+   catch(exception& excep)
+   {
+       REQUIRE(false);
+   }
+}
+
+TEST_CASE("Class Redefinition detection Test 2")
+{
+    Classes classes = create_redefinition_graph2();
+    ClassTableWrapper ct; 
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(ClassRedefinitionException& excep)
+    {
+        Symbol expected = idtable.add_string("myclass4");
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Invalid Inheritance detection Test1")
+{
+    Classes classes = create_invalid_inheritance_classes1();
+    ClassTableWrapper ct;
+
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(UndefinedClassException& excep)
+    {
+        Symbol expected = idtable.add_string("myclass6");
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Invalid Inheritance detection Test2")
+{
+    Classes classes = create_invalid_inheritance_classes2();
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(UndefinedClassException& excep)
+    {
+        Symbol expected = idtable.add_string("myclass1");
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+
+TEST_CASE("Basic Class Redefinition detection test 1")
+{
+    char* basic_class = "Int";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassRedefinitionException& excep)
+    {
+        Symbol expected = idtable.add_string(basic_class);
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Basic Class Redefinition detection test 2")
+{
+    char* basic_class = "String";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassRedefinitionException& excep)
+    {
+        Symbol expected = idtable.add_string(basic_class);
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Basic Class Redefinition detection test 3")
+{
+    char* basic_class = "Bool";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassRedefinitionException& excep)
+    {
+        Symbol expected = idtable.add_string(basic_class);
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Basic Class Redefinition detection test 4")
+{
+    char* basic_class = "IO";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassRedefinitionException& excep)
+    {
+        Symbol expected = idtable.add_string(basic_class);
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Basic Class Inheritance detection test 1")
+{
+    char* basic_class = "Bool";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassInheritanceException& excep)
+    {
+        Symbol expected = idtable.add_string("myclass8");
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Basic Class Inheritance detection test 2")
+{
+    char* basic_class = "String";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassInheritanceException& excep)
+    {
+        Symbol expected = idtable.add_string("myclass8");
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+TEST_CASE("Basic Class Inheritance detection test 3")
+{
+    char* basic_class = "Int";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+        REQUIRE(false);
+    }
+    catch(BasicClassInheritanceException& excep)
+    {
+        Symbol expected = idtable.add_string("myclass8");
+        REQUIRE(excep.get_faulty_class() == expected);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("Basic Class Inheritance detection test 4")
+{
+    char* basic_class = "IO";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("ClassTable Install Basic Class Test")
+{
+    Classes classes = create_valid_graph_without_object();
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+    Symbol int_class = idtable.add_string("Int");
+    Symbol string_class = idtable.add_string("String");
+    Symbol bool_class = idtable.add_string("Bool");
+    Symbol IO_class = idtable.add_string("IO");
+    Symbol object_class = idtable.add_string("Object");
+    
+    REQUIRE(ct.contains(int_class));
+    REQUIRE(ct.contains(string_class));
+    REQUIRE(ct.contains(bool_class));
+    REQUIRE(ct.contains(IO_class));
+    REQUIRE(ct.contains(object_class));
+    
+    REQUIRE(ct[int_class]->get_name() == int_class);
+    REQUIRE(ct[string_class]->get_name() == string_class);
+    REQUIRE(ct[bool_class]->get_name() == bool_class);
+    REQUIRE(ct[IO_class]->get_name() == IO_class);
+    REQUIRE(ct[object_class]->get_name() == object_class);
+}
+
+TEST_CASE("ClassTable Contains Test")
+{
+    Classes classes = create_valid_graph_without_object();
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(ct.contains(classes->nth(i)->get_name()));
+    }
+}
+
+TEST_CASE("ClassTable operator[] Test")
+{
+    Classes classes = create_valid_graph_without_object();
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(ct[classes->nth(i)->get_name()] == classes->nth(i));
+    }
+}
+
+TEST_CASE("ClassTable Iterator Test")
+{
+    Classes classes = create_valid_graph_without_object();
+    ClassTableWrapper ct;
+    try
+    {
+        ct.init(classes);
+    }
+    catch(exception& excep)
+    {
+        REQUIRE(false);
+    }
+
+    unordered_set<Class_> classes_vec;
+    for(auto& entry : ct)
+    {
+        REQUIRE(entry.first == entry.second->get_name());
+        classes_vec.insert(entry.second);
+    }
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(classes_vec.find(classes->nth(i)) == classes_vec.end());
+    }
+
 }

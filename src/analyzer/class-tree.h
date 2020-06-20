@@ -11,6 +11,8 @@
 #include <utility>
 #include <singleton.h>
 
+
+
 using namespace std;
 
 // MACRO to calculate the node with minimum depth
@@ -60,11 +62,11 @@ class UnionFind
 
 };
 
-
 /**
   * Main class that represents the CLASS tree of the program
+  * this is a singleton and must be retrieved using the singleton class
   */ 
-class ClassTree : public Singleton<ClassTree>
+class ClassTree
 {
     friend Singleton<ClassTree>;
     /**
@@ -81,13 +83,14 @@ class ClassTree : public Singleton<ClassTree>
                 unsigned int depth;
                 vector<Node*> children;
                 Node(Symbol class_symbol) : class_symbol(class_symbol) { }
+                ~Node(void);
             public:
                 void euler_walk(unsigned int depth, vector<Symbol>& trip, vector<Node*>& nodes_trip);
         };
       private:
         Node* root; 
         // the first occurance in an euler walk
-        unordered_map<Symbol, unsigned int> eurler_first;
+        unordered_map<Symbol, unsigned int> euler_first;
         SegmentTree* lubtree;
         vector<Symbol> euler_trip;
         
@@ -102,7 +105,7 @@ class ClassTree : public Singleton<ClassTree>
          * index in nodes. This is enough for Kruskal algorithm
          */
         void create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::Node*>& nodes);
-        void construct_graph(Classes classes, vector<pair<Symbol, Symbol>>& edges);
+        void construct_graph(Classes classes, Symbol root_symbol, vector<pair<Symbol, Symbol>>& edges);
         /*
          * runs Kruskals algorithm
          * does not return any thing but might throw a fatal exception
@@ -110,7 +113,8 @@ class ClassTree : public Singleton<ClassTree>
         void check_for_cycles(vector<pair<Symbol, Symbol>>& edges);
         void compute_first_occurance(void);
 
-        ClassTree(void);
+      protected:
+        ClassTree() {}
         ~ClassTree();
 
 
@@ -132,16 +136,17 @@ class ClassTree : public Singleton<ClassTree>
           * @requires: classtable to be initialized 
           * @modifies: this
           * @param Classes the classes in the program + basic classes
+          * @param root the root of the of the tree
           */ 
-        void init(Classes classes);
+        void init(Classes classes, Symbol root);
 
         /**
           * Iterator functions 
           * iterates over the the nodes in the tree in an euler walk order
           * (DFS)
           */
-         auto begin() { return euler_trip.begin(); }
-         auto end() { return euler_trip.end(); }
+        auto begin() { return euler_trip.begin(); }
+        auto end() { return euler_trip.end(); }
 };
 
 /**
