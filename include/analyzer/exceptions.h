@@ -15,6 +15,7 @@
 #include <cool-tree.h>
 #include <vector>
 #include <singleton.h>
+#include <ostream>
 
 
 class SemantException : std::exception
@@ -202,8 +203,17 @@ class SemantExceptionHandler : Singleton<SemantExceptionHandler>
 {
     friend Singleton<SemantExceptionHandler>;
     private:
+        int semant_errors;
         std::vector<AnalysisException*> container;
-        SemantExceptionHandler(void) { }
+        ostream& error_stream;
+        
+        /*Error reporting helper*/
+        int errors() { return semant_errors; }
+        std::ostream& semant_error();
+        std::ostream& semant_error(Class_ c);
+        std::ostream& semant_error(Symbol filename, tree_node *t);
+        
+        SemantExceptionHandler(void) : semant_errors(0), error_stream(cerr) { }
     public:
         void raise(AnalysisException* exception) { container.push_back(exception); }
         auto begin() { return container.begin(); }
@@ -213,14 +223,18 @@ class SemantExceptionHandler : Singleton<SemantExceptionHandler>
           * @modifies: this (clears all the exceptions that were raised)
           * @effects:terminates the program if any errors were raised 
           *          after writing all the errors
+          * @returns the number of reported errors
           */
-        void report_all_if_any(void);
+        int report_all(void);
         /**
           * @brief reports a single exception. Typically used for reporting 
           *        graph errors because they are fatal
           * @effects: terminates the program after reporting the error
           * @param GraphException the graph exception to be reported
           */
-        void report_one(GraphException& exception);
+        void report_one(const GraphException& exception);
+
+
+
 };
 #endif /*EXCEPTIONS_H_*/
