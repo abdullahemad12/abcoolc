@@ -59,7 +59,7 @@ innerclass}
 - check_for_cycles(edges : vector&lt;int, int&gt;&amp;) : void
 - compute_first_occurance() : void
 + lub(type1 : Symbol, type2 : Symbol) : Symbol
-+ init(classes : Classes_)
++ init(classes : Classes_, Symbol root)
 + instance(void) : ClassTree
 + begin() : iterator
 + end() : iterator
@@ -120,7 +120,7 @@ public:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1694</x>
+      <x>1738</x>
       <y>462</y>
       <w>242</w>
       <h>33</h>
@@ -131,7 +131,7 @@ public:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1947</x>
+      <x>1980</x>
       <y>462</y>
       <w>297</w>
       <h>33</h>
@@ -154,13 +154,13 @@ public:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1771</x>
+      <x>1815</x>
       <y>352</y>
-      <w>198</w>
+      <w>154</w>
       <h>132</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>160.0;10.0;10.0;100.0</additional_attributes>
+    <additional_attributes>120.0;10.0;10.0;100.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -928,7 +928,7 @@ delete[] first_occurance_arr</panel_attributes>
       <x>1441</x>
       <y>726</y>
       <w>308</w>
-      <h>198</h>
+      <h>209</h>
     </coordinates>
     <panel_attributes>ClassTable
 --
@@ -936,16 +936,16 @@ delete[] first_occurance_arr</panel_attributes>
 iterator
 innerclass}
 --
-- classes : unordered_map&lt;Class_&gt;
+- classes : unordered_map&lt;Symbol, Class_&gt;
 --
 - class_table()
 - check_for_invalid_inheritance() : void
-- check_for_redefinitions() : void
-- install_basic_classes(classes : Classes_*) : void
+- check_for_invalid_definitions() : void
+- install_basic_classes(classes : Classes) : Classes
 + init(classes : Classes_)
-+ static instance()
 + begin()
-+ end()</panel_attributes>
++ end()
++ operator[](class_symb : Symbol) : Class_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -953,11 +953,11 @@ innerclass}
     <coordinates>
       <x>2101</x>
       <y>352</y>
-      <w>33</w>
+      <w>66</w>
       <h>132</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+    <additional_attributes>10.0;10.0;40.0;100.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -1039,24 +1039,24 @@ singleton</panel_attributes>
     <coordinates>
       <x>1595</x>
       <y>484</y>
-      <w>484</w>
+      <w>517</w>
       <h>264</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>420.0;10.0;10.0;220.0</additional_attributes>
+    <additional_attributes>450.0;10.0;10.0;220.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1518</x>
       <y>484</y>
-      <w>264</w>
+      <w>297</w>
       <h>264</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;throws&gt;&gt;</panel_attributes>
-    <additional_attributes>220.0;10.0;10.0;220.0</additional_attributes>
+    <additional_attributes>250.0;10.0;10.0;220.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -1701,5 +1701,73 @@ Symbol</panel_attributes>
     <panel_attributes>lt=&lt;&lt;-
 type_check</panel_attributes>
     <additional_attributes>10.0;30.0;50.0;30.0;50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1551</x>
+      <y>462</y>
+      <w>187</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>BasicClassInheritanceException</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1496</x>
+      <y>484</y>
+      <w>176</w>
+      <h>264</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes>
+    <additional_attributes>140.0;10.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1705</x>
+      <y>319</y>
+      <w>242</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>200.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1364</x>
+      <y>462</y>
+      <w>187</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>BasicClassRedefinitionException</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1463</x>
+      <y>484</y>
+      <w>88</w>
+      <h>264</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes>
+    <additional_attributes>20.0;10.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1474</x>
+      <y>286</y>
+      <w>473</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>410.0;10.0;10.0;160.0</additional_attributes>
   </element>
 </diagram>

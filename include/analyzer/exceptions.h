@@ -46,7 +46,8 @@ class GraphException : public SemantException
 class ClassRedefinitionException : public GraphException 
 {
     public:
-        ClassRedefinitionException(Symbol faulty_class) : GraphException(faulty_class) { 
+        ClassRedefinitionException(Symbol faulty_class) : GraphException(faulty_class)
+        { 
             ClassRedefinitionException::msg << "class " << faulty_class->get_string() << " is redefined multiple times";
         }
 };
@@ -54,7 +55,8 @@ class ClassRedefinitionException : public GraphException
 class CyclicClassException : public GraphException
 {   
     public:
-        CyclicClassException(Symbol faulty_class) : GraphException(faulty_class) { 
+        CyclicClassException(Symbol faulty_class) : GraphException(faulty_class)
+        { 
             SemantException::msg << "class " << faulty_class->get_string() << " causes a dependency cycle";
         }   
 };
@@ -62,9 +64,29 @@ class CyclicClassException : public GraphException
 class UndefinedClassException : public GraphException
 {
     public:
-    UndefinedClassException(Symbol faulty_class) : GraphException(faulty_class) {
+    UndefinedClassException(Symbol faulty_class) : GraphException(faulty_class)
+    {
         SemantException::msg << "class " << faulty_class->get_string() << " is undefined";
     }
+};
+
+class BasicClassRedefinitionException : public GraphException
+{
+    public:
+        BasicClassRedefinitionException(Symbol faulty_class) : GraphException(faulty_class)
+        {
+            SemantException::msg << "Basic Class " << faulty_class << " cannot be redefined"; 
+        }
+};
+
+class BasicClassInheritanceException : public GraphException
+{
+    public:
+        BasicClassInheritanceException(Symbol faulty_class, Symbol basic_class) : GraphException(faulty_class)
+        {
+            SemantException::msg << "Class " << faulty_class->get_string() 
+                << "cannot inherit from built-in class " << basic_class->get_string();
+        }
 };
 
 /********************************************
@@ -162,6 +184,7 @@ class InconsistentSignatureException : public ScopeException
             SemantException::msg << "cannot override method " << method << " with a different signature";
         }  
 };
+
 
 
 
