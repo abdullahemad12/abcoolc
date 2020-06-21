@@ -1,12 +1,59 @@
 #include <class-table.h>
 #include <cool-tree.h>
+#include <unordered_set>
+#include <exceptions.h>
 
+// prototypes
+void inheritance_from_basic_classes_detection(Classes classes);
+void inheritance_from_undefined_class(Classes classes);
+void redefinition_of_classes_detection(Classes classes);
+void redefinition_of_basic_classes_detection(Classes classes);
 
 
 void ClassTable::init(Classes classes)
 {
+    assert(!is_init);
     initialize_constants();
+    check_for_invalid_inheritance(classes);
+    check_for_invalid_definitions(classes);
+    classes = install_basic_classes(classes);
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Class_ cur_class = classes->nth(i);
+        this->classes[cur_class->get_name()] = cur_class;
+    }
+    is_init = true;
 }
+
+
+
+
+
+void ClassTable::check_for_invalid_inheritance(Classes classes)
+{
+    inheritance_from_basic_classes_detection(classes);
+    inheritance_from_undefined_class(classes);
+}
+
+void ClassTable::check_for_invalid_definitions(Classes classes)
+{
+    redefinition_of_basic_classes_detection(classes);
+    redefinition_of_classes_detection(classes);
+}
+
+
+
+
+
+
+
+
+//////////////////////////////////////
+// 
+//  Installing basic Classes
+//
+/////////////////////////////////////
 // use this to initialize the inheritence tree
 Classes ClassTable::install_basic_classes(Classes classes) {
 
@@ -116,3 +163,75 @@ Classes ClassTable::install_basic_classes(Classes classes) {
             return classes;
 
 }
+
+/*****************************************
+ *          H elper functions            *
+ *****************************************/
+void inheritance_from_basic_classes_detection(Classes classes)
+{
+    unordered_set<Symbol> basic_classes = {Int, Str, Bool};
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Class_ cur_class = classes->nth(i);
+        if(basic_classes.find(cur_class->get_parent()) == basic_classes.end())
+        {
+            throw BasicClassInheritanceException(cur_class->get_name(), cur_class->get_parent());
+        }
+    }
+}
+
+void inheritance_from_undefined_class(Classes classes)
+{
+    int n = classes->len();
+    unordered_set<Symbol> classes_symbols;
+    classes_symbols.insert(No_class); // for the object class
+    for(int i = 0; i < n; i++)
+    {
+        Class_ cur_class = classes->nth(i);
+        Symbol name = cur_class->get_name();
+        classes_symbols.insert(name);
+    }
+
+    for(int i = 0; i < n; i++)
+    {
+        Class_ cur_class = classes->nth(i);
+        Symbol parent = cur_class->get_parent();
+        if(classes_symbols.find(parent) == classes_symbols.end())
+        {
+            throw UndefinedClassException(cur_class->get_name(), parent);
+        }
+    }
+}
+
+void redefinition_of_basic_classes_detection(Classes classes)
+{
+    unordered_set<Symbol> basic_classes = {Object, IO, Int, Str, Bool};
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Symbol cur_class = classes->nth(i)->get_name();
+        if(basic_classes.find(cur_class) != basic_classes.end())
+        {
+            throw BasicClassRedefinitionException(cur_class);
+        }
+    }
+
+}
+
+void redefinition_of_classes_detection(Classes classes)
+{
+    unordered_set<Symbol> set;
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Symbol name = classes->nth(i)->get_name();
+        if(set.find(name) != set.end())
+        {
+            throw ClassRedefinitionException(name);
+        }
+        set.insert(name);
+
+    }
+}
+

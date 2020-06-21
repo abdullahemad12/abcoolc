@@ -65,9 +65,9 @@ class CyclicClassException : public GraphException
 class UndefinedClassException : public GraphException
 {
     public:
-    UndefinedClassException(Symbol faulty_class) : GraphException(faulty_class)
+    UndefinedClassException(Symbol faulty_class, Symbol undefined_class) : GraphException(faulty_class)
     {
-        SemantException::msg << "class " << faulty_class->get_string() << " is undefined";
+        SemantException::msg << "class " << undefined_class->get_string() << " is undefined";
     }
 };
 
@@ -186,6 +186,17 @@ class InconsistentSignatureException : public ScopeException
         }  
 };
 
+class InvalidDispatchException : public ScopeException
+{
+    public:
+        InvalidDispatchException(Symbol faulty_class, tree_node* faulty_node, Symbol undefined_class) :
+                                        ScopeException(faulty_class, faulty_node)
+        {   
+            SemantException::msg << "you are trying to call method in undefined Class " 
+                                << undefined_class->get_string();
+        }  
+};
+
 
 
 
@@ -232,7 +243,7 @@ class SemantExceptionHandler : Singleton<SemantExceptionHandler>
           * @effects: terminates the program after reporting the error
           * @param GraphException the graph exception to be reported
           */
-        void report_one(const GraphException& exception);
+        void report_one(Classes classes, GraphException& exception);
 
 
 

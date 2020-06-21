@@ -13,6 +13,12 @@
 extern int semant_debug;
 extern char *curr_filename;
 
+void terminate_on_errors(void)
+{
+    cerr << "Compilation halted due to static semantic errors." << endl;
+	exit(1);
+}
+
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
@@ -41,19 +47,17 @@ void program_class::semant()
         classtable.init(classes);
         classtree.init(classes, Object);
     }
-    catch(const GraphException& e)
+    catch(GraphException& e)
     {
-        semant_error.report_one(e);
+        semant_error.report_one(classes, e);
+        terminate_on_errors();
     }
-    
-
-    /*Add classes and methods to the envirnment*/
     
     /* report errors and exit if any */
     err = semant_error.report_all();
-    if (err) {
-	cerr << "Compilation halted due to static semantic errors." << endl;
-	exit(1);
+    if (err) 
+    {
+        terminate_on_errors();
     }
 }
 

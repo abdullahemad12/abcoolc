@@ -92,15 +92,15 @@ class ClassTable
         ~ClassTable() { }
 
     private:
-        void check_for_invalid_inheritance(void);
-        void check_for_invalid_definitions(void);
+        void check_for_invalid_inheritance(Classes classes);
+        void check_for_invalid_definitions(Classes classes);
         Classes install_basic_classes(Classes classes);
 
     public:
         void init(Classes classes);
         auto begin(void) { return classes.begin(); }
         auto end(void) { return  classes.end(); }
-        bool contains(Symbol class_);
+        bool contains(Symbol class_) { return classes.find(class_) != classes.end(); };
         Class_ operator[](Symbol sym) { return classes[sym]; }
 };
 

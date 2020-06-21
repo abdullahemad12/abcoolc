@@ -925,10 +925,10 @@ delete[] first_occurance_arr</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1441</x>
+      <x>1419</x>
       <y>726</y>
-      <w>308</w>
-      <h>209</h>
+      <w>330</w>
+      <h>187</h>
     </coordinates>
     <panel_attributes>ClassTable
 --
@@ -939,8 +939,8 @@ innerclass}
 - classes : unordered_map&lt;Symbol, Class_&gt;
 --
 - class_table()
-- check_for_invalid_inheritance() : void
-- check_for_invalid_definitions() : void
+- check_for_invalid_inheritance(classes : Classes) : void
+- check_for_invalid_definitions(classes : Classes) : void
 - install_basic_classes(classes : Classes) : Classes
 + init(classes : Classes_)
 + begin()
@@ -1769,5 +1769,27 @@ type_check</panel_attributes>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>410.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>396</y>
+      <w>275</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>InvalidDispatchException</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>187</x>
+      <y>253</y>
+      <w>693</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>610.0;10.0;10.0;130.0</additional_attributes>
   </element>
 </diagram>

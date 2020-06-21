@@ -1,5 +1,6 @@
 #include <exceptions.h>
-
+#include <class-table.h>
+#include <singleton.h>
 ////////////////////////////////////////////////////////////////////
 //
 // semant_error is an overloaded function for reporting errors
@@ -30,4 +31,39 @@ ostream& SemantExceptionHandler::semant_error()
     semant_errors++;                            
     return error_stream;
 } 
+
+int SemantExceptionHandler::report_all(void)
+{
+    ClassTable& classtable = Singleton<ClassTable>::instance();
+    int n = container.size();
+    for(AnalysisException* exp : container)
+    {
+        Symbol classname = exp->get_faulty_class();
+        Symbol filename = classtable[classname]->get_filename();
+        tree_node* node = exp->get_faulty_node();
+        auto& stream = semant_error(filename, node);
+        stream << exp->what();
+        delete exp;
+    }
+    container.clear();
+    return n;
+}
+
+void SemantExceptionHandler::report_one(Classes classes, GraphException& exp)
+{
+
+    ClassTable& classtable = Singleton<ClassTable>::instance();
+    Symbol class_name = exp.get_faulty_class();
+    int n = 0;
+    for(int i = 0; i < n; i++)
+    {
+        Class_ class_ = classes->nth(i);
+        if(class_->get_name() == class_name) {
+            auto& err = semant_error(class_);
+            err << exp.what();
+            break;
+        }
+    }
+}
+
 
