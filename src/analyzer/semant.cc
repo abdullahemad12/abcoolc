@@ -14,11 +14,10 @@
 extern int semant_debug;
 extern char *curr_filename;
 
-void terminate_on_errors(void)
-{
-    cerr << "Compilation halted due to static semantic errors." << endl;
-	exit(1);
-}
+// prototypes for helpers 
+void semant_check_classes();
+void terminate_on_errors(void);
+
 
 /*   This is the entry point to the semantic checker.
 
@@ -53,12 +52,8 @@ void program_class::semant()
         semant_error.report_one(classes, e);
         terminate_on_errors();
     }
-    
-    // call semant recursively on all classes
-    int n_classes = classes->len();
-    for(int i = 0; i < n_classes; i++)
-        classes->nth(i)->semant();
 
+    semant_check_classes();
     /* report errors and exit if any */
     err = semant_error.report_all();
     if (err) 
@@ -115,4 +110,10 @@ void semant_check_classes()
             visited.insert(class_name);
         }
     }
+}
+
+void terminate_on_errors(void)
+{
+    cerr << "Compilation halted due to static semantic errors." << endl;
+	exit(1);
 }
