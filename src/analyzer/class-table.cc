@@ -3,6 +3,9 @@
 #include <unordered_set>
 #include <exceptions.h>
 
+
+#define MAP_CONTAINS(map, element) (map.find(element) != map.end())
+
 // prototypes
 void inheritance_from_basic_classes_detection(Classes classes);
 void inheritance_from_undefined_class(Classes classes);
@@ -14,9 +17,12 @@ void ClassTable::init(Classes classes)
 {
     assert(!is_init);
     initialize_constants();
-    check_for_invalid_inheritance(classes);
+    // before installing basic classes there better 
+    // be no definitions for them
     check_for_invalid_definitions(classes);
     classes = install_basic_classes(classes);
+    check_for_invalid_inheritance(classes);
+
     int n = classes->len();
     for(int i = 0; i < n; i++)
     {
@@ -174,7 +180,7 @@ void inheritance_from_basic_classes_detection(Classes classes)
     for(int i = 0; i < n; i++)
     {
         Class_ cur_class = classes->nth(i);
-        if(basic_classes.find(cur_class->get_parent()) == basic_classes.end())
+        if(MAP_CONTAINS(basic_classes, cur_class->get_parent()))
         {
             throw BasicClassInheritanceException(cur_class->get_name(), cur_class->get_parent());
         }
@@ -197,7 +203,7 @@ void inheritance_from_undefined_class(Classes classes)
     {
         Class_ cur_class = classes->nth(i);
         Symbol parent = cur_class->get_parent();
-        if(classes_symbols.find(parent) == classes_symbols.end())
+        if(!MAP_CONTAINS(classes_symbols, parent))
         {
             throw UndefinedClassException(cur_class->get_name(), parent);
         }
@@ -211,7 +217,7 @@ void redefinition_of_basic_classes_detection(Classes classes)
     for(int i = 0; i < n; i++)
     {
         Symbol cur_class = classes->nth(i)->get_name();
-        if(basic_classes.find(cur_class) != basic_classes.end())
+        if(MAP_CONTAINS(basic_classes, cur_class))
         {
             throw BasicClassRedefinitionException(cur_class);
         }
@@ -226,12 +232,11 @@ void redefinition_of_classes_detection(Classes classes)
     for(int i = 0; i < n; i++)
     {
         Symbol name = classes->nth(i)->get_name();
-        if(set.find(name) != set.end())
+        if(MAP_CONTAINS(set, name))
         {
             throw ClassRedefinitionException(name);
         }
         set.insert(name);
-
     }
 }
 

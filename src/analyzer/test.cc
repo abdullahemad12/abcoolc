@@ -815,34 +815,36 @@ TEST_CASE("get_euler_walk")
 TEST_CASE("Class Redefinition detection Test 1")
 {
    Classes classes = create_redefinition_graph1();
-   ClassTableWrapper ct; 
+   ClassTableWrapper ct;
+   char* expected_name = "myclass6";
    try
    {
-       ct.init(classes);
-       REQUIRE(false);
+      ct.init(classes);
+      REQUIRE(false);
    }
    catch(ClassRedefinitionException& excep)
    {
-       Symbol expected = idtable.add_string("myclass6");
-       REQUIRE(excep.get_faulty_class() == expected);
+      Symbol expected = idtable.add_string(expected_name);
+      REQUIRE(excep.get_faulty_class() == expected);
    }
    catch(exception& excep)
    {
-       REQUIRE(false);
+      REQUIRE(false);
    }
 }
 
 TEST_CASE("Class Redefinition detection Test 2")
 {
     Classes classes = create_redefinition_graph2();
-    ClassTableWrapper ct; 
+    ClassTableWrapper ct;
+    char* expected_name = "myclass4";
     try
     {
         ct.init(classes);
         REQUIRE(false);
     }
     catch(ClassRedefinitionException& excep)
-    {
+    {   
         Symbol expected = idtable.add_string("myclass4");
         REQUIRE(excep.get_faulty_class() == expected);
     }
@@ -1146,7 +1148,7 @@ TEST_CASE("ClassTable Iterator Test")
 
     for(int i = 0; i < classes->len(); i++)
     {
-        REQUIRE(classes_vec.find(classes->nth(i)) == classes_vec.end());
+        REQUIRE(classes_vec.find(classes->nth(i)) != classes_vec.end());
     }
 
 }
