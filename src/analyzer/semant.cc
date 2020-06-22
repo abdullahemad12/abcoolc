@@ -53,6 +53,11 @@ void program_class::semant()
         terminate_on_errors();
     }
     
+    // call semant recursively on all classes
+    int n_classes = classes->len();
+    for(int i = 0; i < n_classes; i++)
+        classes->nth(i)->semant();
+
     /* report errors and exit if any */
     err = semant_error.report_all();
     if (err) 
@@ -63,4 +68,18 @@ void program_class::semant()
 
 
 
-
+//////////////////////////////////////////////////////////////
+//
+// Helpers for the semant methods
+//
+//////////////////////////////////////////////////////////////
+/**
+  * Runs the semant function of all the classes in the program in a special 
+  * order (namely euler walk order on the inheritance graph). Also tells each class
+  * When to add its features to the global and local environments. This should only 
+  * be called when all the singleton where initialized as needed 
+  */ 
+void semant_check_classes()
+{
+    
+}

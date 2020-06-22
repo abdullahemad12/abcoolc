@@ -526,7 +526,7 @@ check_for_invalid_inheritance()</panel_attributes>
     <coordinates>
       <x>1905</x>
       <y>2865</y>
-      <w>270</w>
+      <w>255</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -686,7 +686,7 @@ send_class()</panel_attributes>
     <coordinates>
       <x>2340</x>
       <y>5505</y>
-      <w>375</w>
+      <w>360</w>
       <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -891,7 +891,7 @@ compute_first_occurance()</panel_attributes>
     <coordinates>
       <x>2580</x>
       <y>3030</y>
-      <w>270</w>
+      <w>255</w>
       <h>165</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -903,7 +903,7 @@ construct_graph()</panel_attributes>
     <coordinates>
       <x>1905</x>
       <y>2805</y>
-      <w>285</w>
+      <w>270</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -915,7 +915,7 @@ check_for_redefinition()</panel_attributes>
     <coordinates>
       <x>2580</x>
       <y>3345</y>
-      <w>345</w>
+      <w>330</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -962,9 +962,9 @@ innerclass}
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>855</x>
+      <x>810</x>
       <y>1815</y>
-      <w>345</w>
+      <w>420</w>
       <h>180</h>
     </coordinates>
     <panel_attributes>Environment
@@ -972,10 +972,11 @@ innerclass}
 - local_method_env : MethodEnvironment
 - gloabl_method_env : MethodEnvironment
 - local_object_env : ObjectEnvironment
++ current_class : Symbol
 --
-+ get_local_method_env() : MethodEnvironment
-+ get_global_method_env() : MethodEnvironment
-+ get_local_object_env() : ObjectEnvironment</panel_attributes>
++ get_local_method_env() : MethodEnvironment&amp;
++ get_global_method_env() : MethodEnvironment&amp;
++ get_local_object_env() : ObjectEnvironment&amp;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -988,7 +989,7 @@ innerclass}
     </coordinates>
     <panel_attributes>lt=&lt;-
 singletone</panel_attributes>
-    <additional_attributes>50.0;60.0;90.0;60.0;90.0;10.0;10.0;10.0;10.0;40.0</additional_attributes>
+    <additional_attributes>70.0;60.0;90.0;60.0;90.0;10.0;10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -1695,7 +1696,7 @@ Symbol</panel_attributes>
     <coordinates>
       <x>1545</x>
       <y>4995</y>
-      <w>195</w>
+      <w>180</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
