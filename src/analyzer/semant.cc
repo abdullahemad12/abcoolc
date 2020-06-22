@@ -9,6 +9,7 @@
 #include <singleton.h>
 #include <class-table.h>
 #include <class-tree.h>
+#include <cassert>
 
 extern int semant_debug;
 extern char *curr_filename;
@@ -81,5 +82,37 @@ void program_class::semant()
   */ 
 void semant_check_classes()
 {
-    
+    ClassTree& class_tree = Singleton<ClassTree>::instance();
+    ClassTable& class_table = Singleton<ClassTable>::instance();
+
+    // first add all the methods to the global environment
+    for(auto& class_entry : class_table)
+    {
+        Class_ c = class_entry.second;
+        c->sync_global_env();
+    }
+
+    // these variables detects change in depth and avoids 
+    // performing semantic check more than once on a class
+    unordered_set<Symbol> visited;
+    Symbol prev_class = NULL; 
+
+    // Now do semantic check on the classes
+    for(Symbol class_name : class_tree)
+    {
+        // if visited we went up a level
+        if(visited.count(class_name))
+        {
+            assert(class_table.contains(prev_class));
+            Class_ c = class_table[prev_class];
+            c->clean_local_env();
+        }
+        else // we went down a level
+        {
+            assert(class_table.contains(class_name));
+            Class_ cur_class = class_table[class_name];
+            cur_class->semant();
+            visited.insert(class_name);
+        }
+    }
 }

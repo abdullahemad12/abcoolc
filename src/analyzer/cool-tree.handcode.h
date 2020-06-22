@@ -53,14 +53,22 @@ virtual void semant() = 0;
 void semant();     				\
 void dump_with_types(ostream&, int);            
 
+
+////////////////////////
+// Synch and clean adds and removes all the features 
+// to and from the environment
+////////////////////////
 #define Class__EXTRAS                   \
 virtual Symbol get_filename() = 0;      \
 virtual Symbol get_name() = 0;		\
 virtual Symbol get_parent() = 0;		\
 virtual Features& get_features() = 0;	\
 virtual void dump_with_types(ostream&,int) = 0; \
-virtual void semant() = 0;
-
+virtual void semant() = 0;	\
+virtual void sync_local_env(); \
+virtual void clean_local_env(); \
+virtual void sync_global_env();
+ 
 
 
 #define class__EXTRAS                               \
