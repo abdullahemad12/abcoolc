@@ -3,5 +3,4 @@ method-environment.o method-environment.d : method-environment.cc method-environ
  ../../include/analyzer/list.h ../../include/analyzer/cool-io.h \
  cool-tree.h ../../include/analyzer/tree.h \
  ../../include/analyzer/stringtab.h cool-tree.handcode.h \
- ../../include/analyzer/cool.h ../../include/analyzer/exceptions.h \
- ../../include/analyzer/singleton.h
+ ../../include/analyzer/cool.h ../../include/analyzer/exceptions.h

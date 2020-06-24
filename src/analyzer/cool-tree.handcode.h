@@ -9,6 +9,7 @@
 #include "cool.h"
 #include "stringtab.h"
 
+#define LOCAL_TYPE "local_type"
 #define yylineno curr_lineno;
 extern int yylineno;
 

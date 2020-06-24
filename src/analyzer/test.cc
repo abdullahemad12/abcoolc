@@ -9,6 +9,7 @@
 #include <utility>
 #include <exceptions.h>
 #include <class-table.h>
+#include <environment.h>
 
 extern Program ast_root;      // root of the abstract syntax tree
 FILE *ast_file = stdin;       // we read the AST from standard input
@@ -565,6 +566,51 @@ Classes create_basic_class_inheritance(char* basic_class)
 }
 
 
+Feature create_method1()
+{
+    Symbol method_name = idtable.add_string("method_name");
+    Symbol type1 = idtable.add_string("My_type1");
+    Symbol type2 = idtable.add_string("My_type2");
+    Symbol name1 = idtable.add_string("Name1");
+    Symbol name2 = idtable.add_string("Name2");
+    Symbol return_type = idtable.add_string("return_type");
+    Formal formal1 = formal(name1, type1);
+    Formal formal2 = formal(name2, type2);
+    Formals formals1 = single_Formals(formal1);
+    Formals formals2 = single_Formals(formal2);
+    Formals formals = append_Formals(formals1, formals2);
+    
+    Feature meth = method(method_name, formals, return_type, no_expr());
+
+    return meth;
+}
+Feature create_method2()
+{
+    Symbol method_name = idtable.add_string("method_name");
+    Symbol type1 = idtable.add_string("My_type1");
+    Symbol type2 = idtable.add_string("My_type2");
+    Symbol name1 = idtable.add_string("Name1");
+    Symbol name2 = idtable.add_string("Name2");
+    Symbol name3 = idtable.add_string("Name3");
+
+    Symbol return_type = idtable.add_string("return_type");
+    
+    Formal formal1 = formal(name1, type1);
+    Formal formal2 = formal(name2, type2);
+    Formal formal3 = formal(name3, type2);
+
+    Formals formals1 = single_Formals(formal1);
+    Formals formals2 = single_Formals(formal2);
+    Formals formals3 = single_Formals(formal3);
+    Formals formals = append_Formals(formals1, formals2);
+    formals = append_Formals(formals, formals3);
+    Feature meth = method(method_name, formals, return_type, no_expr());
+
+    return meth;
+} 
+
+
+
 /*************************************************************************************/
 /*************************************Tests*******************************************/
 /*************************************************************************************/
@@ -696,6 +742,46 @@ TEST_CASE("Method Environment")
 
 }
 
+TEST_CASE("Multiple insertions in Method environment")
+{
+    MethodEnvironment env;
+    int t = 100;
+    for(int i = 0; i < t; i++)
+    {
+        Symbol myclass = idtable.add_string("My_class");
+        Symbol method = idtable.add_string("my_method");
+        Symbol type1 = idtable.add_string("My_type1");
+        Symbol type2 = idtable.add_string("My_type2");
+        Symbol type3 = idtable.add_string("My_type3");
+        vector<Symbol> formals = {type1, type2, type3};
+        Symbol return_type = idtable.add_string("Return_type");
+        env.add(myclass, method, formals, return_type);
+        REQUIRE(env.contains(myclass, method));
+        MethodEnvironment::Signature& sign = env.lookup(myclass, method);
+        REQUIRE(sign.get_param_types() == formals);
+        REQUIRE(sign.get_return_type() == return_type);
+    }
+
+    for(int i = 0; i < t - 1; i++)
+    {
+        Symbol myclass = idtable.add_string("My_class");
+        Symbol method = idtable.add_string("my_method");
+        Symbol type1 = idtable.add_string("My_type1");
+        Symbol type2 = idtable.add_string("My_type2");
+        Symbol type3 = idtable.add_string("My_type3");
+        vector<Symbol> formals = {type1, type2, type3};
+        Symbol return_type = idtable.add_string("Return_type");
+        env.remove(myclass, method);
+        REQUIRE(env.contains(myclass, method));
+        MethodEnvironment::Signature& sign = env.lookup(myclass, method);
+        REQUIRE(sign.get_param_types() == formals);
+        REQUIRE(sign.get_return_type() == return_type);
+    }
+    Symbol myclass = idtable.add_string("My_class");
+    Symbol method = idtable.add_string("my_method");
+    env.remove(myclass, method);
+    REQUIRE(!env.contains(myclass, method));
+}
 TEST_CASE("Cyclic graph Test")
 {
     Classes classes = create_cyclic_classes();
@@ -1151,4 +1237,353 @@ TEST_CASE("ClassTable Iterator Test")
         REQUIRE(classes_vec.find(classes->nth(i)) != classes_vec.end());
     }
 
+}
+
+TEST_CASE("method_class::add_to_global_env test1")
+{
+    Symbol class_name = idtable.add_string("Class_name");
+    Feature method = create_method1();
+    method->add_to_global_env(class_name);
+
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_global_method_env();
+
+    REQUIRE(menv.contains(class_name, method->get_name()));
+    MethodEnvironment::Signature& sign = menv.lookup(class_name, method->get_name());
+
+    // not good style but I need to assert this 
+    REQUIRE((sign ==  *((method_class*) method)));
+
+    menv.remove(class_name, method->get_name());
+
+    REQUIRE(!menv.contains(class_name, method->get_name()));
+
+}
+
+TEST_CASE("method_class::add_to_global_env test2")
+{
+    // tons of memory leaks :(
+    int t = 100;
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_global_method_env();
+    for(int i = 0; i < t; i++)
+    {
+        Symbol class_name = idtable.add_string("Class_name");
+        Feature method = create_method1();
+        method->add_to_global_env(class_name);
+        REQUIRE(menv.contains(class_name, method->get_name()));
+    }
+    Symbol class_name = idtable.add_string("Class_name");
+    Feature method = create_method1();
+    menv.remove(class_name, method->get_name());
+    if(menv.contains(class_name, method->get_name()))
+    {
+        while(menv.contains(class_name, method->get_name()))
+            menv.remove(class_name, method->get_name());
+        // do this to for the other tests to work correctly
+        REQUIRE(false);
+    }
+}
+
+TEST_CASE("method_class::add_to_local_env1")
+{
+    Symbol class_name = idtable.add_string("local_type");
+    Feature method = create_method1();
+    method->add_to_local_env();
+
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
+
+    REQUIRE(menv.contains(class_name, method->get_name()));
+    MethodEnvironment::Signature& sign = menv.lookup(class_name, method->get_name());
+
+    // not good style but I need to assert this 
+    REQUIRE((sign ==  *((method_class*) method)));
+
+    menv.remove(class_name, method->get_name());
+
+    REQUIRE(!menv.contains(class_name, method->get_name()));
+}
+
+TEST_CASE("method_class::add_to_local_env2")
+{
+    Symbol class_name = idtable.add_string("local_type");
+    Feature method = create_method1();
+    method->add_to_local_env();
+    
+    int t = 10;
+    for(int i = 0; i < t; i++)
+    {
+        Feature method_copy = create_method1();
+        method_copy->add_to_local_env();
+    }
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
+    for(int i = 0; i < t; i++)
+    {
+        menv.remove(class_name, method->get_name());
+        REQUIRE(menv.contains(class_name, method->get_name()));
+    }
+    menv.remove(class_name, method->get_name());
+    REQUIRE(!menv.contains(class_name, method->get_name()));
+
+}
+
+TEST_CASE("method_class::add_to_local_env3")
+{
+    Symbol class_name = idtable.add_string("local_type");
+    Feature method = create_method2();
+    method->add_to_local_env();
+
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
+
+    REQUIRE(menv.contains(class_name, method->get_name()));
+    MethodEnvironment::Signature& sign = menv.lookup(class_name, method->get_name());
+
+    // not good style but I need to assert this 
+    REQUIRE((sign ==  *((method_class*) method)));
+
+    menv.remove(class_name, method->get_name());
+
+    REQUIRE(!menv.contains(class_name, method->get_name()));
+}
+
+
+TEST_CASE("Invalid method_class::add_to_local_env4")
+{
+    // attempt two insert two methods with the same name but different parameters
+    Symbol class_name = idtable.add_string("local_type");
+    Feature method1 = create_method1();
+    Feature method2 = create_method2();
+
+    method1->add_to_local_env();
+
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+
+    method2->add_to_local_env();
+    
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
+    
+    menv.remove(class_name, method1->get_name());
+    REQUIRE(!menv.contains(class_name, method1->get_name()));
+
+    vector<SemantException*> exceptions_after;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+    REQUIRE(method2->is_malformed());
+    REQUIRE(exceptions_after.size() == exceptions_before.size() + 1);
+}
+
+TEST_CASE("method_class::remove_from_local_env")
+{
+    // attempt two insert two methods with the same name but different parameters
+    Symbol class_name = idtable.add_string("local_type");
+    Feature method1 = create_method1();
+
+    method1->add_to_local_env();
+
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
+    REQUIRE(menv.contains(class_name, method1->get_name()));
+    method1->remove_from_local_env();
+    REQUIRE(!menv.contains(class_name, method1->get_name()));
+
+}
+
+TEST_CASE("attribute::add_to_local_env")
+{
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol attr2 = idtable.add_string("attr2");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+    Feature fattr2 = attr(attr2, type1, no_expr());
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+    fattr1->add_to_local_env();
+    fattr2->add_to_local_env();
+
+    Environment& env = Environment::instance();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+
+    REQUIRE(oenv.contains(attr1));
+
+    oenv.remove(attr1);
+
+    REQUIRE(oenv.contains(attr2));
+
+    oenv.remove(attr2);
+
+    REQUIRE(!oenv.contains(attr2));
+
+
+    vector<SemantException*> exceptions_after;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+    REQUIRE(exceptions_before.size() == exceptions_after.size());
+
+}
+
+TEST_CASE("Invalid attribute::add_to_local_env")
+{
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol attr2 = idtable.add_string("attr1");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+    Feature fattr2 = attr(attr2, type1, no_expr());
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+    fattr1->add_to_local_env();
+    fattr2->add_to_local_env();
+
+    Environment& env = Environment::instance();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+
+    REQUIRE(oenv.contains(attr1));
+
+    oenv.remove(attr1);
+
+    REQUIRE(!oenv.contains(attr2));
+
+    REQUIRE(!fattr1->is_malformed());
+    REQUIRE(fattr2->is_malformed());
+
+    vector<SemantException*> exceptions_after;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+    REQUIRE(exceptions_before.size() == exceptions_after.size() - 1);
+}
+
+TEST_CASE("Sync_local_environment1")
+{
+     
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol attr2 = idtable.add_string("attr2");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+    Feature fattr2 = attr(attr2, type1, no_expr());
+
+    Feature method = create_method1();
+
+    Features f1 = single_Features(fattr1);
+    Features f2 = single_Features(fattr2);
+    Features f3 = single_Features(method);
+    Features features = append_Features(f1, f2);
+    features = append_Features(features, f3);
+
+    Symbol class_name = idtable.add_string("Class1");
+    Symbol parent = idtable.add_string("Object");
+    Symbol filename = idtable.add_string("cool.cl");
+    Class_ class__ = class_(class_name, parent, features, filename);
+
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+
+    class__->sync_local_env();
+
+    vector<SemantException*> exceptions_after;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+    
+    REQUIRE(exceptions_after == exceptions_before);
+
+    Environment& env = Environment::instance();
+
+    MethodEnvironment& menv = env.get_local_method_env();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+    Symbol local_class = idtable.add_string(LOCAL_TYPE);
+    REQUIRE(menv.contains(local_class, method->get_name()));
+    REQUIRE(oenv.contains(attr1));
+    REQUIRE(oenv.contains(attr2));
+    REQUIRE(!method->is_malformed());
+    REQUIRE(!fattr1->is_malformed());
+    REQUIRE(!fattr2->is_malformed());
+
+    class__->clean_local_env();
+    REQUIRE(!menv.contains(local_class, method->get_name()));
+    REQUIRE(!oenv.contains(attr1));
+    REQUIRE(!oenv.contains(attr2));
+}
+
+TEST_CASE("Sync_local_environment2")
+{
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+
+    Feature method = create_method1();
+    Feature fattr2 = attr(method->get_name(), type1, no_expr());
+
+    Features f1 = single_Features(fattr1);
+    Features f2 = single_Features(fattr2);
+    Features f3 = single_Features(method);
+    Features features = append_Features(f1, f3);
+    features = append_Features(features, f2);
+
+    Symbol class_name = idtable.add_string("Class1");
+    Symbol parent = idtable.add_string("Object");
+    Symbol filename = idtable.add_string("cool.cl");
+    Class_ class__ = class_(class_name, parent, features, filename);
+
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+    class__->sync_local_env();
+
+    vector<SemantException*> exceptions_after;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+    
+    REQUIRE(exceptions_after != exceptions_before);
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+
+    Symbol local_class = idtable.add_string(LOCAL_TYPE);
+    REQUIRE(menv.contains(local_class, method->get_name()));
+    REQUIRE(oenv.contains(attr1));
+    REQUIRE(!method->is_malformed());
+    REQUIRE(!fattr1->is_malformed());
+    REQUIRE(fattr2->is_malformed());
+    
+    class__->clean_local_env();
+    REQUIRE(!menv.contains(local_class, method->get_name()));
+    REQUIRE(!oenv.contains(attr1));
 }

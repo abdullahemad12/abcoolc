@@ -9,7 +9,6 @@
 #include <unordered_set>
 #include <vector>
 #include <utility>
-#include <singleton.h>
 
 
 
@@ -68,7 +67,6 @@ class UnionFind
   */ 
 class ClassTree
 {
-    friend Singleton<ClassTree>;
     /**
       * Represents a Node in the CLASS tree
       * Holds extra information other than class_ class
@@ -114,8 +112,13 @@ class ClassTree
         void compute_first_occurance(void);
 
       protected:
-        ClassTree() {}
+        ClassTree() { }
         ~ClassTree();
+        /*delete those methods to avoid unwanted errors */
+        ClassTree(ClassTree const&) = delete;
+        void operator=(ClassTree const&) = delete;
+
+
 
 
       public:
@@ -147,6 +150,14 @@ class ClassTree
           */
         auto begin() { return euler_trip.begin(); }
         auto end() { return euler_trip.end(); }
+        /**
+          * References: https://stackoverflow.com/a/30687399/6548856
+          */
+        static ClassTree& instance()
+        {
+            static ClassTree t;
+            return t;
+        }
 };
 
 /**

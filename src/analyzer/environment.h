@@ -13,15 +13,18 @@
  ******************************************************************************************/
 #include <method-environment.h>
 #include <object-environment.h>
-#include <singleton.h>
 #include <symtab.h>
 
 class Environment
 {
-    friend Singleton<Environment>;
     protected:
         Environment() { }
         ~Environment() { }
+        /*delete those methods to avoid unwanted errors */
+        Environment(Environment const&) = delete;
+        void operator=(Environment const&) = delete;
+
+
     private:
         MethodEnvironment local_method_env;
         ObjectEnvironment local_object_env;
@@ -31,5 +34,14 @@ class Environment
         MethodEnvironment& get_local_method_env() { return local_method_env; }
         ObjectEnvironment& get_local_object_env() { return local_object_env; }
         MethodEnvironment& get_global_method_env() { return global_object_env; }
+        /**
+         * References: https://stackoverflow.com/a/30687399/6548856
+         */
+        static Environment& instance()
+        {
+            static Environment t;
+            return t;
+        }
+        
 };
 #endif /*_ENVIRONMENT_H*/

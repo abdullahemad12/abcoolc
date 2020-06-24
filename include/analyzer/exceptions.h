@@ -14,7 +14,6 @@
 #include <tree.h>
 #include <cool-tree.h>
 #include <vector>
-#include <singleton.h>
 #include <ostream>
 
 
@@ -210,9 +209,8 @@ class InvalidDispatchException : public ScopeException
  *                                                                                           *
  * For other semantic errors, it is okay to halt the execution after hitting on of them      *
  *********************************************************************************************/
-class SemantExceptionHandler : Singleton<SemantExceptionHandler>
+class SemantExceptionHandler
 {
-    friend Singleton<SemantExceptionHandler>;
     private:
         int semant_errors;
         std::vector<AnalysisException*> container;
@@ -225,10 +223,22 @@ class SemantExceptionHandler : Singleton<SemantExceptionHandler>
         std::ostream& semant_error(Symbol filename, tree_node *t);
         
         SemantExceptionHandler(void) : semant_errors(0), error_stream(cerr) { }
+        ~SemantExceptionHandler(void) { }
+        /*delete those methods to avoid unwanted errors */
+        SemantExceptionHandler(SemantExceptionHandler const&) = delete;
+        void operator=(SemantExceptionHandler const&) = delete;
+        
+        
     public:
         void raise(AnalysisException* exception) { container.push_back(exception); }
         auto begin() { return container.begin(); }
         auto end() { return container.end(); }
+        static SemantExceptionHandler& instance()
+        {
+            static SemantExceptionHandler t;
+            return t;
+        }
+
         /**
           * @brief reports all the excptions that were passed to the raise method
           * @modifies: this (clears all the exceptions that were raised)
@@ -244,6 +254,8 @@ class SemantExceptionHandler : Singleton<SemantExceptionHandler>
           * @param GraphException the graph exception to be reported
           */
         void report_one(Classes classes, GraphException& exception);
+
+        
 
 
 

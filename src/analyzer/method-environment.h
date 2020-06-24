@@ -2,9 +2,10 @@
  * Method Environment
  * This data structure is used to store cool methods signatures in the
  * scope of a class.  The supported operations are:
- *   1. add: adds a method signature to the environment. if the signature already exists
- *           does nothig.
- *   2. remove: removes the entry for the given method name symbol from the environment
+ *   1. add: adds a method signature to the environment. if the signature already exists increments 
+ *      the counter in the signature. 
+ *   2. remove: decrements the counter of the associated method then removes the entry for the given 
+ *              method name symbol from the environment if the counter is 0
  *   3. lookup: looks up the signature of a given method
  *   4. contains: returns true if there is entry for the given method in the given class
  *
@@ -17,6 +18,15 @@
  *
  *   The second unordered_map is indexed by the method's name and stores the method's
  *   signature.
+ *  
+ *   The method environment dont really care about the identifier names of the formals since 
+ *   they are considered  part of the object environment. Instead, it cares about the types 
+ *   of the identifiers in their given order in addition to the return type of the method. 
+ *   Additionally the signature data structure keeps track of a counter that indicates how 
+ *   many methods with the same name, class and signature were inserted into the environment. 
+ *   This becomes useful especially for the local environment because a method maybe defined 
+ *   multiple times. It is up to the caller to decide when a method can override an existing
+ *   one, or a redefinition error should be raised.
  *****************************************************************************************/
 #ifndef METHOD_ENVIRONMENT_H_
 #define METHOD_ENVIRONMENT_H_

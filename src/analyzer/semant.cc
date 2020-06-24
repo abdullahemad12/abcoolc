@@ -6,7 +6,6 @@
 #include "semant.h"
 #include "utilities.h"
 #include <exceptions.h>
-#include <singleton.h>
 #include <class-table.h>
 #include <class-tree.h>
 #include <cassert>
@@ -37,9 +36,9 @@ void program_class::semant()
 
     int err; 
     /*Get singleton data structure*/
-    ClassTable& classtable = Singleton<ClassTable>::instance();
-    ClassTree& classtree = Singleton<ClassTree>::instance();
-    SemantExceptionHandler& semant_error = Singleton<SemantExceptionHandler>::instance();
+    ClassTable& classtable = ClassTable::instance();
+    ClassTree& classtree = ClassTree::instance();
+    SemantExceptionHandler& semant_error = SemantExceptionHandler::instance();
 	
     /*Initialize the the class data structures*/
     try
@@ -221,8 +220,8 @@ void object_class::semant()
   */ 
 void semant_check_classes()
 {
-    ClassTree& class_tree = Singleton<ClassTree>::instance();
-    ClassTable& class_table = Singleton<ClassTable>::instance();
+    ClassTree& class_tree = ClassTree::instance();
+    ClassTable& class_table = ClassTable::instance();
 
     // first add all the methods to the global environment
     for(auto& class_entry : class_table)

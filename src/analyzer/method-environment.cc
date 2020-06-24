@@ -7,12 +7,16 @@ using namespace std;
 
 void MethodEnvironment::add(Symbol class_name, Symbol name, vector<Symbol> params, Symbol return_type)
 {
-    MethodSignature* sig = new MethodSignature(name, params, return_type);
     if(env.find(class_name) == env.end()){
         std::unordered_map<Symbol, MethodSignature*> meths; 
         env[class_name] = meths;
     }
-    env[class_name][name] = sig;
+    if(env[class_name].find(name) == env[class_name].end())
+    {
+        MethodSignature* sig = new MethodSignature(name, params, return_type);
+        env[class_name][name] = sig;
+    }
+    ++env[class_name][name]->counter;
 }
 
 
@@ -20,7 +24,9 @@ void MethodEnvironment::remove(Symbol class_name, Symbol method_name)
 {
     assert(env.find(class_name) != env.end());
     assert(env[class_name].find(method_name) != env[class_name].end());
-    env[class_name].erase(method_name);
+    --env[class_name][method_name]->counter;
+    if(env[class_name][method_name]->counter == 0)
+        env[class_name].erase(method_name);
 }
 
 MethodEnvironment::Signature& MethodEnvironment::lookup(Symbol class_name, Symbol method_name)
@@ -34,8 +40,7 @@ MethodEnvironment::Signature& MethodEnvironment::lookup(Symbol class_name, Symbo
 
 bool MethodEnvironment::contains(Symbol class_name, Symbol method_name)
 {
-    assert(env.find(class_name) != env.end());
-    return env[class_name].find(method_name) != env[class_name].end();
+    return (env.find(class_name) != env.end()) && (env[class_name].find(method_name) != env[class_name].end());
 }
 
 MethodEnvironment::~MethodEnvironment()
@@ -53,9 +58,10 @@ MethodEnvironment::~MethodEnvironment()
 /***************
  *  Signature  *
  ***************/
-MethodEnvironment::Signature::Signature(Symbol name, vector<Symbol> params , Symbol ret_type){
-    this->params = params;
-    this->ret_type = ret_type;
+MethodEnvironment::Signature::Signature(Symbol name, vector<Symbol> params , Symbol ret_type)
+                            : params(params), ret_type(ret_type), counter(0)
+{
+
 }
 
 vector<Symbol> MethodEnvironment::Signature::get_param_types()

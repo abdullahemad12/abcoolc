@@ -4,7 +4,6 @@
 #include <exceptions.h>
 #include <unordered_set>
 
-#define LOCAL_TYPE "local_type"
 #define CONTAINS(set, elem) ((set.find(elem)) != (set.end()))
 
 using namespace std;
@@ -24,8 +23,8 @@ vector<Symbol> extract_formals_type(Formals formals);
 // an error
 void method_class::add_to_global_env(Symbol class_name)
 {
-    // insert only if the method is defined.
-    Environment& env = Singleton<Environment>::instance();
+    // insert only if the method is not defined.
+    Environment& env = Environment::instance();
     MethodEnvironment& menv =  env.get_global_method_env();
     if(!menv.contains(class_name, name))
     {
@@ -55,8 +54,8 @@ void method_class::add_to_local_env()
 {
     assert(!malformed);
     Symbol class_name = idtable.add_string(LOCAL_TYPE);
-    Environment& env = Singleton<Environment>::instance();
-    MethodEnvironment menv = env.get_local_method_env();
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
     vector<Symbol> formal_symbols = extract_formals_type(formals);
     
     // there is no way to detect if whether, this is overriding 
@@ -82,8 +81,8 @@ void method_class::remove_from_local_env()
 {
     assert(!malformed);
     Symbol class_name = idtable.add_string(LOCAL_TYPE);
-    Environment& env = Singleton<Environment>::instance();
-    MethodEnvironment menv = env.get_local_method_env();
+    Environment& env = Environment::instance();
+    MethodEnvironment& menv = env.get_local_method_env();
     menv.remove(class_name, name);
 }
 
@@ -91,7 +90,7 @@ void attr_class::add_to_local_env()
 {
     assert(!malformed);
     // because those are features, no feature shall shadow another one 
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     ObjectEnvironment& oenv = env.get_local_object_env();
     if(oenv.contains(name))
     {
@@ -105,7 +104,7 @@ void attr_class::add_to_local_env()
 void attr_class::remove_from_local_env()
 {
     assert(!malformed);
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     ObjectEnvironment& oenv = env.get_local_object_env();
     oenv.remove(name);
 }
@@ -114,7 +113,7 @@ void formal_class::add_to_local_env()
 {
     assert(!malformed);
     // as long as it is unique within the formals, no other condition applies
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     ObjectEnvironment& oenv = env.get_local_object_env();
     oenv.add(name, type_decl);
 }
@@ -122,7 +121,7 @@ void formal_class::add_to_local_env()
 void formal_class::remove_from_local_env()
 {
     assert(!malformed);
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     ObjectEnvironment& oenv = env.get_local_object_env();
     oenv.remove(name);
 }
@@ -143,8 +142,7 @@ void class__class::sync_global_env()
     for(int i = 0; i < features->len(); i++)
     {
         Feature feature = features->nth(i);
-        if(!feature->is_malformed())
-            features->nth(i)->add_to_global_env(name);
+        features->nth(i)->add_to_global_env(name);
     }
 }
 
@@ -170,7 +168,7 @@ void class__class::sync_local_env()
         }
         else // add to the environment
         {
-            
+            feature->add_to_local_env();
             defined.insert(feature->get_name());
         }
     }
@@ -185,7 +183,9 @@ void class__class::clean_local_env()
 {
     for(int i = 0; i  < features->len(); i++)
     {
-        features->nth(i)->remove_from_local_env();
+        Feature feature = features->nth(i);
+        if(!feature->is_malformed())
+            feature->remove_from_local_env();
     }
 }
 
@@ -201,39 +201,39 @@ void class__class::clean_local_env()
 void Feature_class::raise_error (AnalysisException* excep)
 {
     malformed = true;
-    SemantExceptionHandler& sem_err = Singleton<SemantExceptionHandler>::instance();
+    SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
     sem_err.raise(excep);
 }
 void Formal_class::raise_error (AnalysisException* excep)
 {
     malformed = true;
-    SemantExceptionHandler& sem_err = Singleton<SemantExceptionHandler>::instance();
+    SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
     sem_err.raise(excep);
 }
 
 void method_class::raise_redefinition_error()
 {
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     raise_error(new MethodRedefinitionException(env.current_class, this, name));
 }
 
 void method_class::raise_inconsistent_signature_error()
 {
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     raise_error(new InconsistentSignatureException(env.current_class, this, name)); 
 }
 
 
 void attr_class::raise_redefinition_error()
 {
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     raise_error(new AttributeRedefinitionException(env.current_class, this, name)); 
 }
 
 
 void formal_class::raise_redefinition_error()
 {
-    Environment& env = Singleton<Environment>::instance();
+    Environment& env = Environment::instance();
     raise_error(new AttributeRedefinitionException(env.current_class, this, name));
 }
 //////////////////////

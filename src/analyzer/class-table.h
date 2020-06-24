@@ -3,7 +3,6 @@
 
 #include <unordered_map>
 #include <cool-tree.h>
-#include <singleton.h>
 
 using namespace std;
 
@@ -83,13 +82,17 @@ static void initialize_constants(void)
 
 class ClassTable
 {
-    friend Singleton<ClassTable>;
     private:
         std::unordered_map<Symbol, Class_> classes;
         bool is_init = false;
     protected:
         ClassTable() { }
         ~ClassTable() { }
+        /*delete those methods to avoid unwanted errors */
+        ClassTable(ClassTable const&) = delete;
+        void operator=(ClassTable const&) = delete;
+
+        
 
     private:
         void check_for_invalid_inheritance(Classes classes);
@@ -102,6 +105,14 @@ class ClassTable
         auto end(void) { return  classes.end(); }
         bool contains(Symbol class_) { return classes.find(class_) != classes.end(); };
         Class_ operator[](Symbol sym) { return classes[sym]; }
+        /**
+         * References: https://stackoverflow.com/a/30687399/6548856
+         */
+        static ClassTable& instance()
+        {
+            static ClassTable t;
+            return t;
+        }
 };
 
 
