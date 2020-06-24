@@ -63,6 +63,150 @@ void program_class::semant()
 }
 
 
+/////////////////////////////////////////////////////////////
+//
+// Semant functions for the program children
+//
+//////////////////////////////////////////////////////////////
+
+void class__class::semant()
+{
+
+}
+
+void method_class::semant()
+{
+
+}
+
+void attr_class::semant()
+{
+
+}
+
+void formal_class::semant()
+{
+
+}
+
+void assign_class::semant()
+{
+
+}
+
+void static_dispatch_class::semant()
+{
+
+}
+
+void dispatch_class::semant()
+{
+
+}
+
+void cond_class::semant()
+{
+
+}
+
+void loop_class::semant()
+{
+
+}
+
+void typcase_class::semant()
+{
+
+}
+
+void block_class::semant()
+{
+
+}
+
+void let_class::semant()
+{
+
+}
+
+void plus_class::semant()
+{
+
+}
+
+void sub_class::semant()
+{
+
+}
+
+void mul_class::semant()
+{
+
+}
+
+void divide_class::semant()
+{
+
+}
+
+void neg_class::semant()
+{
+
+}
+
+void lt_class::semant()
+{
+
+}
+
+void eq_class::semant()
+{
+
+}
+void leq_class::semant()
+{
+
+}
+
+void comp_class::semant()
+{
+
+}
+
+void int_const_class::semant()
+{
+
+}
+
+void bool_const_class::semant()
+{
+
+}
+
+void string_const_class::semant()
+{
+
+}
+
+void new__class::semant()
+{
+
+}
+
+void isvoid_class::semant()
+{
+
+}
+
+void no_expr_class::semant()
+{
+
+}
+
+void object_class::semant()
+{
+
+}
 
 //////////////////////////////////////////////////////////////
 //

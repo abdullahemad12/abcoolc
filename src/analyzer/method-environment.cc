@@ -67,3 +67,26 @@ Symbol MethodEnvironment::Signature::get_return_type()
 {
     return ret_type;
 }
+
+bool operator==(MethodSignature& sign, method_class& meth)
+{
+    vector<Symbol> params = sign.get_param_types();
+    Formals formals = meth.get_formals();
+    if((int)params.size() != formals->len())
+        return false;
+    for(unsigned int i = 0; i < params.size(); i++)
+        if(params[i] != formals->nth(i)->get_type_decl())
+            return false;
+    return true;
+}
+bool operator!=(MethodSignature& sign, method_class& meth)
+{
+    vector<Symbol> params = sign.get_param_types();
+    Formals formals = meth.get_formals();
+    if((int)params.size() != formals->len())
+        return true;
+    for(unsigned int i = 0; i < params.size(); i++)
+        if(params[i] != formals->nth(i)->get_type_decl())
+            return true;
+    return false;
+}

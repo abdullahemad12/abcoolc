@@ -39,6 +39,7 @@ class MethodEnvironment
             private:
                 vector<Symbol> params;
                 Symbol ret_type;
+                int counter;
                 Signature(Symbol name, vector<Symbol> params, Symbol ret_type);
             public:
                 vector<Symbol> get_param_types();
@@ -93,6 +94,11 @@ class MethodEnvironment
 };
 
 typedef MethodEnvironment::Signature MethodSignature;
+
+
+// overload method signature equality 
+bool operator==(MethodSignature& sign, method_class& meth);
+bool operator!=(MethodSignature& sign, method_class& meth);
 
 
 #endif /*METHOD_ENVIRONMENT_H*/

@@ -171,7 +171,7 @@ Classes ClassTable::install_basic_classes(Classes classes) {
 }
 
 /*****************************************
- *          H elper functions            *
+ *          Helper functions             *
  *****************************************/
 void inheritance_from_basic_classes_detection(Classes classes)
 {

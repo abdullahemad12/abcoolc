@@ -156,20 +156,20 @@ class UndefinedMethodException : public ScopeException
     }
 };
 
-class attribute_redefinition_exception : public ScopeException
+class AttributeRedefinitionException : public ScopeException
 {
     public:
-    attribute_redefinition_exception(Symbol faulty_class, tree_node* faulty_node, Symbol identifier) : 
+    AttributeRedefinitionException(Symbol faulty_class, tree_node* faulty_node, Symbol identifier) : 
                                      ScopeException(faulty_class, faulty_node)
     {
         SemantException::msg << "attribute " << identifier << "is defined multiple times";
     }
 };
 
-class MethodRedefinition : public ScopeException
+class MethodRedefinitionException : public ScopeException
 {
     public:
-    MethodRedefinition(Symbol faulty_class, tree_node* faulty_node, Symbol method) : 
+    MethodRedefinitionException(Symbol faulty_class, tree_node* faulty_node, Symbol method) : 
                                      ScopeException(faulty_class, faulty_node)
     {
         SemantException::msg << "method " << method << "is defined multiple times";

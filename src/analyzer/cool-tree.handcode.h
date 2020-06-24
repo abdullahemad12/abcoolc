@@ -8,9 +8,12 @@
 #include "tree.h"
 #include "cool.h"
 #include "stringtab.h"
+
 #define yylineno curr_lineno;
 extern int yylineno;
 
+
+class AnalysisException;
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
 inline void dump_Boolean(ostream& stream, int padding, Boolean b)
@@ -65,9 +68,9 @@ virtual Symbol get_parent() = 0;		\
 virtual Features& get_features() = 0;	\
 virtual void dump_with_types(ostream&,int) = 0; \
 virtual void semant() = 0;	\
-virtual void sync_local_env(); \
-virtual void clean_local_env(); \
-virtual void sync_global_env();
+virtual void sync_local_env() = 0; \
+virtual void clean_local_env() = 0; \
+virtual void sync_global_env() = 0;
  
 
 
@@ -77,24 +80,33 @@ Symbol get_name() { return name; }                    \
 Symbol get_parent() { return parent; }                 \
 Features& get_features() { return features; }            \
 void dump_with_types(ostream&,int);                    	\
-void semant();
+void semant();											\
+void sync_local_env(); 						\
+void clean_local_env(); 					\
+void sync_global_env();
 
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 				\
-virtual void add_to_global_env() = 0;							\
+virtual void add_to_global_env(Symbol class_name) = 0;							\
 virtual void add_to_local_env() = 0;							\
 virtual void remove_from_local_env() = 0;						\
-virtual void semant() = 0;
-
-
+virtual void semant() = 0;										\
+virtual Symbol get_name() = 0;									\
+virtual void raise_redefinition_error() = 0;					\
+bool is_malformed() { return malformed; }						\
+protected:														\
+void raise_error(AnalysisException* excep);											\
+bool malformed = false;											
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    \
 void semant(); \
-void add_to_global_env();							\
+void add_to_global_env(Symbol class_name);							\
 void add_to_local_env();							\
-void remove_from_local_env();						
+void remove_from_local_env();						\
+Symbol get_name() { return name; };					\
+void raise_redefinition_error();					\
 
 
 
@@ -104,15 +116,23 @@ void remove_from_local_env();
 virtual void dump_with_types(ostream&,int) = 0;		\
 virtual Symbol get_name(void) = 0;				\
 virtual Symbol get_type_decl(void) = 0;		\
-virtual void semant() = 0;
-
-
+virtual void add_to_local_env() = 0;		\
+virtual void remove_from_local_env() = 0;	\
+virtual void semant() = 0;					\
+bool is_malformed() { return malformed; } 	\
+virtual void raise_redefinition_error() = 0; \
+protected:									\
+void raise_error(AnalysisException* excep);				\
+bool malformed = false;
 
 #define formal_EXTRAS                           \
 void dump_with_types(ostream&,int);				\
 Symbol get_name(void) { return name; }			\
 Symbol get_type_decl(void) { return type_decl; } \
-void semant();
+void add_to_local_env();			 \
+void remove_from_local_env();		 \
+void semant();						\
+void raise_redefinition_error();
 
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \
@@ -138,9 +158,13 @@ void dump_with_types(ostream&,int);  \
 void semant();
 
 #define method_EXTRAS			  \
-Symbol get_name() { return name; } 	  \
 Formals& get_formals() { return formals; } \
 Symbol get_return_type() { return return_type; } \
-Expression& get_expression() { return expr; }
+Expression& get_expression() { return expr; } \
+void raise_inconsistent_signature_error();
+
+#define attr_EXTRAS				\
+Symbol get_type_decl() { return type_decl; }
+
 
 #endif

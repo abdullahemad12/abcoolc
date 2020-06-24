@@ -67,6 +67,7 @@ bool operator!=(Entry& arg1, Entry& arg2)
     return (&arg1 != &arg2) && (strcmp(arg1.get_string(), arg2.get_string()) != 0);
 }
 
+
 // A Symbol is a pointer to an Entry.  Symbols are stored directly
 // as nodes of the abstract syntax tree defined by the cool-tree.aps.
 // The APS package requires that copy and print (called dump) functions

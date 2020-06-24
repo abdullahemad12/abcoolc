@@ -5,7 +5,7 @@
  *)
 
 class A {
-
+   num : Int <- 0;
    var : Int <- 0;
 
    value() : Int { var };

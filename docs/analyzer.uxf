@@ -239,7 +239,7 @@ m1=1</panel_attributes>
     <coordinates>
       <x>1245</x>
       <y>1260</y>
-      <w>585</w>
+      <w>630</w>
       <h>330</h>
     </coordinates>
     <panel_attributes>MethodEnvironment
@@ -249,6 +249,7 @@ Signature
 --
 - params : vector&lt;Symbol&gt;
 - return_type : Symbol
+- counter : int
 --
 - signature(params : Formals, return_type : Symbol)
 + operator==(sign : Signature) : bool
@@ -256,7 +257,7 @@ Signature
 + get_param_types() : vector&lt;Symbol&gt;
 + get_return_type() : Symbol
 innerclass}
-- env : unordered_map&lt;Symbol, unodered_map&lt;Symbol, Signature&gt;&gt;
+- env : unordered_map&lt;Symbol, unodered_map &lt;Symbol, Signature&gt; &gt;
 --
 + add(class_name : Symbol, vector&lt;Symbol&gt; formals, Symbol ret_type) : void
 + remove(class_name : Symbol, fun_name : Symbol) : void
@@ -526,7 +527,7 @@ check_for_invalid_inheritance()</panel_attributes>
     <coordinates>
       <x>1905</x>
       <y>2865</y>
-      <w>255</w>
+      <w>270</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -686,7 +687,7 @@ send_class()</panel_attributes>
     <coordinates>
       <x>2340</x>
       <y>5505</y>
-      <w>360</w>
+      <w>375</w>
       <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -891,7 +892,7 @@ compute_first_occurance()</panel_attributes>
     <coordinates>
       <x>2580</x>
       <y>3030</y>
-      <w>255</w>
+      <w>270</w>
       <h>165</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -903,7 +904,7 @@ construct_graph()</panel_attributes>
     <coordinates>
       <x>1905</x>
       <y>2805</y>
-      <w>270</w>
+      <w>285</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -915,7 +916,7 @@ check_for_redefinition()</panel_attributes>
     <coordinates>
       <x>2580</x>
       <y>3345</y>
-      <w>330</w>
+      <w>345</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
@@ -1696,7 +1697,7 @@ Symbol</panel_attributes>
     <coordinates>
       <x>1545</x>
       <y>4995</y>
-      <w>180</w>
+      <w>195</w>
       <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
