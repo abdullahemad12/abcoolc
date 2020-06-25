@@ -59,6 +59,7 @@ public:
     virtual void dump(ostream& stream, int n) = 0;
     int get_line_number();
     tree_node *set(tree_node *);
+    bool type_check(Symbol given_type, Symbol inferred_type);
 };
 
 ///////////////////////////////////////////////////////////////////

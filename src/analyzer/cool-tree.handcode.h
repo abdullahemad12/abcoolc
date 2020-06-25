@@ -170,4 +170,7 @@ void clean_local_environment();
 Symbol get_type_decl() { return type_decl; }
 
 
+#define assign_EXTRAS \
+bool scope_check();
+
 #endif

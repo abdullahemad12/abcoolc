@@ -1,4 +1,4 @@
-semant.o semant.d : semant.cc semant.h ../../include/analyzer/utilities.h \
+semant.o semant.d : semant.cc ../../include/analyzer/utilities.h \
  ../../include/analyzer/copyright.h ../../include/analyzer/cool-io.h \
  ../../include/analyzer/exceptions.h ../../include/analyzer/tree.h \
  ../../include/analyzer/stringtab.h ../../include/analyzer/list.h \

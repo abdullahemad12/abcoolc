@@ -909,13 +909,15 @@ TEST_CASE("is_derived check")
     Symbol object = idtable.add_string("Object");
     ct.init(classes, object);
 
-    REQUIRE(ct.is_derived(myclass1, myclass2));
-    REQUIRE(ct.is_derived(myclass3, myclass4));
-    REQUIRE(!ct.is_derived(myclass8, myclass9));
-    REQUIRE(!ct.is_derived(myclass5, myclass4));
-    REQUIRE(ct.is_derived(object, myclass4));
-    REQUIRE(ct.is_derived(myclass2, myclass5));
-    REQUIRE(!ct.is_derived(myclass6, myclass8));
+    REQUIRE(ct.is_derived(myclass2, myclass1));
+    REQUIRE(ct.is_derived(myclass4, myclass3));
+    REQUIRE(!ct.is_derived(myclass9, myclass8));
+    REQUIRE(!ct.is_derived(myclass4, myclass5));
+    REQUIRE(ct.is_derived(myclass4, object));
+    REQUIRE(ct.is_derived(myclass5, myclass2));
+    REQUIRE(!ct.is_derived(myclass8, myclass6));
+    REQUIRE(ct.is_derived(myclass6, myclass6));
+
 }
 
 TEST_CASE("get_euler_walk")

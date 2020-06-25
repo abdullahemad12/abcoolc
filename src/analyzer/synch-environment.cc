@@ -1,3 +1,15 @@
+/////////////////////////////////////////////////////////////////////////
+// This class contains functions that adds and remove a 
+// collection of objects and methods to and from the environment
+// It is split into their own methods for the following reasons
+// 1) It is not possible to check duplication when looking for one thing
+//    at a time; espically, when it is possible for the environment to
+//    have duplicates due to shadowing and overriding.
+// 2) The objects and methods being synched must be in the environment
+//    before doing any semantic checks because it is legal to reference 
+//    a feature before it is defined
+//////////////////////////////////////////////////////////////////////////
+
 #include <cool-tree.h>
 #include <environment.h>
 #include <symtab.h>

@@ -108,7 +108,7 @@ Symbol ClassTree::lub(Symbol type1, Symbol type2)
   return node->class_symbol;
 }
 
-bool ClassTree::is_derived(Symbol base, Symbol derived)
+bool ClassTree::is_derived(Symbol derived, Symbol base)
 {
   return lub(base, derived) == base;
 }

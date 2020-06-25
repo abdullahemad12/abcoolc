@@ -31,6 +31,8 @@ void ClassTable::init(Classes classes)
         Class_ cur_class = classes->nth(i);
         this->classes[cur_class->get_name()] = cur_class;
     }
+
+
     is_init = true;
 }
 

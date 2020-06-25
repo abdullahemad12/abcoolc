@@ -142,7 +142,7 @@ class ClassTree
          * @param Symbol the class that is thought to be derived 
          * @returns true if the derived <= base 
          */ 
-        bool is_derived(Symbol base, Symbol derived);
+        bool is_derived(Symbol derived, Symbol base);
 
         /**
           * @brief creates the graph using the given classes

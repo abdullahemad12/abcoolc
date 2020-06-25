@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include "semant.h"
 #include "utilities.h"
 #include <exceptions.h>
 #include <class-table.h>
@@ -17,7 +16,7 @@ extern char *curr_filename;
 // prototypes for helpers 
 void semant_check_classes();
 void terminate_on_errors(void);
-Symbol resolve_type(Symbol sym);
+Symbol resolve_self_type_c(Symbol type);
 
 
 /*   This is the entry point to the semantic checker.
@@ -70,11 +69,14 @@ void program_class::semant()
 //
 //////////////////////////////////////////////////////////////
 
+/**
+  * This method wont sync or clean the local environment unlike the other
+  * semant methods. That is because it does not actually know when to sync
+  * and when it is appropriate to clean. Note also self is bound to this 
+  * class when synching. 
+  */
 void class__class::semant()
 {
-    // this will take care features defined multiple times 
-    sync_local_env();
-
     // analyze the children
     int n = features->len();
     for(int i = 0; i < n; i++)
@@ -98,17 +100,8 @@ void method_class::semant()
 
     expr->semant();
 
-    //check that the return type is valid
-    if(!classtable.contains(resolve_type(return_type)))
-    {
-        sem_error.raise(new UndefinedTypeException(env.current_class, this, return_type));
-    }
-    else
-    {
-        // the type of the function must be
-
-    }
-    
+    // type check 
+    type_check(return_type, expr->type);
 
     // remove formals from object Environment
     clean_local_environment();
@@ -116,17 +109,34 @@ void method_class::semant()
 
 void attr_class::semant()
 {
-
+    init->semant();
+    type_check(type_decl, init->type);   
 }
 
 void formal_class::semant()
 {
+    if(type_decl == SELF_TYPE)
+    {
+        SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
+        Environment& env = Environment::instance();
+        sem_err.raise(new SelfTypeAsArgumentException(env.current_class, this));
+        return;
+    }
 
+    // we only need to know if the type 
+    // references a defined method
+    type_check(type_decl, type_decl);
 }
 
 void assign_class::semant()
-{
-
+{   
+    expr->semant();
+    if(scope_check())
+    {
+        Environment& env = Environment::instance();
+        Symbol type = env.lookup_local_object(name);
+        type_check(type, expr->type);
+    }
 }
 
 void static_dispatch_class::semant()
@@ -243,6 +253,51 @@ void object_class::semant()
 
 }
 
+
+
+//////////////////////////////////////////////////////////////
+//
+// Scope and Type checking
+//
+//////////////////////////////////////////////////////////////
+
+bool assign_class::scope_check()
+{
+    Environment& env = Environment::instance();
+    SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
+    if(!env.contains_local_object(name))
+    {
+        sem_err.raise(new UndefinedAttributeException(env.current_class, this, name));
+        return false;
+    }
+    return true;
+}
+bool tree_node::type_check(Symbol given_type, Symbol inferred_type)
+{
+    // this is common with declaration without intialization
+    if(inferred_type == No_type)
+    {
+        return true;
+    }
+
+    Environment& env = Environment::instance();
+    ClassTable& class_table = ClassTable::instance();
+    ClassTree& class_tree = ClassTree::instance();
+    SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
+    given_type = resolve_self_type_c(given_type);
+    inferred_type = resolve_self_type_c(inferred_type);
+    if(!class_table.contains(given_type))
+    {
+        sem_err.raise(new UndefinedTypeException(env.current_class, this, given_type));
+        return false;
+    }
+    if(!class_tree.is_derived(inferred_type, given_type))
+    {
+        sem_err.raise(new TypeMismathcException(env.current_class, this,  inferred_type, given_type));
+        return false;
+    }
+    return true;
+}
 //////////////////////////////////////////////////////////////
 //
 // Helpers for the semant methods
@@ -285,7 +340,12 @@ void semant_check_classes()
         {
             assert(class_table.contains(class_name));
             Class_ cur_class = class_table[class_name];
+            
+            // this will take care features defined multiple times 
+            cur_class->sync_local_env();
+            
             cur_class->semant();
+            
             visited.insert(class_name);
         }
     }
@@ -297,11 +357,15 @@ void terminate_on_errors(void)
 	exit(1);
 }
 
-// must be used on symbols before comparing, or using their type
-Symbol resolve_type(Symbol sym)
+
+Symbol resolve_self_type_c(Symbol type)
 {
     Environment& env = Environment::instance();
-    if(sym == SELF_TYPE)
+    if(type == SELF_TYPE)
+    {
         return env.current_class;
-    return sym;
+    }
+    return type;
 }
+
+
