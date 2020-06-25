@@ -48,6 +48,7 @@ class MethodEnvironment
         class Signature 
         {
             friend class MethodEnvironment;
+            friend class Environment;
             private:
                 vector<Symbol> params;
                 Symbol ret_type;
@@ -66,8 +67,6 @@ class MethodEnvironment
         /*delete those methods to avoid unwanted errors */
         MethodEnvironment(MethodEnvironment const&) = delete;
         void operator=(MethodEnvironment const&) = delete;
-      public:
-
 
         /**
           * @brief adds a method signature to the given class
@@ -96,7 +95,7 @@ class MethodEnvironment
           * @return the method signature, or NULL if no matching method
           * @note   DO NOT delete the method returned signature
           */   
-        Signature& lookup(Symbol class_name, Symbol fun_name); 
+        Signature lookup(Symbol class_name, Symbol fun_name); 
 
         /**
           * @brief checks if the environment contains a given method in a given class

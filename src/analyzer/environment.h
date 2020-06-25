@@ -14,6 +14,9 @@
 #include <method-environment.h>
 #include <object-environment.h>
 #include <symtab.h>
+#include <vector>
+
+using namespace std;
 
 class Environment
 {
@@ -28,12 +31,24 @@ class Environment
     private:
         MethodEnvironment local_method_env;
         ObjectEnvironment local_object_env;
-        MethodEnvironment global_object_env;
+        MethodEnvironment global_method_env;
+        Symbol resolve_type(Symbol type);
+        void resolve_signature_type(MethodSignature& sign);
     public:
         Symbol current_class;
-        MethodEnvironment& get_local_method_env() { return local_method_env; }
-        ObjectEnvironment& get_local_object_env() { return local_object_env; }
-        MethodEnvironment& get_global_method_env() { return global_object_env; }
+        void add_local(Symbol name, Symbol type);
+        void add_local(Symbol class_name, Symbol name, vector<Symbol> formals, Symbol return_type);
+        void add_global(Symbol class_name, Symbol name, vector<Symbol> formals, Symbol return_type);
+        void remove_local_method(Symbol class_name, Symbol name);
+        void remove_global_method(Symbol class_name, Symbol name);
+        void remove_local_object(Symbol name);
+        bool contains_local_object(Symbol name);
+        bool contains_local_method(Symbol class_name, Symbol name);
+        bool contains_global_method(Symbol class_name, Symbol name);
+        Symbol lookup_local_object(Symbol name);
+        MethodEnvironment::Signature lookup_local_method(Symbol class_name, Symbol name);
+        MethodEnvironment::Signature lookup_global_method(Symbol class_name, Symbol name);
+
         /**
          * References: https://stackoverflow.com/a/30687399/6548856
          */

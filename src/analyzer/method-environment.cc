@@ -29,7 +29,7 @@ void MethodEnvironment::remove(Symbol class_name, Symbol method_name)
         env[class_name].erase(method_name);
 }
 
-MethodEnvironment::Signature& MethodEnvironment::lookup(Symbol class_name, Symbol method_name)
+MethodEnvironment::Signature MethodEnvironment::lookup(Symbol class_name, Symbol method_name)
 {
     /*must check that the class is defined before calling this method*/
     assert(env.find(class_name) != env.end());

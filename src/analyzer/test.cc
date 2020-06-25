@@ -48,6 +48,22 @@ class ObjectEnvironmentWrapper : public ObjectEnvironment
     public:
         ObjectEnvironmentWrapper() { }
         ~ObjectEnvironmentWrapper() { }
+        void add(Symbol name, Symbol type)        
+        {
+            ObjectEnvironment::add(name, type);
+        }
+        void remove(Symbol name)
+        {
+            ObjectEnvironment::remove(name);
+        }
+        bool contains(Symbol name)
+        {
+            return ObjectEnvironment::contains(name);
+        }
+        Symbol lookup(Symbol name)
+        {
+            return ObjectEnvironment::lookup(name);
+        }
 };
 
 class MethodEnvironmentWrapper : public MethodEnvironment
@@ -55,7 +71,22 @@ class MethodEnvironmentWrapper : public MethodEnvironment
     public:
         MethodEnvironmentWrapper() { }
         ~MethodEnvironmentWrapper() { }
-
+        void add(Symbol class_name, Symbol name, vector<Symbol> params, Symbol return_type)        
+        {
+            MethodEnvironment::add(class_name, name, params, return_type);
+        }
+        void remove(Symbol class_name, Symbol name)
+        {
+            MethodEnvironment::remove(class_name, name);
+        }
+        bool contains(Symbol class_name, Symbol name)
+        {
+            return MethodEnvironment::contains(class_name, name);
+        }
+        MethodSignature lookup(Symbol class_name, Symbol name)
+        {
+            return MethodEnvironment::lookup(class_name, name);
+        }
 };
 
 /*************************************************
@@ -744,7 +775,7 @@ TEST_CASE("Method Environment")
     }
     for(unsigned int i = 0; i < methods.size(); i++)
     {
-        MethodEnvironment::Signature& sig = env.lookup(classes_of_ith_method[i], methods[i].first);
+        MethodEnvironment::Signature sig = env.lookup(classes_of_ith_method[i], methods[i].first);
         REQUIRE(sig.get_param_types() == methods[i].second);
         REQUIRE(sig.get_return_type() == ret_type_of_ith_method[i]);
     }
@@ -772,7 +803,7 @@ TEST_CASE("Multiple insertions in Method environment")
         Symbol return_type = idtable.add_string("Return_type");
         env.add(myclass, method, formals, return_type);
         REQUIRE(env.contains(myclass, method));
-        MethodEnvironment::Signature& sign = env.lookup(myclass, method);
+        MethodEnvironment::Signature sign = env.lookup(myclass, method);
         REQUIRE(sign.get_param_types() == formals);
         REQUIRE(sign.get_return_type() == return_type);
     }
@@ -788,7 +819,7 @@ TEST_CASE("Multiple insertions in Method environment")
         Symbol return_type = idtable.add_string("Return_type");
         env.remove(myclass, method);
         REQUIRE(env.contains(myclass, method));
-        MethodEnvironment::Signature& sign = env.lookup(myclass, method);
+        MethodEnvironment::Signature sign = env.lookup(myclass, method);
         REQUIRE(sign.get_param_types() == formals);
         REQUIRE(sign.get_return_type() == return_type);
     }
@@ -860,6 +891,31 @@ TEST_CASE("LUB Operation")
 
     sym = ct.lub(myclass7, myclass1);
     REQUIRE(sym == myclass1);
+}
+TEST_CASE("is_derived check")
+{
+    Classes classes = create_valid_graph();
+    ClassTreeWrapper ct;
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string("myclass9");
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol object = idtable.add_string("Object");
+    ct.init(classes, object);
+
+    REQUIRE(ct.is_derived(myclass1, myclass2));
+    REQUIRE(ct.is_derived(myclass3, myclass4));
+    REQUIRE(!ct.is_derived(myclass8, myclass9));
+    REQUIRE(!ct.is_derived(myclass5, myclass4));
+    REQUIRE(ct.is_derived(object, myclass4));
+    REQUIRE(ct.is_derived(myclass2, myclass5));
+    REQUIRE(!ct.is_derived(myclass6, myclass8));
 }
 
 TEST_CASE("get_euler_walk")
@@ -1261,17 +1317,16 @@ TEST_CASE("method_class::add_to_global_env test1")
     method->add_to_global_env(class_name);
 
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_global_method_env();
 
-    REQUIRE(menv.contains(class_name, method->get_name()));
-    MethodEnvironment::Signature& sign = menv.lookup(class_name, method->get_name());
+    REQUIRE(env.contains_global_method(class_name, method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_global_method(class_name, method->get_name());
 
     // not good style but I need to assert this 
     REQUIRE((sign ==  *((method_class*) method)));
 
-    menv.remove(class_name, method->get_name());
+    env.remove_global_method(class_name, method->get_name());
 
-    REQUIRE(!menv.contains(class_name, method->get_name()));
+    REQUIRE(!env.contains_global_method(class_name, method->get_name()));
 
 }
 
@@ -1280,21 +1335,20 @@ TEST_CASE("method_class::add_to_global_env test2")
     // tons of memory leaks :(
     int t = 100;
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_global_method_env();
     for(int i = 0; i < t; i++)
     {
         Symbol class_name = idtable.add_string("Class_name");
         Feature method = create_method1();
         method->add_to_global_env(class_name);
-        REQUIRE(menv.contains(class_name, method->get_name()));
+        REQUIRE(env.contains_global_method(class_name, method->get_name()));
     }
     Symbol class_name = idtable.add_string("Class_name");
     Feature method = create_method1();
-    menv.remove(class_name, method->get_name());
-    if(menv.contains(class_name, method->get_name()))
+    env.remove_global_method(class_name, method->get_name());
+    if(env.contains_global_method(class_name, method->get_name()))
     {
-        while(menv.contains(class_name, method->get_name()))
-            menv.remove(class_name, method->get_name());
+        while(env.contains_global_method(class_name, method->get_name()))
+            env.remove_global_method(class_name, method->get_name());
         // do this to for the other tests to work correctly
         REQUIRE(false);
     }
@@ -1307,17 +1361,16 @@ TEST_CASE("method_class::add_to_local_env1")
     method->add_to_local_env();
 
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
 
-    REQUIRE(menv.contains(class_name, method->get_name()));
-    MethodEnvironment::Signature& sign = menv.lookup(class_name, method->get_name());
+    REQUIRE(env.contains_local_method(class_name, method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_local_method(class_name, method->get_name());
 
     // not good style but I need to assert this 
     REQUIRE((sign ==  *((method_class*) method)));
 
-    menv.remove(class_name, method->get_name());
+    env.remove_local_method(class_name, method->get_name());
 
-    REQUIRE(!menv.contains(class_name, method->get_name()));
+    REQUIRE(!env.contains_local_method(class_name, method->get_name()));
 }
 
 TEST_CASE("method_class::add_to_local_env2")
@@ -1333,14 +1386,13 @@ TEST_CASE("method_class::add_to_local_env2")
         method_copy->add_to_local_env();
     }
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
     for(int i = 0; i < t; i++)
     {
-        menv.remove(class_name, method->get_name());
-        REQUIRE(menv.contains(class_name, method->get_name()));
+        env.remove_local_method(class_name, method->get_name());
+        REQUIRE(env.contains_local_method(class_name, method->get_name()));
     }
-    menv.remove(class_name, method->get_name());
-    REQUIRE(!menv.contains(class_name, method->get_name()));
+    env.remove_local_method(class_name, method->get_name());
+    REQUIRE(!env.contains_local_method(class_name, method->get_name()));
 
 }
 
@@ -1351,17 +1403,16 @@ TEST_CASE("method_class::add_to_local_env3")
     method->add_to_local_env();
 
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
 
-    REQUIRE(menv.contains(class_name, method->get_name()));
-    MethodEnvironment::Signature& sign = menv.lookup(class_name, method->get_name());
+    REQUIRE(env.contains_local_method(class_name, method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_local_method(class_name, method->get_name());
 
     // not good style but I need to assert this 
     REQUIRE((sign ==  *((method_class*) method)));
 
-    menv.remove(class_name, method->get_name());
+    env.remove_local_method(class_name, method->get_name());
 
-    REQUIRE(!menv.contains(class_name, method->get_name()));
+    REQUIRE(!env.contains_local_method(class_name, method->get_name()));
 }
 
 
@@ -1384,10 +1435,9 @@ TEST_CASE("Invalid method_class::add_to_local_env4")
     method2->add_to_local_env();
     
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
     
-    menv.remove(class_name, method1->get_name());
-    REQUIRE(!menv.contains(class_name, method1->get_name()));
+    env.remove_local_method(class_name, method1->get_name());
+    REQUIRE(!env.contains_local_method(class_name, method1->get_name()));
 
     vector<SemantException*> exceptions_after;
     for(SemantException* excep : sem_error)
@@ -1407,10 +1457,9 @@ TEST_CASE("method_class::remove_from_local_env")
     method1->add_to_local_env();
 
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
-    REQUIRE(menv.contains(class_name, method1->get_name()));
+    REQUIRE(env.contains_local_method(class_name, method1->get_name()));
     method1->remove_from_local_env();
-    REQUIRE(!menv.contains(class_name, method1->get_name()));
+    REQUIRE(!env.contains_local_method(class_name, method1->get_name()));
 
 }
 
@@ -1432,17 +1481,16 @@ TEST_CASE("attribute::add_to_local_env")
     fattr2->add_to_local_env();
 
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
 
-    REQUIRE(oenv.contains(attr1));
+    REQUIRE(env.contains_local_object(attr1));
 
-    oenv.remove(attr1);
+    env.remove_local_object(attr1);
 
-    REQUIRE(oenv.contains(attr2));
+    REQUIRE(env.contains_local_object(attr2));
 
-    oenv.remove(attr2);
+    env.remove_local_object(attr2);
 
-    REQUIRE(!oenv.contains(attr2));
+    REQUIRE(!env.contains_local_object(attr2));
 
 
     vector<SemantException*> exceptions_after;
@@ -1472,13 +1520,12 @@ TEST_CASE("Invalid attribute::add_to_local_env")
     fattr2->add_to_local_env();
 
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
 
-    REQUIRE(oenv.contains(attr1));
+    REQUIRE(env.contains_local_object(attr1));
 
-    oenv.remove(attr1);
+    env.remove_local_object(attr1);
 
-    REQUIRE(!oenv.contains(attr2));
+    REQUIRE(!env.contains_local_object(attr2));
 
     REQUIRE(!fattr1->is_malformed());
     REQUIRE(fattr2->is_malformed());
@@ -1534,20 +1581,19 @@ TEST_CASE("Sync_local_environment1")
 
     Environment& env = Environment::instance();
 
-    MethodEnvironment& menv = env.get_local_method_env();
-    ObjectEnvironment& oenv = env.get_local_object_env();
+
     Symbol local_class = idtable.add_string(LOCAL_TYPE);
-    REQUIRE(menv.contains(local_class, method->get_name()));
-    REQUIRE(oenv.contains(attr1));
-    REQUIRE(oenv.contains(attr2));
+    REQUIRE(env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(env.contains_local_object(attr1));
+    REQUIRE(env.contains_local_object(attr2));
     REQUIRE(!method->is_malformed());
     REQUIRE(!fattr1->is_malformed());
     REQUIRE(!fattr2->is_malformed());
 
     class__->clean_local_env();
-    REQUIRE(!menv.contains(local_class, method->get_name()));
-    REQUIRE(!oenv.contains(attr1));
-    REQUIRE(!oenv.contains(attr2));
+    REQUIRE(!env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(!env.contains_local_object(attr1));
+    REQUIRE(!env.contains_local_object(attr2));
 }
 
 TEST_CASE("Sync_local_environment2")
@@ -1588,19 +1634,18 @@ TEST_CASE("Sync_local_environment2")
     
     REQUIRE(exceptions_after != exceptions_before);
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
-    ObjectEnvironment& oenv = env.get_local_object_env();
+
 
     Symbol local_class = idtable.add_string(LOCAL_TYPE);
-    REQUIRE(menv.contains(local_class, method->get_name()));
-    REQUIRE(oenv.contains(attr1));
+    REQUIRE(env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(env.contains_local_object(attr1));
     REQUIRE(!method->is_malformed());
     REQUIRE(!fattr1->is_malformed());
     REQUIRE(fattr2->is_malformed());
     
     class__->clean_local_env();
-    REQUIRE(!menv.contains(local_class, method->get_name()));
-    REQUIRE(!oenv.contains(attr1));
+    REQUIRE(!env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(!env.contains_local_object(attr1));
 }
 
 
@@ -1613,12 +1658,13 @@ TEST_CASE("Method::synch_local_environment1")
     Symbol id3 = idtable.add_string("id3");
     Symbol id4 = idtable.add_string("id4");
     Symbol id5 = idtable.add_string("id5");
+    Symbol self = idtable.add_string("self");
     Symbol type1 = idtable.add_string("Type1");
     Symbol type2 = idtable.add_string("Type2");
     Symbol type3 = idtable.add_string("Type1");
     Symbol type4 = idtable.add_string("Type3");
     Symbol type5 = idtable.add_string("Type3");
-
+    
     Formal formal1 = formal(id1, type1);
     Formal formal2 = formal(id2, type2);
     Formal formal3 = formal(id3, type3);
@@ -1657,29 +1703,33 @@ TEST_CASE("Method::synch_local_environment1")
     REQUIRE(exceptions_before == exceptions_after);
 
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
-    REQUIRE(oenv.contains(id1));
-    REQUIRE(oenv.contains(id2));
-    REQUIRE(oenv.contains(id3));
-    REQUIRE(oenv.contains(id4));
-    REQUIRE(oenv.contains(id5));
+    REQUIRE(env.contains_local_object(id1));
+    REQUIRE(env.contains_local_object(id2));
+    REQUIRE(env.contains_local_object(id3));
+    REQUIRE(env.contains_local_object(id4));
+    REQUIRE(env.contains_local_object(id5));
+    REQUIRE(env.contains_local_object(self));
 
-    REQUIRE(oenv.lookup(id1) == type1);
-    REQUIRE(oenv.lookup(id2) == type2);
-    REQUIRE(oenv.lookup(id3) == type3);
-    REQUIRE(oenv.lookup(id4) == type4);
-    REQUIRE(oenv.lookup(id5) == type5);
+    REQUIRE(env.lookup_local_object(id1) == type1);
+    REQUIRE(env.lookup_local_object(id2) == type2);
+    REQUIRE(env.lookup_local_object(id3) == type3);
+    REQUIRE(env.lookup_local_object(id4) == type4);
+    REQUIRE(env.lookup_local_object(id5) == type5);
+    REQUIRE(env.lookup_local_object(self) == env.current_class);
 
-    oenv.remove(id1);
-    oenv.remove(id2);
-    oenv.remove(id3);
-    oenv.remove(id4);
-    oenv.remove(id5);
-    REQUIRE(!oenv.contains(id1));
-    REQUIRE(!oenv.contains(id2));
-    REQUIRE(!oenv.contains(id3));
-    REQUIRE(!oenv.contains(id4));
-    REQUIRE(!oenv.contains(id5));
+    env.remove_local_object(id1);
+    env.remove_local_object(id2);
+    env.remove_local_object(id3);
+    env.remove_local_object(id4);
+    env.remove_local_object(id5);
+    env.remove_local_object(self);
+
+    REQUIRE(!env.contains_local_object(id1));
+    REQUIRE(!env.contains_local_object(id2));
+    REQUIRE(!env.contains_local_object(id3));
+    REQUIRE(!env.contains_local_object(id4));
+    REQUIRE(!env.contains_local_object(id5));
+    REQUIRE(!env.contains_local_object(self));
 
     REQUIRE(!formal2->is_malformed());
     REQUIRE(!formal4->is_malformed());
@@ -1703,6 +1753,7 @@ TEST_CASE("Method::synch_local_environment2")
     Symbol type3 = idtable.add_string("Type1");
     Symbol type4 = idtable.add_string("Type3");
     Symbol type5 = idtable.add_string("Type3");
+    Symbol self = idtable.add_string("self");
 
     Formal formal1 = formal(id1, type1);
     Formal formal2 = formal(id2, type2);
@@ -1741,23 +1792,26 @@ TEST_CASE("Method::synch_local_environment2")
     REQUIRE(exceptions_before.size() == exceptions_after.size() - 2);
 
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
-    REQUIRE(oenv.contains(id1));
-    REQUIRE(oenv.contains(id3));
-    REQUIRE(oenv.contains(id5));
+    REQUIRE(env.contains_local_object(id1));
+    REQUIRE(env.contains_local_object(id3));
+    REQUIRE(env.contains_local_object(id5));
+    REQUIRE(env.contains_local_object(self));
 
-    REQUIRE(oenv.lookup(id1) == type1);
-    REQUIRE(oenv.lookup(id3) == type3);
-    REQUIRE(oenv.lookup(id5) == type5);
+    REQUIRE(env.lookup_local_object(id1) == type1);
+    REQUIRE(env.lookup_local_object(id3) == type3);
+    REQUIRE(env.lookup_local_object(id5) == type5);
+    REQUIRE(env.lookup_local_object(self) == env.current_class);
 
-    oenv.remove(id1);
-    oenv.remove(id3);
-    oenv.remove(id5);
-    REQUIRE(!oenv.contains(id1));
-    REQUIRE(!oenv.contains(id2));
-    REQUIRE(!oenv.contains(id3));
-    REQUIRE(!oenv.contains(id4));
-    REQUIRE(!oenv.contains(id5));
+    env.remove_local_object(id1);
+    env.remove_local_object(id3);
+    env.remove_local_object(id5);
+    env.remove_local_object(self);
+
+    REQUIRE(!env.contains_local_object(id1));
+    REQUIRE(!env.contains_local_object(id2));
+    REQUIRE(!env.contains_local_object(id3));
+    REQUIRE(!env.contains_local_object(id4));
+    REQUIRE(!env.contains_local_object(id5));
     REQUIRE(formal2->is_malformed());
     REQUIRE(formal4->is_malformed());
     REQUIRE(!formal1->is_malformed());
@@ -1780,6 +1834,7 @@ TEST_CASE("Method::clean_local_environment3")
     Symbol type3 = idtable.add_string("Type1");
     Symbol type4 = idtable.add_string("Type3");
     Symbol type5 = idtable.add_string("Type3");
+    Symbol self = idtable.add_string("self");
 
     Formal formal1 = formal(id1, type1);
     Formal formal2 = formal(id2, type2);
@@ -1806,13 +1861,13 @@ TEST_CASE("Method::clean_local_environment3")
 
 
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
 
     meth->clean_local_environment();
 
-    REQUIRE(!oenv.contains(id1));
-    REQUIRE(!oenv.contains(id2));
-    REQUIRE(!oenv.contains(id3));
-    REQUIRE(!oenv.contains(id4));
-    REQUIRE(!oenv.contains(id5));
+    REQUIRE(!env.contains_local_object(id1));
+    REQUIRE(!env.contains_local_object(id2));
+    REQUIRE(!env.contains_local_object(id3));
+    REQUIRE(!env.contains_local_object(id4));
+    REQUIRE(!env.contains_local_object(id5));
+    REQUIRE(!env.contains_local_object(self));
 }

@@ -51,8 +51,6 @@ int SemantExceptionHandler::report_all(void)
 
 void SemantExceptionHandler::report_one(Classes classes, GraphException& exp)
 {
-
-    ClassTable& classtable = ClassTable::instance();
     Symbol class_name = exp.get_faulty_class();
     int n = 0;
     for(int i = 0; i < n; i++)

@@ -48,42 +48,40 @@ class  ObjectEnvironment{
         /*delete those methods to avoid unwanted errors */
         ObjectEnvironment(ObjectEnvironment const&) = delete;
         void operator=(ObjectEnvironment const&) = delete;
-    public:
-
-    /**
-      * @brief adds a (identifier, type) pair to the environment 
-      * @modifies: this 
-      * @param Symbol the identifier symbol from idtable
-      * @param Symbol the type of the identifier from idtable
-     */ 
-    void add(Symbol id, Symbol type);
-
-    /**
-      * @brief removes one (identifier, type) entry from the environment
-      *          in FIFO order
-      * @modifies: this
-      * @param Symbol the identifier symbol from the idtable 
-      */
-    void remove(Symbol id);
-
-    /**
-      * @brief looks up the type from the symbol table by id. if the 
-      *          same id has more than one type, the most recently
-      *          added one is returned. 
-      * @param Symbol the identifier symbol from the idtable 
-      * @requires: id to be in the environment (bug otherwise)  
-      * @returns the most recently added type symbol, or NULL if no 
-      *          entry for identifier was found
+      /**
+        * @brief adds a (identifier, type) pair to the environment 
+        * @modifies: this 
+        * @param Symbol the identifier symbol from idtable
+        * @param Symbol the type of the identifier from idtable
       */ 
-    Symbol lookup(Symbol id);
+      void add(Symbol id, Symbol type);
 
-    /**
-      * @brief: checks if the there exists at least one entry
-      *          for the given identifier
-      * @param Symbol the identifier symbol from the idtable 
-      * @returns true if at least one entry was found
-      */
-     bool contains(Symbol id);
+      /**
+        * @brief removes one (identifier, type) entry from the environment
+        *          in FIFO order
+        * @modifies: this
+        * @param Symbol the identifier symbol from the idtable 
+        */
+      void remove(Symbol id);
+
+      /**
+        * @brief looks up the type from the symbol table by id. if the 
+        *          same id has more than one type, the most recently
+        *          added one is returned. 
+        * @param Symbol the identifier symbol from the idtable 
+        * @requires: id to be in the environment (bug otherwise)  
+        * @returns the most recently added type symbol, or NULL if no 
+        *          entry for identifier was found
+        */ 
+      Symbol lookup(Symbol id);
+
+      /**
+        * @brief: checks if the there exists at least one entry
+        *          for the given identifier
+        * @param Symbol the identifier symbol from the idtable 
+        * @returns true if at least one entry was found
+        */
+      bool contains(Symbol id);
 
 };
 

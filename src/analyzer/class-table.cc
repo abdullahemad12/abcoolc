@@ -9,7 +9,7 @@
 // prototypes
 void inheritance_from_basic_classes_detection(Classes classes);
 void inheritance_from_undefined_class(Classes classes);
-void inheritance_from_self_type(Classes classes);
+void misuse_of_self_type(Classes classes);
 void redefinition_of_classes_detection(Classes classes);
 void redefinition_of_basic_classes_detection(Classes classes);
 
@@ -20,6 +20,7 @@ void ClassTable::init(Classes classes)
     initialize_constants();
     // before installing basic classes there better 
     // be no definitions for them
+    misuse_of_self_type(classes);
     check_for_invalid_definitions(classes);
     classes = install_basic_classes(classes);
     check_for_invalid_inheritance(classes);
@@ -207,6 +208,23 @@ void inheritance_from_undefined_class(Classes classes)
         if(!MAP_CONTAINS(classes_symbols, parent))
         {
             throw UndefinedClassException(cur_class->get_name(), parent);
+        }
+    }
+}
+
+void misuse_of_self_type(Classes classes)
+{
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Class_ class_ = classes->nth(i);
+        if(class_->get_name() == SELF_TYPE)
+        {
+            throw new SelfTypeClassDeclarationException(class_->get_name());
+        }
+        if(class_->get_name() == SELF_TYPE)
+        {
+            throw new SelfTypeInheritanceException(class_->get_name());
         }
     }
 }

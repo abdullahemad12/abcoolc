@@ -17,6 +17,7 @@ extern char *curr_filename;
 // prototypes for helpers 
 void semant_check_classes();
 void terminate_on_errors(void);
+Symbol resolve_type(Symbol sym);
 
 
 /*   This is the entry point to the semantic checker.
@@ -87,8 +88,6 @@ void method_class::semant()
     SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
     Environment& env = Environment::instance();
 
-
-    
     // add formals to ObjectEnvironment
     sync_local_environment();
 
@@ -100,13 +99,14 @@ void method_class::semant()
     expr->semant();
 
     //check that the return type is valid
-    if(!classtable.contains(return_type))
+    if(!classtable.contains(resolve_type(return_type)))
     {
         sem_error.raise(new UndefinedTypeException(env.current_class, this, return_type));
     }
     else
     {
-        // the type of the function must be 
+        // the type of the function must be
+
     }
     
 
@@ -295,4 +295,13 @@ void terminate_on_errors(void)
 {
     cerr << "Compilation halted due to static semantic errors." << endl;
 	exit(1);
+}
+
+// must be used on symbols before comparing, or using their type
+Symbol resolve_type(Symbol sym)
+{
+    Environment& env = Environment::instance();
+    if(sym == SELF_TYPE)
+        return env.current_class;
+    return sym;
 }

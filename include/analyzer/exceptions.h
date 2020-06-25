@@ -99,7 +99,7 @@ class SelfTypeInheritanceException : public GraphException
         }
 };
 
-SelfTypeClassDeclarationException : public GraphException
+class SelfTypeClassDeclarationException : public GraphException
 {
     public: 
         SelfTypeClassDeclarationException(Symbol faulty_class) : GraphException(faulty_class)

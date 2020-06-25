@@ -135,6 +135,16 @@ class ClassTree
 
 
         /**
+         * @brief checks if the given base class is a parent of the given derived
+         *        class. That is derived <= base
+         * @requires: the given two class to the defined in the ClassTree
+         * @param Symbol the base class 
+         * @param Symbol the class that is thought to be derived 
+         * @returns true if the derived <= base 
+         */ 
+        bool is_derived(Symbol base, Symbol derived);
+
+        /**
           * @brief creates the graph using the given classes
           * @requires: classtable to be initialized 
           * @modifies: this

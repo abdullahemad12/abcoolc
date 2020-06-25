@@ -25,11 +25,10 @@ void method_class::add_to_global_env(Symbol class_name)
 {
     // insert only if the method is not defined.
     Environment& env = Environment::instance();
-    MethodEnvironment& menv =  env.get_global_method_env();
-    if(!menv.contains(class_name, name))
+    if(!env.contains_global_method(class_name, name))
     {
         vector<Symbol> formal_symbols = extract_formals_type(formals);
-        menv.add(class_name, name, formal_symbols, return_type);
+        env.add_global(class_name, name, formal_symbols, return_type);
     }
 }
 
@@ -55,25 +54,24 @@ void method_class::add_to_local_env()
     assert(!malformed);
     Symbol class_name = idtable.add_string(LOCAL_TYPE);
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
     vector<Symbol> formal_symbols = extract_formals_type(formals);
     
     // there is no way to detect if whether, this is overriding 
     // or redefinition. Hence, This is left to the caller to assert
     // however, if this exists, then the signatures must be identical
-    if(!menv.contains(class_name, name))
+    if(!env.contains_local_method(class_name, name))
     {
-        menv.add(class_name, name, formal_symbols, return_type);
+        env.add_local(class_name, name, formal_symbols, return_type);
     }
     else 
     {
-        MethodEnvironment::Signature& sign = menv.lookup(class_name, name);
+        MethodEnvironment::Signature sign = env.lookup_local_method(class_name, name);
         if(sign != *this) // the != operator is overloaded
         {
             raise_inconsistent_signature_error();
             return;
         }
-        menv.add(class_name, name, formal_symbols, return_type); 
+        env.add_local(class_name, name, formal_symbols, return_type); 
     }
 }
 
@@ -82,8 +80,7 @@ void method_class::remove_from_local_env()
     assert(!malformed);
     Symbol class_name = idtable.add_string(LOCAL_TYPE);
     Environment& env = Environment::instance();
-    MethodEnvironment& menv = env.get_local_method_env();
-    menv.remove(class_name, name);
+    env.remove_local_method(class_name, name);
 }
 
 void attr_class::add_to_local_env()
@@ -91,13 +88,12 @@ void attr_class::add_to_local_env()
     assert(!malformed);
     // because those are features, no feature shall shadow another one 
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
-    if(oenv.contains(name))
+    if(env.contains_local_object(name))
     {
         raise_redefinition_error();
         return;
     }
-    oenv.add(name, type_decl);
+    env.add_local(name, type_decl);
   
 }
 
@@ -105,8 +101,7 @@ void attr_class::remove_from_local_env()
 {
     assert(!malformed);
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
-    oenv.remove(name);
+    env.remove_local_object(name);
 }
 
 void formal_class::add_to_local_env()
@@ -114,16 +109,14 @@ void formal_class::add_to_local_env()
     assert(!malformed);
     // as long as it is unique within the formals, no other condition applies
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
-    oenv.add(name, type_decl);
+    env.add_local(name, type_decl);
 }
 
 void formal_class::remove_from_local_env()
 {
     assert(!malformed);
     Environment& env = Environment::instance();
-    ObjectEnvironment& oenv = env.get_local_object_env();
-    oenv.remove(name);
+    env.remove_local_object(name);
 }
 
 
@@ -134,7 +127,7 @@ void formal_class::remove_from_local_env()
 ////////////////////////////////////////
 void method_class::sync_local_environment()
 {
-    ObjectEnvironment& oenv = Environment::instance().get_local_object_env();
+    Environment& env = Environment::instance();
     unordered_set<Symbol> defined;
     int n = formals->len();
     for(int i = 0; i < n; i++)
@@ -146,22 +139,29 @@ void method_class::sync_local_environment()
         }
         else
         {
-            oenv.add(formal->get_name(), formal->get_type_decl());
+            env.add_local(formal->get_name(), formal->get_type_decl());
             defined.insert(formal->get_name());
         }
     }
+
+    // add self to the environment
+    Symbol self = idtable.add_string("self");
+    assert(!env.contains_local_object(self));
+    env.add_local(self, env.current_class);
 }
 
 void method_class::clean_local_environment()
 {
-    ObjectEnvironment& oenv = Environment::instance().get_local_object_env();
+    Environment& env = Environment::instance();
     int n = formals->len();
     for(int i = 0; i < n; i++)
     {
         Formal formal = formals->nth(i);
         if(!formal->is_malformed())
-            oenv.remove(formal->get_name());
+            env.remove_local_object(formal->get_name());
     }
+    Symbol self = idtable.add_string("self");
+    env.remove_local_object(self);
 }
 /////////////////////////////////////////
 //
