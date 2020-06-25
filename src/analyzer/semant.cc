@@ -9,6 +9,7 @@
 #include <class-table.h>
 #include <class-tree.h>
 #include <cassert>
+#include <environment.h>
 
 extern int semant_debug;
 extern char *curr_filename;
@@ -70,12 +71,47 @@ void program_class::semant()
 
 void class__class::semant()
 {
+    // this will take care features defined multiple times 
+    sync_local_env();
 
+    // analyze the children
+    int n = features->len();
+    for(int i = 0; i < n; i++)
+        features->nth(i)->semant();
 }
 
 void method_class::semant()
 {
+    // get global data structures
+    ClassTable& classtable = ClassTable::instance();
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+    Environment& env = Environment::instance();
 
+
+    
+    // add formals to ObjectEnvironment
+    sync_local_environment();
+
+    // semant check formals
+    int n = formals->len();
+    for(int i = 0; i < n; i++)
+        formals->nth(i)->semant();
+
+    expr->semant();
+
+    //check that the return type is valid
+    if(!classtable.contains(return_type))
+    {
+        sem_error.raise(new UndefinedTypeException(env.current_class, this, return_type));
+    }
+    else
+    {
+        // the type of the function must be 
+    }
+    
+
+    // remove formals from object Environment
+    clean_local_environment();
 }
 
 void attr_class::semant()

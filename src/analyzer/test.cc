@@ -43,6 +43,21 @@ class ClassTableWrapper : public ClassTable
         ~ClassTableWrapper() { }
 };
 
+class ObjectEnvironmentWrapper : public ObjectEnvironment
+{
+    public:
+        ObjectEnvironmentWrapper() { }
+        ~ObjectEnvironmentWrapper() { }
+};
+
+class MethodEnvironmentWrapper : public MethodEnvironment
+{
+    public:
+        MethodEnvironmentWrapper() { }
+        ~MethodEnvironmentWrapper() { }
+
+};
+
 /*************************************************
  *  Helper functions
  * ***********************************************/
@@ -656,7 +671,7 @@ TEST_CASE("Object Environment") {
         Symbol type = idtable.add_string(typestr);
         types.push_back(type);
     }
-    ObjectEnvironment objenv;
+    ObjectEnvironmentWrapper objenv;
     for(int i = 0; i < t; i++) {
         int rand1 = random(0, names.size());
         int rand2 = random(0, types.size());
@@ -700,7 +715,7 @@ TEST_CASE("Method Environment")
         Symbol name = idtable.add_string(namestr);
         classes.push_back(name);
     }
-    MethodEnvironment env;
+    MethodEnvironmentWrapper env;
     for(int i = 0; i < n_names; i++) 
     {
         char namestr[i+10+1];
@@ -744,7 +759,7 @@ TEST_CASE("Method Environment")
 
 TEST_CASE("Multiple insertions in Method environment")
 {
-    MethodEnvironment env;
+    MethodEnvironmentWrapper env;
     int t = 100;
     for(int i = 0; i < t; i++)
     {
@@ -1586,4 +1601,218 @@ TEST_CASE("Sync_local_environment2")
     class__->clean_local_env();
     REQUIRE(!menv.contains(local_class, method->get_name()));
     REQUIRE(!oenv.contains(attr1));
+}
+
+
+TEST_CASE("Method::synch_local_environment1")
+{
+    Symbol name = idtable.add_string("method_name");
+    Symbol ret_type = idtable.add_string("Type");
+    Symbol id1 = idtable.add_string("id1");
+    Symbol id2 = idtable.add_string("id2");
+    Symbol id3 = idtable.add_string("id3");
+    Symbol id4 = idtable.add_string("id4");
+    Symbol id5 = idtable.add_string("id5");
+    Symbol type1 = idtable.add_string("Type1");
+    Symbol type2 = idtable.add_string("Type2");
+    Symbol type3 = idtable.add_string("Type1");
+    Symbol type4 = idtable.add_string("Type3");
+    Symbol type5 = idtable.add_string("Type3");
+
+    Formal formal1 = formal(id1, type1);
+    Formal formal2 = formal(id2, type2);
+    Formal formal3 = formal(id3, type3);
+    Formal formal4 = formal(id4, type4);
+    Formal formal5 = formal(id5, type5);
+
+    Formals sing1 = single_Formals(formal1);
+    Formals sing2 = single_Formals(formal2);
+    Formals sing3 = single_Formals(formal3);
+    Formals sing4 = single_Formals(formal4);
+    Formals sing5 = single_Formals(formal5);
+
+    Formals formals = append_Formals(sing1, sing2);
+    formals = append_Formals(formals, sing3);
+    formals = append_Formals(formals, sing4);
+    formals = append_Formals(formals, sing5);
+
+    method_class* meth = (method_class*) method(name, formals, ret_type, no_expr());
+
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+
+    meth->sync_local_environment();
+    vector<SemantException*> exceptions_after;
+
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+
+    REQUIRE(exceptions_before == exceptions_after);
+
+    Environment& env = Environment::instance();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+    REQUIRE(oenv.contains(id1));
+    REQUIRE(oenv.contains(id2));
+    REQUIRE(oenv.contains(id3));
+    REQUIRE(oenv.contains(id4));
+    REQUIRE(oenv.contains(id5));
+
+    REQUIRE(oenv.lookup(id1) == type1);
+    REQUIRE(oenv.lookup(id2) == type2);
+    REQUIRE(oenv.lookup(id3) == type3);
+    REQUIRE(oenv.lookup(id4) == type4);
+    REQUIRE(oenv.lookup(id5) == type5);
+
+    oenv.remove(id1);
+    oenv.remove(id2);
+    oenv.remove(id3);
+    oenv.remove(id4);
+    oenv.remove(id5);
+    REQUIRE(!oenv.contains(id1));
+    REQUIRE(!oenv.contains(id2));
+    REQUIRE(!oenv.contains(id3));
+    REQUIRE(!oenv.contains(id4));
+    REQUIRE(!oenv.contains(id5));
+
+    REQUIRE(!formal2->is_malformed());
+    REQUIRE(!formal4->is_malformed());
+    REQUIRE(!formal1->is_malformed());
+    REQUIRE(!formal3->is_malformed());
+    REQUIRE(!formal5->is_malformed());
+}
+
+
+TEST_CASE("Method::synch_local_environment2")
+{
+    Symbol name = idtable.add_string("method_name");
+    Symbol ret_type = idtable.add_string("Type");
+    Symbol id1 = idtable.add_string("id1");
+    Symbol id2 = idtable.add_string("id1");
+    Symbol id3 = idtable.add_string("id3");
+    Symbol id4 = idtable.add_string("id3");
+    Symbol id5 = idtable.add_string("id5");
+    Symbol type1 = idtable.add_string("Type1");
+    Symbol type2 = idtable.add_string("Type2");
+    Symbol type3 = idtable.add_string("Type1");
+    Symbol type4 = idtable.add_string("Type3");
+    Symbol type5 = idtable.add_string("Type3");
+
+    Formal formal1 = formal(id1, type1);
+    Formal formal2 = formal(id2, type2);
+    Formal formal3 = formal(id3, type3);
+    Formal formal4 = formal(id4, type4);
+    Formal formal5 = formal(id5, type5);
+
+    Formals sing1 = single_Formals(formal1);
+    Formals sing2 = single_Formals(formal2);
+    Formals sing3 = single_Formals(formal3);
+    Formals sing4 = single_Formals(formal4);
+    Formals sing5 = single_Formals(formal5);
+
+    Formals formals = append_Formals(sing1, sing2);
+    formals = append_Formals(formals, sing3);
+    formals = append_Formals(formals, sing4);
+    formals = append_Formals(formals, sing5);
+
+    method_class* meth = (method_class*) method(name, formals, ret_type, no_expr());
+
+    SemantExceptionHandler& sem_error = SemantExceptionHandler::instance();
+
+    vector<SemantException*> exceptions_before;
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_before.push_back(excep);
+    }
+    meth->sync_local_environment();
+    vector<SemantException*> exceptions_after;
+
+    for(SemantException* excep : sem_error)
+    {
+        exceptions_after.push_back(excep);
+    }
+
+    REQUIRE(exceptions_before.size() == exceptions_after.size() - 2);
+
+    Environment& env = Environment::instance();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+    REQUIRE(oenv.contains(id1));
+    REQUIRE(oenv.contains(id3));
+    REQUIRE(oenv.contains(id5));
+
+    REQUIRE(oenv.lookup(id1) == type1);
+    REQUIRE(oenv.lookup(id3) == type3);
+    REQUIRE(oenv.lookup(id5) == type5);
+
+    oenv.remove(id1);
+    oenv.remove(id3);
+    oenv.remove(id5);
+    REQUIRE(!oenv.contains(id1));
+    REQUIRE(!oenv.contains(id2));
+    REQUIRE(!oenv.contains(id3));
+    REQUIRE(!oenv.contains(id4));
+    REQUIRE(!oenv.contains(id5));
+    REQUIRE(formal2->is_malformed());
+    REQUIRE(formal4->is_malformed());
+    REQUIRE(!formal1->is_malformed());
+    REQUIRE(!formal3->is_malformed());
+    REQUIRE(!formal5->is_malformed());
+
+}
+
+TEST_CASE("Method::clean_local_environment3")
+{
+    Symbol name = idtable.add_string("method_name");
+    Symbol ret_type = idtable.add_string("Type");
+    Symbol id1 = idtable.add_string("id1");
+    Symbol id2 = idtable.add_string("id1");
+    Symbol id3 = idtable.add_string("id3");
+    Symbol id4 = idtable.add_string("id3");
+    Symbol id5 = idtable.add_string("id5");
+    Symbol type1 = idtable.add_string("Type1");
+    Symbol type2 = idtable.add_string("Type2");
+    Symbol type3 = idtable.add_string("Type1");
+    Symbol type4 = idtable.add_string("Type3");
+    Symbol type5 = idtable.add_string("Type3");
+
+    Formal formal1 = formal(id1, type1);
+    Formal formal2 = formal(id2, type2);
+    Formal formal3 = formal(id3, type3);
+    Formal formal4 = formal(id4, type4);
+    Formal formal5 = formal(id5, type5);
+
+    Formals sing1 = single_Formals(formal1);
+    Formals sing2 = single_Formals(formal2);
+    Formals sing3 = single_Formals(formal3);
+    Formals sing4 = single_Formals(formal4);
+    Formals sing5 = single_Formals(formal5);
+
+    Formals formals = append_Formals(sing1, sing2);
+    formals = append_Formals(formals, sing3);
+    formals = append_Formals(formals, sing4);
+    formals = append_Formals(formals, sing5);
+
+    method_class* meth = (method_class*) method(name, formals, ret_type, no_expr());
+
+
+
+    meth->sync_local_environment();
+
+
+    Environment& env = Environment::instance();
+    ObjectEnvironment& oenv = env.get_local_object_env();
+
+    meth->clean_local_environment();
+
+    REQUIRE(!oenv.contains(id1));
+    REQUIRE(!oenv.contains(id2));
+    REQUIRE(!oenv.contains(id3));
+    REQUIRE(!oenv.contains(id4));
+    REQUIRE(!oenv.contains(id5));
 }

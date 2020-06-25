@@ -37,11 +37,17 @@
 #include <unordered_map>
 #include <stack>
 
-
-class ObjectEnvironment {
+class Enivornment;
+class  ObjectEnvironment{
+    friend class Environment;
     private:
         std::unordered_map<Symbol, std::stack<Symbol>> env;
-    
+      protected:
+        ObjectEnvironment() { }
+        ~ObjectEnvironment() { }
+        /*delete those methods to avoid unwanted errors */
+        ObjectEnvironment(ObjectEnvironment const&) = delete;
+        void operator=(ObjectEnvironment const&) = delete;
     public:
 
     /**

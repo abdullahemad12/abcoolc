@@ -162,7 +162,9 @@ void semant();
 Formals& get_formals() { return formals; } \
 Symbol get_return_type() { return return_type; } \
 Expression& get_expression() { return expr; } \
-void raise_inconsistent_signature_error();
+void raise_inconsistent_signature_error();	\
+void sync_local_environment();				\
+void clean_local_environment();
 
 #define attr_EXTRAS				\
 Symbol get_type_decl() { return type_decl; }

@@ -124,13 +124,23 @@ class ScopeException : public AnalysisException
         
 };
 
-class TypeException : public AnalysisException
+class TypeMismathcException : public AnalysisException
 {
     public:
-    TypeException(Symbol faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
+    TypeMismathcException(Symbol faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
                    AnalysisException(faulty_class, faulty_node) 
     {
        SemantException::msg <<  "expected type " << expected_symbol << " but got " << faulty_symbol;
+    }
+};
+
+class UndefinedTypeException : public AnalysisException
+{
+    public:
+    UndefinedTypeException(Symbol faulty_class, tree_node* faulty_node, Symbol type) :
+                           AnalysisException(faulty_class, faulty_node)
+    {
+        SemantException::msg << type << " does not name a valid class";
     }
 };
 

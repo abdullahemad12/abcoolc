@@ -37,11 +37,13 @@
 #include <vector>
 #include <unordered_map>
 
-
 using namespace std;
+
+class Environment;
 
 class MethodEnvironment
 {
+    friend class Environment;
     public:
         class Signature 
         {
@@ -57,10 +59,15 @@ class MethodEnvironment
         };
       private:
         unordered_map<Symbol, unordered_map<Symbol, Signature*>> env;
-        
-      public:
-        /*destructor*/
+      
+      protected:
+        MethodEnvironment() { }
         ~MethodEnvironment();
+        /*delete those methods to avoid unwanted errors */
+        MethodEnvironment(MethodEnvironment const&) = delete;
+        void operator=(MethodEnvironment const&) = delete;
+      public:
+
 
         /**
           * @brief adds a method signature to the given class

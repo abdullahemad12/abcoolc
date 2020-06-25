@@ -126,6 +126,43 @@ void formal_class::remove_from_local_env()
     oenv.remove(name);
 }
 
+
+/////////////////////////////////////////
+//
+//      Method Environment interaction
+//
+////////////////////////////////////////
+void method_class::sync_local_environment()
+{
+    ObjectEnvironment& oenv = Environment::instance().get_local_object_env();
+    unordered_set<Symbol> defined;
+    int n = formals->len();
+    for(int i = 0; i < n; i++)
+    {
+        Formal formal = formals->nth(i);
+        if(defined.find(formal->get_name()) != defined.end())
+        {
+            formal->raise_redefinition_error();
+        }
+        else
+        {
+            oenv.add(formal->get_name(), formal->get_type_decl());
+            defined.insert(formal->get_name());
+        }
+    }
+}
+
+void method_class::clean_local_environment()
+{
+    ObjectEnvironment& oenv = Environment::instance().get_local_object_env();
+    int n = formals->len();
+    for(int i = 0; i < n; i++)
+    {
+        Formal formal = formals->nth(i);
+        if(!formal->is_malformed())
+            oenv.remove(formal->get_name());
+    }
+}
 /////////////////////////////////////////
 //
 // Class-Environment interactions
