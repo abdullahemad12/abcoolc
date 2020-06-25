@@ -97,7 +97,7 @@ class SelfTypeInheritanceException : public GraphException
             SemantException::msg << "Class " << faulty_class->get_string()
                     << " is trying to inherit from SelfType";
         }
-}
+};
 
 SelfTypeClassDeclarationException : public GraphException
 {
@@ -106,7 +106,7 @@ SelfTypeClassDeclarationException : public GraphException
         {
             SemantException::msg << "Self type cannot be declared as a class";
         }
-}
+};
 
 /********************************************
  * Exceptions for semantic analysis         *
@@ -162,6 +162,17 @@ class UndefinedTypeException : public AnalysisException
         SemantException::msg << type << " does not name a valid class";
     }
 };
+
+class SelfTypeAsArgumentException: public AnalysisException
+{
+    public:
+        SelfTypeAsArgumentException(Symbol faulty_class, tree_node* faulty_node) :
+                                    AnalysisException(faulty_class, faulty_node) 
+        {
+            SemantException::msg << "SELF_TYPE cannot be declared as a method argument type";
+        }
+};
+
 
 class UndefinedAttributeException : public ScopeException
 {
