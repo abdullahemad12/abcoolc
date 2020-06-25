@@ -89,6 +89,25 @@ class BasicClassInheritanceException : public GraphException
         }
 };
 
+class SelfTypeInheritanceException : public GraphException
+{
+    public:
+        SelfTypeInheritanceException(Symbol faulty_class) : GraphException(faulty_class)
+        {
+            SemantException::msg << "Class " << faulty_class->get_string()
+                    << " is trying to inherit from SelfType";
+        }
+}
+
+SelfTypeClassDeclarationException : public GraphException
+{
+    public: 
+        SelfTypeClassDeclarationException(Symbol faulty_class) : GraphException(faulty_class)
+        {
+            SemantException::msg << "Self type cannot be declared as a class";
+        }
+}
+
 /********************************************
  * Exceptions for semantic analysis         *
  * There are five possible exceptios        *

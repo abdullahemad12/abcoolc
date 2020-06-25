@@ -9,6 +9,7 @@
 // prototypes
 void inheritance_from_basic_classes_detection(Classes classes);
 void inheritance_from_undefined_class(Classes classes);
+void inheritance_from_self_type(Classes classes);
 void redefinition_of_classes_detection(Classes classes);
 void redefinition_of_basic_classes_detection(Classes classes);
 
