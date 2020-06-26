@@ -42,7 +42,7 @@ int SemantExceptionHandler::report_all(void)
         Symbol filename = classtable[classname]->get_filename();
         tree_node* node = exp->get_faulty_node();
         auto& stream = semant_error(filename, node);
-        stream << exp->what();
+        stream << exp->what() << endl;
         delete exp;
     }
     container.clear();

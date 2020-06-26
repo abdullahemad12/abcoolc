@@ -1,4 +1,4 @@
-class Main inherits H
+class Main
 {
 	hello() : Hi { 1 };
 };

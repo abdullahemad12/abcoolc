@@ -238,7 +238,7 @@ class InconsistentSignatureException : public ScopeException
         InconsistentSignatureException(Symbol faulty_class, tree_node* faulty_node, Symbol method) :
                                         ScopeException(faulty_class, faulty_node)
         {   
-            msg << "cannot override method " << method << " with a different signature";
+            msg << "cannot override method " << method->get_string() << " with a different signature";
         }  
 };
 
