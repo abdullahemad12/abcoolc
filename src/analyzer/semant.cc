@@ -39,6 +39,8 @@ void program_class::semant()
     ClassTable& classtable = ClassTable::instance();
     ClassTree& classtree = ClassTree::instance();
     SemantExceptionHandler& semant_error = SemantExceptionHandler::instance();
+    
+    
     /*Initialize the the class data structures*/
     try
     {
@@ -50,8 +52,15 @@ void program_class::semant()
         semant_error.report_one(classes, e);
         terminate_on_errors();
     }
+    catch(MainMissingException& e)
+    {
+        cerr << e.what() << endl;
+        terminate_on_errors();
+    }
 
     semant_check_classes();
+
+    
     /* report errors and exit if any */
     err = semant_error.report_all();
     if (err) 
