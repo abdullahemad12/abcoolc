@@ -865,9 +865,13 @@ TEST_CASE("LUB Operation")
     Symbol myclass9 = idtable.add_string("myclass9");
     Symbol myclass10 = idtable.add_string("myclass10");
     Symbol object = idtable.add_string("Object");
+    Symbol recovery = idtable.add_string("_recovery");
     ct.init(classes, object);
 
-    Symbol sym = ct.lub(myclass1, myclass2);
+    Symbol sym = ct.lub(recovery, object);
+    REQUIRE(sym == object);
+    
+    sym = ct.lub(myclass1, myclass2);
     REQUIRE(sym == myclass1);
 
     sym = ct.lub(myclass9, myclass6);
@@ -907,6 +911,8 @@ TEST_CASE("is_derived check")
     Symbol myclass9 = idtable.add_string("myclass9");
     Symbol myclass10 = idtable.add_string("myclass10");
     Symbol object = idtable.add_string("Object");
+    Symbol recovery = idtable.add_string("_recovery");
+
     ct.init(classes, object);
 
     REQUIRE(ct.is_derived(myclass2, myclass1));
@@ -936,6 +942,7 @@ TEST_CASE("get_euler_walk")
     Symbol myclass9 = idtable.add_string("myclass9");
     Symbol myclass10 = idtable.add_string("myclass10");
     Symbol object = idtable.add_string("Object");
+    Symbol recovery = idtable.add_string("_recovery");
     ct.init(classes, object);
 
     vector<Symbol> expected;
@@ -1364,15 +1371,15 @@ TEST_CASE("method_class::add_to_local_env1")
 
     Environment& env = Environment::instance();
 
-    REQUIRE(env.contains_local_method(class_name, method->get_name()));
-    MethodEnvironment::Signature sign = env.lookup_local_method(class_name, method->get_name());
+    REQUIRE(env.contains_local_method(method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_local_method(method->get_name());
 
     // not good style but I need to assert this 
     REQUIRE((sign ==  *((method_class*) method)));
 
-    env.remove_local_method(class_name, method->get_name());
+    env.remove_local_method(method->get_name());
 
-    REQUIRE(!env.contains_local_method(class_name, method->get_name()));
+    REQUIRE(!env.contains_local_method(method->get_name()));
 }
 
 TEST_CASE("method_class::add_to_local_env2")
@@ -1390,11 +1397,11 @@ TEST_CASE("method_class::add_to_local_env2")
     Environment& env = Environment::instance();
     for(int i = 0; i < t; i++)
     {
-        env.remove_local_method(class_name, method->get_name());
-        REQUIRE(env.contains_local_method(class_name, method->get_name()));
+        env.remove_local_method(method->get_name());
+        REQUIRE(env.contains_local_method(method->get_name()));
     }
-    env.remove_local_method(class_name, method->get_name());
-    REQUIRE(!env.contains_local_method(class_name, method->get_name()));
+    env.remove_local_method(method->get_name());
+    REQUIRE(!env.contains_local_method(method->get_name()));
 
 }
 
@@ -1406,15 +1413,15 @@ TEST_CASE("method_class::add_to_local_env3")
 
     Environment& env = Environment::instance();
 
-    REQUIRE(env.contains_local_method(class_name, method->get_name()));
-    MethodEnvironment::Signature sign = env.lookup_local_method(class_name, method->get_name());
+    REQUIRE(env.contains_local_method(method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_local_method(method->get_name());
 
     // not good style but I need to assert this 
     REQUIRE((sign ==  *((method_class*) method)));
 
-    env.remove_local_method(class_name, method->get_name());
+    env.remove_local_method(method->get_name());
 
-    REQUIRE(!env.contains_local_method(class_name, method->get_name()));
+    REQUIRE(!env.contains_local_method(method->get_name()));
 }
 
 
@@ -1438,8 +1445,8 @@ TEST_CASE("Invalid method_class::add_to_local_env4")
     
     Environment& env = Environment::instance();
     
-    env.remove_local_method(class_name, method1->get_name());
-    REQUIRE(!env.contains_local_method(class_name, method1->get_name()));
+    env.remove_local_method(method1->get_name());
+    REQUIRE(!env.contains_local_method(method1->get_name()));
 
     vector<SemantException*> exceptions_after;
     for(SemantException* excep : sem_error)
@@ -1459,9 +1466,9 @@ TEST_CASE("method_class::remove_from_local_env")
     method1->add_to_local_env();
 
     Environment& env = Environment::instance();
-    REQUIRE(env.contains_local_method(class_name, method1->get_name()));
+    REQUIRE(env.contains_local_method(method1->get_name()));
     method1->remove_from_local_env();
-    REQUIRE(!env.contains_local_method(class_name, method1->get_name()));
+    REQUIRE(!env.contains_local_method(method1->get_name()));
 
 }
 
@@ -1585,7 +1592,7 @@ TEST_CASE("Sync_local_environment1")
 
 
     Symbol local_class = idtable.add_string(LOCAL_TYPE);
-    REQUIRE(env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(env.contains_local_method(method->get_name()));
     REQUIRE(env.contains_local_object(attr1));
     REQUIRE(env.contains_local_object(attr2));
     REQUIRE(!method->is_malformed());
@@ -1593,7 +1600,7 @@ TEST_CASE("Sync_local_environment1")
     REQUIRE(!fattr2->is_malformed());
 
     class__->clean_local_env();
-    REQUIRE(!env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(!env.contains_local_method(method->get_name()));
     REQUIRE(!env.contains_local_object(attr1));
     REQUIRE(!env.contains_local_object(attr2));
 }
@@ -1639,14 +1646,14 @@ TEST_CASE("Sync_local_environment2")
 
 
     Symbol local_class = idtable.add_string(LOCAL_TYPE);
-    REQUIRE(env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(env.contains_local_method(method->get_name()));
     REQUIRE(env.contains_local_object(attr1));
     REQUIRE(!method->is_malformed());
     REQUIRE(!fattr1->is_malformed());
     REQUIRE(fattr2->is_malformed());
     
     class__->clean_local_env();
-    REQUIRE(!env.contains_local_method(local_class, method->get_name()));
+    REQUIRE(!env.contains_local_method(method->get_name()));
     REQUIRE(!env.contains_local_object(attr1));
 }
 

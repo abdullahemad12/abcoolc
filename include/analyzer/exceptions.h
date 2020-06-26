@@ -173,6 +173,15 @@ class SelfTypeAsArgumentException: public AnalysisException
         }
 };
 
+class UnexpectedNumberOfArgsException : public AnalysisException
+{
+    public:
+        UnexpectedNumberOfArgsException(Symbol faulty_class, tree_node* faulty_node, int n_expected, int n_given) :
+                                    AnalysisException(faulty_class, faulty_node)
+        {
+            SemantException::msg << "Expects " << n_expected << " but given " << n_given; 
+        }
+};
 
 class UndefinedAttributeException : public ScopeException
 {

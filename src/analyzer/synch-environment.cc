@@ -64,26 +64,25 @@ void attr_class::add_to_global_env(Symbol class_name)
 void method_class::add_to_local_env()
 {
     assert(!malformed);
-    Symbol class_name = idtable.add_string(LOCAL_TYPE);
     Environment& env = Environment::instance();
     vector<Symbol> formal_symbols = extract_formals_type(formals);
     
     // there is no way to detect if whether, this is overriding 
     // or redefinition. Hence, This is left to the caller to assert
     // however, if this exists, then the signatures must be identical
-    if(!env.contains_local_method(class_name, name))
+    if(!env.contains_local_method(name))
     {
-        env.add_local(class_name, name, formal_symbols, return_type);
+        env.add_local(name, formal_symbols, return_type);
     }
     else 
     {
-        MethodEnvironment::Signature sign = env.lookup_local_method(class_name, name);
+        MethodEnvironment::Signature sign = env.lookup_local_method(name);
         if(sign != *this) // the != operator is overloaded
         {
             raise_inconsistent_signature_error();
             return;
         }
-        env.add_local(class_name, name, formal_symbols, return_type); 
+        env.add_local(name, formal_symbols, return_type); 
     }
 }
 
@@ -92,7 +91,7 @@ void method_class::remove_from_local_env()
     assert(!malformed);
     Symbol class_name = idtable.add_string(LOCAL_TYPE);
     Environment& env = Environment::instance();
-    env.remove_local_method(class_name, name);
+    env.remove_local_method(name);
 }
 
 void attr_class::add_to_local_env()

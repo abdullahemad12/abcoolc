@@ -110,7 +110,9 @@ Symbol ClassTree::lub(Symbol type1, Symbol type2)
 
 bool ClassTree::is_derived(Symbol derived, Symbol base)
 {
-  return lub(base, derived) == base;
+  Symbol self_type = idtable.add_string("SELF_TYPE");
+  // self type as base is always false
+  return ((base != self_type) || (base == derived)) && (lub(base, derived)) == base;
 }
 
 ClassTree::~ClassTree(void)

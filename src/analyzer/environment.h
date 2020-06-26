@@ -37,16 +37,16 @@ class Environment
     public:
         Symbol current_class;
         void add_local(Symbol name, Symbol type);
-        void add_local(Symbol class_name, Symbol name, vector<Symbol> formals, Symbol return_type);
+        void add_local(Symbol name, vector<Symbol> formals, Symbol return_type);
         void add_global(Symbol class_name, Symbol name, vector<Symbol> formals, Symbol return_type);
-        void remove_local_method(Symbol class_name, Symbol name);
+        void remove_local_method(Symbol name);
         void remove_global_method(Symbol class_name, Symbol name);
         void remove_local_object(Symbol name);
         bool contains_local_object(Symbol name);
-        bool contains_local_method(Symbol class_name, Symbol name);
+        bool contains_local_method(Symbol name);
         bool contains_global_method(Symbol class_name, Symbol name);
         Symbol lookup_local_object(Symbol name);
-        MethodEnvironment::Signature lookup_local_method(Symbol class_name, Symbol name);
+        MethodEnvironment::Signature lookup_local_method(Symbol name);
         MethodEnvironment::Signature lookup_global_method(Symbol class_name, Symbol name);
 
         /**

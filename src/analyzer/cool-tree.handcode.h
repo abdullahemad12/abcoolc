@@ -50,12 +50,14 @@ typedef Cases_class *Cases;
 
 #define Program_EXTRAS                          \
 virtual void dump_with_types(ostream&, int) = 0;\
-virtual void semant() = 0;
+virtual void semant() = 0;			\
+virtual void undefined_identifier_check() = 0;
 
 
 #define program_EXTRAS                          \
 void semant();     				\
-void dump_with_types(ostream&, int);            
+void dump_with_types(ostream&, int);  	\
+void undefined_identifier_check();
 
 
 ////////////////////////
@@ -71,8 +73,9 @@ virtual void dump_with_types(ostream&,int) = 0; \
 virtual void semant() = 0;	\
 virtual void sync_local_env() = 0; \
 virtual void clean_local_env() = 0; \
-virtual void sync_global_env() = 0;
- 
+virtual void sync_global_env() = 0; \
+virtual void undefined_identifier_check() = 0;
+
 
 
 #define class__EXTRAS                               \
@@ -84,7 +87,9 @@ void dump_with_types(ostream&,int);                    	\
 void semant();											\
 void sync_local_env(); 						\
 void clean_local_env(); 					\
-void sync_global_env();
+void sync_global_env();				\
+void undefined_identifier_check();
+
 
 
 #define Feature_EXTRAS                                        \
@@ -95,10 +100,15 @@ virtual void remove_from_local_env() = 0;						\
 virtual void semant() = 0;										\
 virtual Symbol get_name() = 0;									\
 virtual void raise_redefinition_error() = 0;					\
+virtual void scope_check() = 0;									\
+virtual void type_check() = 0;									\
 bool is_malformed() { return malformed; }						\
+virtual void undefined_identifier_check() = 0;					\
 protected:														\
-void raise_error(AnalysisException* excep);											\
-bool malformed = false;											
+void raise_error(AnalysisException* excep);						\
+bool malformed = false;											\
+Symbol type;													
+
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    \
@@ -108,9 +118,9 @@ void add_to_local_env();							\
 void remove_from_local_env();						\
 Symbol get_name() { return name; };					\
 void raise_redefinition_error();					\
-
-
-
+void scope_check();									\
+void type_check();									\
+void undefined_identifier_check();
 
 
 #define Formal_EXTRAS                              \
@@ -122,9 +132,10 @@ virtual void remove_from_local_env() = 0;	\
 virtual void semant() = 0;					\
 bool is_malformed() { return malformed; } 	\
 virtual void raise_redefinition_error() = 0; \
+virtual void undefined_identifier_check() = 0;\
 protected:									\
 void raise_error(AnalysisException* excep);				\
-bool malformed = false;
+bool malformed = false;								
 
 #define formal_EXTRAS                           \
 void dump_with_types(ostream&,int);				\
@@ -133,16 +144,18 @@ Symbol get_type_decl(void) { return type_decl; } \
 void add_to_local_env();			 \
 void remove_from_local_env();		 \
 void semant();						\
-void raise_redefinition_error();
+void raise_redefinition_error();    \
+void undefined_identifier_check();
 
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \
-void semant();
+virtual void semant() = 0;								\
+virtual void undefined_identifier_check() = 0;
 
 #define branch_EXTRAS                                   \
 void dump_with_types(ostream& ,int); \
-void semant();
-
+void semant(); 						\
+void undefined_identifier_check();
 
 #define Expression_EXTRAS                    \
 Symbol type;                                 \
@@ -151,12 +164,16 @@ Expression set_type(Symbol s) { type = s; return this; } \
 virtual void dump_with_types(ostream&,int) = 0;  \
 void dump_type(ostream&, int);               \
 Expression_class() { type = (Symbol) NULL; } \
-virtual void semant() = 0;
+virtual void semant() = 0;					\
+virtual void undefined_identifier_check() = 0;
+
 
 
 #define Expression_SHARED_EXTRAS           \
 void dump_with_types(ostream&,int);  \
-void semant();
+void semant();						\
+void undefined_identifier_check();
+
 
 #define method_EXTRAS			  \
 Formals& get_formals() { return formals; } \
@@ -172,5 +189,13 @@ Symbol get_type_decl() { return type_decl; }
 
 #define assign_EXTRAS \
 bool scope_check();
+
+#define static_dispatch_EXTRAS \
+bool scope_check();
+
+#define dispatch_EXTRAS \
+bool scope_check();
+
+
 
 #endif
