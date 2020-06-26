@@ -58,9 +58,12 @@ void program_class::semant()
         terminate_on_errors();
     }
 
+    // will check types decl and replace undefined ones by Object
+    undefined_identifier_check();
+
     semant_check_classes();
 
-    
+
     /* report errors and exit if any */
     err = semant_error.report_all();
     if (err) 

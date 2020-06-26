@@ -25,7 +25,7 @@ class SemantException : std::exception
         SemantException(Symbol faulty_class) : faulty_class (faulty_class) { }
     public:
         Symbol get_faulty_class(void) { return faulty_class; }
-        const char* what(void) { return msg.str().c_str(); }
+        std::string what(void) {  return this->msg.str(); }
 };
 /**********************************************
  * Exceptions for malformed inheritance graph. *
@@ -48,7 +48,7 @@ class ClassRedefinitionException : public GraphException
     public:
         ClassRedefinitionException(Symbol faulty_class) : GraphException(faulty_class)
         { 
-            ClassRedefinitionException::msg << "class " << faulty_class->get_string() << " is redefined multiple times";
+            msg << "class " << faulty_class->get_string() << " is redefined multiple times";
         }
 };
 
@@ -57,7 +57,7 @@ class CyclicClassException : public GraphException
     public:
         CyclicClassException(Symbol faulty_class) : GraphException(faulty_class)
         { 
-            SemantException::msg << "class " << faulty_class->get_string() << " causes a dependency cycle";
+            msg << "class " << faulty_class->get_string() << " causes a dependency cycle";
         }   
 };
 
@@ -66,7 +66,8 @@ class UndefinedClassException : public GraphException
     public:
     UndefinedClassException(Symbol faulty_class, Symbol undefined_class) : GraphException(faulty_class)
     {
-        SemantException::msg << "class " << undefined_class->get_string() << " is undefined";
+        this->msg << "class " << faulty_class->get_string() << 
+                                " inherits from undefined class " << undefined_class;
     }
 };
 
@@ -75,7 +76,7 @@ class BasicClassRedefinitionException : public GraphException
     public:
         BasicClassRedefinitionException(Symbol faulty_class) : GraphException(faulty_class)
         {
-            SemantException::msg << "Basic Class " << faulty_class << " cannot be redefined"; 
+            msg << "Basic Class " << faulty_class->get_string() << " cannot be redefined"; 
         }
 };
 
@@ -84,7 +85,7 @@ class BasicClassInheritanceException : public GraphException
     public:
         BasicClassInheritanceException(Symbol faulty_class, Symbol basic_class) : GraphException(faulty_class)
         {
-            SemantException::msg << "Class " << faulty_class->get_string() 
+            msg << "Class " << faulty_class->get_string() 
                 << "cannot inherit from built-in class " << basic_class->get_string();
         }
 };
@@ -94,7 +95,7 @@ class SelfTypeInheritanceException : public GraphException
     public:
         SelfTypeInheritanceException(Symbol faulty_class) : GraphException(faulty_class)
         {
-            SemantException::msg << "Class " << faulty_class->get_string()
+            msg << "Class " << faulty_class->get_string()
                     << " is trying to inherit from SelfType";
         }
 };
@@ -104,7 +105,7 @@ class SelfTypeClassDeclarationException : public GraphException
     public: 
         SelfTypeClassDeclarationException(Symbol faulty_class) : GraphException(faulty_class)
         {
-            SemantException::msg << "Self type cannot be declared as a class";
+            msg << "Self type cannot be declared as a class";
         }
 };
 
@@ -156,7 +157,7 @@ class TypeMismathcException : public AnalysisException
     TypeMismathcException(Symbol faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
                    AnalysisException(faulty_class, faulty_node) 
     {
-       SemantException::msg <<  "expected type " << expected_symbol << " but got " << faulty_symbol;
+       msg <<  "expected type " << expected_symbol->get_string() << " but got " << faulty_symbol->get_string();
     }
 };
 
@@ -166,7 +167,7 @@ class UndefinedTypeException : public AnalysisException
     UndefinedTypeException(Symbol faulty_class, tree_node* faulty_node, Symbol type) :
                            AnalysisException(faulty_class, faulty_node)
     {
-        SemantException::msg << type << " does not name a valid class";
+        msg << type->get_string() << " does not name a valid class";
     }
 };
 
@@ -176,7 +177,7 @@ class SelfTypeAsArgumentException: public AnalysisException
         SelfTypeAsArgumentException(Symbol faulty_class, tree_node* faulty_node) :
                                     AnalysisException(faulty_class, faulty_node) 
         {
-            SemantException::msg << "SELF_TYPE cannot be declared as a method argument type";
+            msg << "SELF_TYPE cannot be declared as a method argument type";
         }
 };
 
@@ -186,7 +187,7 @@ class UnexpectedNumberOfArgsException : public AnalysisException
         UnexpectedNumberOfArgsException(Symbol faulty_class, tree_node* faulty_node, int n_expected, int n_given) :
                                     AnalysisException(faulty_class, faulty_node)
         {
-            SemantException::msg << "Expects " << n_expected << " but given " << n_given; 
+            msg << "Expects " << n_expected << " but given " << n_given; 
         }
 };
 
@@ -196,7 +197,7 @@ class UndefinedAttributeException : public ScopeException
         UndefinedAttributeException(Symbol faulty_class, tree_node* faulty_node, Symbol identifier) :    
                                         ScopeException(faulty_class, faulty_node)
         {
-            SemantException::msg << "attribute " << identifier << " is not defined in this context";
+            msg << "attribute " << identifier->get_string() << " is not defined in this context";
         }
 };
 
@@ -207,7 +208,7 @@ class UndefinedMethodException : public ScopeException
     UndefinedMethodException(Symbol faulty_class, tree_node* faulty_node, Symbol method) :
                               ScopeException(faulty_class, faulty_node)
     {
-        SemantException::msg << "method " << method << " is not defined in this context";
+        msg << "method " << method->get_string() << " is not defined in this context";
     }
 };
 
@@ -217,7 +218,7 @@ class AttributeRedefinitionException : public ScopeException
     AttributeRedefinitionException(Symbol faulty_class, tree_node* faulty_node, Symbol identifier) : 
                                      ScopeException(faulty_class, faulty_node)
     {
-        SemantException::msg << "attribute " << identifier << "is defined multiple times";
+        msg << "attribute " << identifier->get_string() << "is defined multiple times";
     }
 };
 
@@ -227,7 +228,7 @@ class MethodRedefinitionException : public ScopeException
     MethodRedefinitionException(Symbol faulty_class, tree_node* faulty_node, Symbol method) : 
                                      ScopeException(faulty_class, faulty_node)
     {
-        SemantException::msg << "method " << method << "is defined multiple times";
+        msg << "method " << method->get_string() << "is defined multiple times";
     }
 };
 
@@ -237,7 +238,7 @@ class InconsistentSignatureException : public ScopeException
         InconsistentSignatureException(Symbol faulty_class, tree_node* faulty_node, Symbol method) :
                                         ScopeException(faulty_class, faulty_node)
         {   
-            SemantException::msg << "cannot override method " << method << " with a different signature";
+            msg << "cannot override method " << method << " with a different signature";
         }  
 };
 
@@ -247,7 +248,7 @@ class InvalidDispatchException : public ScopeException
         InvalidDispatchException(Symbol faulty_class, tree_node* faulty_node, Symbol undefined_class) :
                                         ScopeException(faulty_class, faulty_node)
         {   
-            SemantException::msg << "you are trying to call method in undefined Class " 
+            msg << "you are trying to call method in undefined Class " 
                                 << undefined_class->get_string();
         }  
 };

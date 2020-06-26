@@ -52,13 +52,13 @@ int SemantExceptionHandler::report_all(void)
 void SemantExceptionHandler::report_one(Classes classes, GraphException& exp)
 {
     Symbol class_name = exp.get_faulty_class();
-    int n = 0;
+    int n = classes->len();
     for(int i = 0; i < n; i++)
     {
         Class_ class_ = classes->nth(i);
         if(class_->get_name() == class_name) {
             auto& err = semant_error(class_);
-            err << exp.what();
+            err << exp.what() << std::endl;
             break;
         }
     }
