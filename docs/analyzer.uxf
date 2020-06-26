@@ -1951,4 +1951,15 @@ type_check</panel_attributes>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>540.0;10.0;10.0;110.0</additional_attributes>
   </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2004</x>
+      <y>876</y>
+      <w>180</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>MainMissingException</panel_attributes>
+    <additional_attributes/>
+  </element>
 </diagram>

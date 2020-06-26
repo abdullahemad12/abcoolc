@@ -33,17 +33,16 @@ void terminate_on_errors(void);
  */
 void program_class::semant()
 {
-
+    initialize_constants();
     int err; 
     /*Get singleton data structure*/
     ClassTable& classtable = ClassTable::instance();
     ClassTree& classtree = ClassTree::instance();
     SemantExceptionHandler& semant_error = SemantExceptionHandler::instance();
-	
     /*Initialize the the class data structures*/
     try
     {
-        classtable.init(classes);
+        classes = classtable.init(classes);
         classtree.init(classes, Object);
     }
     catch(GraphException& e)
@@ -307,6 +306,7 @@ void semant_check_classes()
             
             visited.insert(class_name);
         }
+        prev_class = class_name;
     }
 }
 

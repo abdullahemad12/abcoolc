@@ -108,6 +108,13 @@ class SelfTypeClassDeclarationException : public GraphException
         }
 };
 
+class MainMissingException
+{
+    public:
+        MainMissingException(){ }
+        const char* what(void) { return "Main Class is not defined."; }
+
+};
 /********************************************
  * Exceptions for semantic analysis         *
  * There are five possible exceptios        *

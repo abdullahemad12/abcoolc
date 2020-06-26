@@ -14,7 +14,7 @@ void redefinition_of_classes_detection(Classes classes);
 void redefinition_of_basic_classes_detection(Classes classes);
 
 
-void ClassTable::init(Classes classes)
+Classes ClassTable::init(Classes classes)
 {
     assert(!is_init);
     initialize_constants();
@@ -32,8 +32,13 @@ void ClassTable::init(Classes classes)
         this->classes[cur_class->get_name()] = cur_class;
     }
 
+    if(!MAP_CONTAINS(this->classes, Main))
+    {
+        throw MainMissingException();
+    }
 
     is_init = true;
+    return classes;
 }
 
 

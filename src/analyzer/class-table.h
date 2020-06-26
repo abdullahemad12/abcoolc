@@ -100,7 +100,7 @@ class ClassTable
         Classes install_basic_classes(Classes classes);
 
     public:
-        void init(Classes classes);
+        Classes init(Classes classes);
         auto begin(void) { return classes.begin(); }
         auto end(void) { return  classes.end(); }
         bool contains(Symbol class_) { return classes.find(class_) != classes.end(); };

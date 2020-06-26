@@ -19,7 +19,7 @@ static void create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::Node
 
 void ClassTree::init(Classes classes, Symbol root_symbol)
 {
-
+  initialize_constants();
   assert(!is_init);
   // declarations
   vector<pair<Symbol, Symbol>> edges;
@@ -42,7 +42,7 @@ void ClassTree::construct_graph(Classes classes, Symbol root_symbol, vector<pair
     assert(MAP_CONTAINS(nodes, root_symbol));
     root = nodes[root_symbol];
     this->n = nodes.size();
-
+    nodes[No_class] = NULL;
     // adds child to the parent and creates a new edge
     for(int i = 0, n = classes->len(); i < n; i++)
     {
