@@ -69,9 +69,9 @@ virtual Symbol get_name() = 0;		\
 virtual Symbol get_parent() = 0;		\
 virtual Features& get_features() = 0;	\
 virtual void dump_with_types(ostream&,int) = 0; \
-virtual void sync_local_env() = 0; \
-virtual void clean_local_env() = 0; \
-virtual void sync_global_env() = 0; \
+virtual void sync_local_env(Environment& env) = 0; \
+virtual void clean_local_env(Environment& env) = 0; \
+virtual void sync_global_env(Environment& env) = 0; \
 virtual void reserved_symbols_misuse_check(TypeTable& typetable) = 0;\
 virtual void undefined_types_check(TypeTable& typetable) = 0; \
 virtual void redefinition_check(TypeTable& typetable) = 0; \
@@ -84,9 +84,9 @@ Symbol get_name() { return name; }                    \
 Symbol get_parent() { return parent; }                 \
 Features& get_features() { return features; }            \
 void dump_with_types(ostream&,int);                    	\
-void sync_local_env(); 						\
-void clean_local_env(); 					\
-void sync_global_env();				\
+void sync_local_env(Environment& env); 						\
+void clean_local_env(Environment& env); 					\
+void sync_global_env(Environment& env);				\
 void reserved_symbols_misuse_check(TypeTable& typetable);\
 void undefined_types_check(TypeTable& typetable); \
 void redefinition_check(TypeTable& typetable); \
@@ -96,9 +96,8 @@ void type_check(Environment& env);
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 				\
-virtual void add_to_env(Symbol class_name) = 0;							\
-virtual void add_to_env() = 0;							\
-virtual void remove_from_env() = 0;						\
+virtual void add_to_env(Symbol class_name, Environment& env) = 0;							\
+virtual void remove_from_env(Environment& env) = 0;						\
 virtual Symbol get_name() = 0;									\
 virtual void reserved_symbols_misuse_check(TypeTable& typetable) = 0;\
 virtual void undefined_types_check(TypeTable& typetable) = 0; \
@@ -113,9 +112,8 @@ bool duplicate = false;
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    \
-void add_to_env(Symbol class_name);		\
-void add_to_env();							\
-void remove_from_env();						\
+void add_to_env(Symbol class_name, Environment& env);		\
+void remove_from_env(Environment& env);						\
 Symbol get_name() { return name; };					\
 void reserved_symbols_misuse_check(TypeTable& typetable);\
 void undefined_types_check(TypeTable& typetable); \
@@ -128,8 +126,8 @@ void type_check(Environment& env);
 virtual void dump_with_types(ostream&,int) = 0;		\
 virtual Symbol get_name(void) = 0;				\
 virtual Symbol get_type_decl(void) = 0;		\
-virtual void add_to_env() = 0;		\
-virtual void remove_from_env() = 0;	\
+virtual void add_to_env(Environment& env) = 0;		\
+virtual void remove_from_env(Environment& env) = 0;	\
 bool is_duplicate() { return duplicate; } 	\
 virtual void reserved_symbols_misuse_check(TypeTable& typetable) = 0;\
 virtual void undefined_types_check(TypeTable& typetable) = 0; \
@@ -143,8 +141,8 @@ bool duplicate = false;
 void dump_with_types(ostream&,int);				\
 Symbol get_name(void) { return name; }			\
 Symbol get_type_decl(void) { return type_decl; } \
-void add_to_env();			 \
-void remove_from_env();		 \
+void add_to_env(Environment& env);			 \
+void remove_from_env(Environment& env);		 \
 void reserved_symbols_misuse_check(TypeTable& typetable);\
 void undefined_types_check(TypeTable& typetable); \
 void redefinition_check(TypeTable& typetable); \
@@ -195,8 +193,8 @@ void type_check(Environment& env);
 Formals& get_formals() { return formals; } \
 Symbol get_type() { return return_type; } \
 Expression& get_expression() { return expr; } \
-void sync_environment();				\
-void clean_environment();
+void sync_environment(Environment& env);				\
+void clean_environment(Environment& env);
 
 #define attr_EXTRAS				\
 Symbol get_type() { return type_decl; };

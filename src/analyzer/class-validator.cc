@@ -12,6 +12,7 @@ Classes install_basic_classes(Classes classes);
 Classes validate(Classes classes)
 {
     initialize_constants();
+    exit(1);
     return classes;
 }
 
@@ -144,10 +145,10 @@ unordered_map<Symbol, int> map_class_to_int(Classes classes)
 void check_for_cycles(Classes classes)
 {
 
-  unsigned int n = classes->len();
+  int n = classes->len();
 
   auto class_map = map_class_to_int(classes);
-  assert(class_map.size() == classes->len());
+  assert((int)class_map.size() == classes->len());
 
   // Note: n includes the dummy _no_type symbol but it does not really matter as it 
   // does not add a cycle

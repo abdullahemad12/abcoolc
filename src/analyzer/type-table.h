@@ -4,6 +4,8 @@
 #include <cool-tree.h>
 
 #include <unordered_set>
+
+using namespace std;
 static char* no_type = "_no_type"; 
 
 //////////////////////////////////////////////////////////////////////

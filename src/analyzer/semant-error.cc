@@ -1,5 +1,4 @@
 #include <semant-errors.h>
-#include <class-table.h>
 #include <cool-tree.h>
 
 ////////////////////////////////////////////////////////////////////
@@ -125,7 +124,7 @@ string UndefinedMainError::what(void)
 }
 
 
-TypeMismathcError::TypeMismathcError(Class_ faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
+TypeMismathcError::TypeMismathcError(Class_ class_, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
                    SemantError(class_, faulty_node) 
 {
     msg <<  "expected type " << expected_symbol->get_string() << " but got " << faulty_symbol->get_string();

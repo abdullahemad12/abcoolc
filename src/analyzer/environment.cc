@@ -12,7 +12,7 @@ void Environment::add_object(Symbol name, Symbol type)
     object_env.add(name, type); 
 }
 
-void Environment::add_method(Class_ class_, method_class* method)
+void Environment::add_method(Symbol class_, method_class* method)
 { 
     Formals formals = method->get_formals();
     vector<Symbol> params;
@@ -21,7 +21,7 @@ void Environment::add_method(Class_ class_, method_class* method)
     {
         params.push_back(formals->nth(i)->get_type_decl());
     }
-    method_env.add(class_->get_name(), method->get_name(), params, method->get_return_type()); 
+    method_env.add(class_, method->get_name(), params, method->get_type()); 
 }
 
 

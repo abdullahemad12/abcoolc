@@ -32,7 +32,7 @@ class Environment
         ~Environment() { }
         Symbol current_class;
         void add_object(Symbol name, Symbol type);
-        void add_method(Class_ class_,  method_class* method);
+        void add_method(Symbol class_,  method_class* method);
         void remove_object(Symbol name);
         void remove_method(Symbol class_name, Symbol method_name);
         bool contains_object(Symbol name);

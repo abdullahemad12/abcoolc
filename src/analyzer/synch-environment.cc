@@ -13,7 +13,6 @@
 #include <cool-tree.h>
 #include <environment.h>
 #include <symtab.h>
-#include <exceptions.h>
 #include <unordered_set>
 
 #define CONTAINS(set, elem) ((set.find(elem)) != (set.end()))
@@ -25,110 +24,55 @@ vector<Symbol> extract_formals_type(Formals formals);
 
 
 ////////////////////////////////////////////////////////////////
-// globla environment
-// Adding to this environment happens as a preprocessing step 
-// before the semantic analysis begins. Therefore, correctness of the 
-// environment should not be assumed
+// if a global synching was to occur the name of the class will 
+// be the name of the current class that is synching its features
+// Otherwise, methods are place under class symbol "SELF_TYPE"
+// indicating that it is a local method. Note that a local method
+// need not be defined in the same class. It can also be defined 
+// in a parent class
 /////////////////////////////////////////////////////////////////
 
-// this is a preprocessing step, thus there is no need for raising 
-// an error
-void method_class::add_to_global_env(Symbol class_name)
+void method_class::add_to_env(Symbol class_name, Environment& env)
 {
-    // insert only if the method is not defined.
-    Environment& env = Environment::instance();
-    if(!env.contains_global_method(class_name, name))
-    {
-        vector<Symbol> formal_symbols = extract_formals_type(formals);
-        env.add_global(class_name, name, formal_symbols, return_type);
-    }
+    if(!duplicate)
+        env.add_method(class_name, this);
 }
 
-/*
- * do nothing as attributes are private
- */ 
-void attr_class::add_to_global_env(Symbol class_name)
+void attr_class::add_to_env(Symbol class_name, Environment& env)
 {
-    
+    if(!duplicate)
+        env.add_object(name, type_decl);
+}
+
+void formal_class::add_to_env(Environment& env)
+{
+    if(!duplicate)
+        env.add_object(name, type_decl);
 }
 
 ///////////////////////////////////////////////////////////////////////
-// local environment
-// Check for multiple definition here for the sake consistency
-// Modifying this environment happens while the analysis check 
-// is carried out. It makes the assumption that all the operations 
-// on it were called in the correct order as decided by the program node
+// Cleaning only happen on local attributes. Global Attributes are never 
+// removed. Thus, we remove the methods under the type "SELF_TYPE"
 /////////////////////////////////////////////////////////////////////////
 
-
-void method_class::add_to_local_env()
+void method_class::remove_from_env(Environment& env)
 {
-    assert(!malformed);
-    Environment& env = Environment::instance();
-    vector<Symbol> formal_symbols = extract_formals_type(formals);
-    
-    // there is no way to detect if whether, this is overriding 
-    // or redefinition. Hence, This is left to the caller to assert
-    // however, if this exists, then the signatures must be identical
-    if(!env.contains_local_method(name))
-    {
-        env.add_local(name, formal_symbols, return_type);
-    }
-    else 
-    {
-        MethodEnvironment::Signature sign = env.lookup_local_method(name);
-        if(sign != *this) // the != operator is overloaded
-        {
-            raise_inconsistent_signature_error();
-            return;
-        }
-        env.add_local(name, formal_symbols, return_type); 
-    }
+    if(!duplicate)
+        env.remove_method(idtable.add_string("SELF_TYPE"), name);
 }
 
-void method_class::remove_from_local_env()
+void attr_class::remove_from_env(Environment& env)
 {
-    assert(!malformed);
-    Symbol class_name = idtable.add_string(LOCAL_TYPE);
-    Environment& env = Environment::instance();
-    env.remove_local_method(name);
+    if(!duplicate)
+        env.remove_object(name);
 }
 
-void attr_class::add_to_local_env()
+void formal_class::remove_from_env(Environment& env)
 {
-    assert(!malformed);
-    // because those are features, no feature shall shadow another one 
-    Environment& env = Environment::instance();
-    if(env.contains_local_object(name))
-    {
-        raise_redefinition_error();
-        return;
-    }
-    env.add_local(name, type_decl);
-  
+    if(!duplicate)
+        env.remove_object(name);
 }
 
-void attr_class::remove_from_local_env()
-{
-    assert(!malformed);
-    Environment& env = Environment::instance();
-    env.remove_local_object(name);
-}
-
-void formal_class::add_to_local_env()
-{
-    assert(!malformed);
-    // as long as it is unique within the formals, no other condition applies
-    Environment& env = Environment::instance();
-    env.add_local(name, type_decl);
-}
-
-void formal_class::remove_from_local_env()
-{
-    assert(!malformed);
-    Environment& env = Environment::instance();
-    env.remove_local_object(name);
-}
 
 
 /////////////////////////////////////////
@@ -136,43 +80,18 @@ void formal_class::remove_from_local_env()
 //      Method Environment interaction
 //
 ////////////////////////////////////////
-void method_class::sync_local_environment()
+void method_class::sync_environment(Environment& env)
 {
-    Environment& env = Environment::instance();
-    unordered_set<Symbol> defined;
     int n = formals->len();
-    for(int i = 0; i < n; i++)
-    {
-        Formal formal = formals->nth(i);
-        if(defined.find(formal->get_name()) != defined.end())
-        {
-            formal->raise_redefinition_error();
-        }
-        else
-        {
-            env.add_local(formal->get_name(), formal->get_type_decl());
-            defined.insert(formal->get_name());
-        }
-    }
-
-    // add self to the environment
-    Symbol self = idtable.add_string("self");
-    assert(!env.contains_local_object(self));
-    env.add_local(self, env.current_class);
+    for(int i = 0; i  < n; i++)
+        formals->nth(i)->add_to_env(env);
 }
 
-void method_class::clean_local_environment()
+void method_class::clean_environment(Environment& env)
 {
-    Environment& env = Environment::instance();
     int n = formals->len();
     for(int i = 0; i < n; i++)
-    {
-        Formal formal = formals->nth(i);
-        if(!formal->is_malformed())
-            env.remove_local_object(formal->get_name());
-    }
-    Symbol self = idtable.add_string("self");
-    env.remove_local_object(self);
+        formals->nth(i)->remove_from_env(env);
 }
 /////////////////////////////////////////
 //
@@ -185,13 +104,11 @@ void method_class::clean_local_environment()
  * this is preprocessing pass that adds features to the global environment
  * no need for error checking
  */ 
-void class__class::sync_global_env()
+void class__class::sync_global_env(Environment& env)
 {
-    for(int i = 0; i < features->len(); i++)
-    {
-        Feature feature = features->nth(i);
-        features->nth(i)->add_to_global_env(name);
-    }
+    int n = features->len();
+    for(int i = 0; i < n; i++)
+        features->nth(i)->add_to_env(name, env);
 }
 
 /*
@@ -199,100 +116,20 @@ void class__class::sync_global_env()
  * for detecting malformed feature definitions. Error are passed to the 
  * error handler accordingly without interrupting execution
  */ 
-void class__class::sync_local_env()
+void class__class::sync_local_env(Environment& env)
 {
-    // stores all the features seen so far
-    unordered_set<Symbol> defined;
-
-    // for every feature, raise an error if its redefined 
-    // within this class, or add it to the environment otherwise
-    for(int i = 0; i  < features->len(); i++)
-    {
-        Feature feature = features->nth(i);
-        if(CONTAINS(defined, feature->get_name()))
-        {
-            // raise error and pass 
-            feature->raise_redefinition_error();
-        }
-        else // add to the environment
-        {
-            feature->add_to_local_env();
-            defined.insert(feature->get_name());
-        }
-    }
-
+    int n = features->len();
+    for(int i = 0; i < n; i++)
+        features->nth(i)->add_to_env(idtable.add_string("SELF_TYPE"), env); 
 }
 
 /*
  * this is typically done after this class and all its children
  * has been visited, At this point we dont need its features anymore
  */ 
-void class__class::clean_local_env()
+void class__class::clean_local_env(Environment& env)
 {
-    for(int i = 0; i  < features->len(); i++)
-    {
-        Feature feature = features->nth(i);
-        if(!feature->is_malformed())
-            feature->remove_from_local_env();
-    }
-}
-
-//////////////////////
-//
-// polymorphic errors
-//
-//////////////////////
-
-/**
-  * Any raise_exception definition below must raise it's exception through this 
-  */
-void Feature_class::raise_error (AnalysisException* excep)
-{
-    malformed = true;
-    SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
-    sem_err.raise(excep);
-}
-void Formal_class::raise_error (AnalysisException* excep)
-{
-    malformed = true;
-    SemantExceptionHandler& sem_err = SemantExceptionHandler::instance();
-    sem_err.raise(excep);
-}
-
-void method_class::raise_redefinition_error()
-{
-    Environment& env = Environment::instance();
-    raise_error(new MethodRedefinitionException(env.current_class, this, name));
-}
-
-void method_class::raise_inconsistent_signature_error()
-{
-    Environment& env = Environment::instance();
-    raise_error(new InconsistentSignatureException(env.current_class, this, name)); 
-}
-
-
-void attr_class::raise_redefinition_error()
-{
-    Environment& env = Environment::instance();
-    raise_error(new AttributeRedefinitionException(env.current_class, this, name)); 
-}
-
-
-void formal_class::raise_redefinition_error()
-{
-    Environment& env = Environment::instance();
-    raise_error(new AttributeRedefinitionException(env.current_class, this, name));
-}
-//////////////////////
-// Helpers
-//////////////////////
-vector<Symbol> extract_formals_type(Formals formals)
-{
-    vector<Symbol> formal_symbols;
-     // no need to store information of the identifiers' names
-    for(int i = 0; i < formals->len(); i++)
-        formal_symbols.push_back(formals->nth(i)->get_type_decl());
-
-    return formal_symbols;
+    int n = features->len();
+    for(int i = 0; i < n; i++)
+        features->nth(i)->remove_from_env(env);
 }

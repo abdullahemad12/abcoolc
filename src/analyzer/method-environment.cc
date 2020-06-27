@@ -1,6 +1,5 @@
 #include <method-environment.h>
 #include <cassert>
-#include <exceptions.h>
 
 
 using namespace std;
