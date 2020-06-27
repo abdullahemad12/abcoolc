@@ -135,7 +135,7 @@ Classes install_basic_classes(Classes classes)
 unordered_map<Symbol, int> map_class_to_int(Classes classes)
 {
     int n = classes->len();
-    unordered_map<Class_, int> map; 
+    unordered_map<Symbol, int> map; 
     for(int i = 0; i < n; i++)
         map[classes->nth(i)->get_name()] = i;
     return map;
@@ -162,7 +162,8 @@ void check_for_cycles(Classes classes)
       //cycle detected 
       if(!uf.disjoint(class_map[cur], class_map[parent]))
       {
-          sem_err.report_fatal(new CyclicClassError(class_, class_));
+          CyclicClassError err(class_, class_); 
+          sem_err.report_fatal(err);
       }
       uf.union_components(class_map[cur], class_map[parent]);
   }

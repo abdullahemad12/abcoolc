@@ -107,7 +107,7 @@ class TypeMismathcError : public SemantError
 {
     public:
     TypeMismathcError(Class_ faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol);
-
+};
 class UndefinedTypeError : public SemantError
 {
     public:

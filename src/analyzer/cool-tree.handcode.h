@@ -14,7 +14,8 @@
 extern int yylineno;
 
 
-class AnalysisException;
+class TypeTable;
+class Environment;
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
 inline void dump_Boolean(ostream& stream, int padding, Boolean b)

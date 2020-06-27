@@ -47,7 +47,19 @@ void ClassTree::construct_graph(Classes classes, Symbol root_symbol, vector<pair
     for(int i = 0; i < n; i++)
     {
       Class_ class_ = classes->nth(i);
-      add_child_parent_edge(nodes, class_->get_name(), class_->get_parent());
+      Symbol name = class_->get_name();
+      Symbol parent = class_->get_parent();
+      // catch bugs
+      assert(MAP_CONTAINS(nodes, name));
+      assert(MAP_CONTAINS(nodes, parent));
+      
+      if(nodes[parent] != NULL)
+      {
+        nodes[parent]->children.push_back(nodes[name]);
+        // create edge
+        pair<Symbol, Symbol> p(parent, name);
+        edges.push_back(p);
+      } 
     }
 
 }
@@ -118,19 +130,4 @@ void ClassTree::create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::
     assert(!MAP_CONTAINS(nodes, name));
     nodes[name] = new Node(name);
   }
-}
-
-void add_child_parent_edge(unordered_map<Symbol, ClassTree::Node*>& nodes, Symbol name, Symbol parent)
-{
-  // catch bugs
-    assert(MAP_CONTAINS(nodes, name));
-    assert(MAP_CONTAINS(nodes, parent));
-    
-    if(nodes[parent] != NULL)
-    {
-      nodes[parent]->children.push_back(nodes[name]);
-      // create edge
-      pair<Symbol, Symbol> p(parent, name);
-      edges.push_back(p);
-    } 
 }
