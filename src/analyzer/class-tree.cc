@@ -1,8 +1,8 @@
 #include <cassert>  
-#include <class-tree.h>
-#include <cool-tree.h>
 #include <unordered_map>
+#include "cool-tree.h"
 #include <type-table.h>
+#include <class-tree.h>
 
 using namespace std;
 

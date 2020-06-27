@@ -13,9 +13,9 @@
 #define yylineno curr_lineno;
 extern int yylineno;
 
-
-class TypeTable;
+class UnionFind;
 class Environment;
+class TypeTable;
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
 inline void dump_Boolean(ostream& stream, int padding, Boolean b)
@@ -51,12 +51,23 @@ typedef Cases_class *Cases;
 
 #define Program_EXTRAS                          \
 virtual void dump_with_types(ostream&, int) = 0;\
-virtual void semant() = 0;			
-
+virtual void semant() = 0;						\
+virtual void validate_classes(TypeTable& tb) = 0; \
+virtual void install_basic_classes() = 0;			
 
 #define program_EXTRAS                          \
 void semant();     				\
-void dump_with_types(ostream&, int);  	
+void dump_with_types(ostream&, int);  	\
+void validate_classes(TypeTable& tb);			\
+private:							\
+void main_validation(TypeTable& tb); 				\
+void class_reserved_keywords_inheritance_validation(TypeTable& tb);	\
+void class_reserved_keywords_definition_validation(TypeTable& tb);	\
+void class_inheritance_validation(TypeTable& tb);		\
+void class_definition_validation(TypeTable& tb);			\
+void unique_class_validation(TypeTable& tb);				\
+void acyclic_inheritance_graph_validation(TypeTable& tb); \
+void install_basic_classes();			
 
 
 ////////////////////////
@@ -76,7 +87,14 @@ virtual void reserved_symbols_misuse_check(TypeTable& typetable) = 0;\
 virtual void undefined_types_check(TypeTable& typetable) = 0; \
 virtual void redefinition_check(TypeTable& typetable) = 0; \
 virtual void scope_check(Environment& env) = 0;		\
-virtual void type_check(Environment& env) = 0;
+virtual void type_check(Environment& env) = 0;		\
+virtual bool is_main() = 0;				\
+virtual void class_reserved_keywords_inheritance_validation(TypeTable& tb) = 0;	\
+virtual void class_reserved_keywords_definition_validation(TypeTable& tb) = 0;	\
+virtual void class_inheritance_validation(TypeTable& tb) = 0;		\
+virtual void class_definition_validation(TypeTable& tb) = 0;			\
+virtual void unique_class_validation(TypeTable& tb) = 0;				\
+virtual void acyclic_inheritance_graph_validation(UnionFind& uf) = 0; 
 
 #define class__EXTRAS                               \
 Symbol get_filename() { return filename; }           \
@@ -91,8 +109,17 @@ void reserved_symbols_misuse_check(TypeTable& typetable);\
 void undefined_types_check(TypeTable& typetable); \
 void redefinition_check(TypeTable& typetable); \
 void scope_check(Environment& env);		\
-void type_check(Environment& env);
-
+void type_check(Environment& env);		\
+bool is_main();				\
+void validate_name(TypeTable& tb);		\
+void validate_inheritance(TypeTable& tb);  \
+void class_redefintion(TypeTable& tb);	\
+void class_reserved_keywords_inheritance_validation(TypeTable& tb);	\
+void class_reserved_keywords_definition_validation(TypeTable& tb);	\
+void class_inheritance_validation(TypeTable& tb);		\
+void class_definition_validation(TypeTable& tb);			\
+void unique_class_validation(TypeTable& tb);				\
+void acyclic_inheritance_graph_validation(UnionFind& uf); 
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 				\

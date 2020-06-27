@@ -1,6 +1,7 @@
 #include <type-table.h>
 #include <cool-tree.h>
 #include <unordered_set>
+#include <vector>
 
 #define SET_CONTAINS(map, element) (map.find(element) != map.end())
 
@@ -18,19 +19,16 @@ TypeTable::TypeTable(Classes classes)
     // insert all the types in the set
     for(int i = 0, n = classes->len(); i < n; i++)
         all_defined_types.insert(classes->nth(i)->get_name());
+
+    
     basic_types = {Int, Str, Bool};
     built_in_types = {Int, Str, Bool, Object, IO};
     reserved_types = { SELF_TYPE };
     reserved_identifiers = { self };
 
-    all_defined_types.insert(SELF_TYPE);
-
-    assert(SET_CONTAINS(all_defined_types, Int));
-    assert(SET_CONTAINS(all_defined_types, Str));
-    assert(SET_CONTAINS(all_defined_types, Bool));
-    assert(SET_CONTAINS(all_defined_types, IO));
-    assert(SET_CONTAINS(all_defined_types, Int));
-
+    vector<Symbol> all_special_types = {Int, Str, Bool, Object, IO};
+    for(auto type : all_special_types)
+        all_defined_types.insert(type);
 }
 
 bool TypeTable::contains(Symbol type)

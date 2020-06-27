@@ -1,12 +1,12 @@
 #ifndef _TYPE_TABLE_H_
 #define _TYPE_TABLE_H_
 
-#include <cool-tree.h>
-
 #include <unordered_set>
+#include <cool-tree.h>
 
 using namespace std;
 static char* no_type = "_no_type"; 
+
 
 //////////////////////////////////////////////////////////////////////
 //

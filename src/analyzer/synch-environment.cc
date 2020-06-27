@@ -10,7 +10,7 @@
 //    a feature before it is defined
 //////////////////////////////////////////////////////////////////////////
 
-#include <cool-tree.h>
+#include "cool-tree.h"
 #include <environment.h>
 #include <symtab.h>
 #include <unordered_set>
@@ -109,6 +109,7 @@ void class__class::sync_global_env(Environment& env)
     int n = features->len();
     for(int i = 0; i < n; i++)
         features->nth(i)->add_to_env(name, env);
+    clean_local_env(env); /*clean features that might have been added by mistake*/
 }
 
 /*

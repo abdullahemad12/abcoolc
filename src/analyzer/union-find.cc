@@ -1,7 +1,8 @@
 #include <cassert>  
-#include <class-tree.h>
+#include <cool-tree.h>
+#include <union-find.h>
 
-UnionFind::UnionFind(unsigned int n) : n(n)
+UnionFind::UnionFind(Classes classes) : n(classes->len())
 {
     parents = new unsigned int[n];
     rank = new unsigned int[n];
@@ -9,6 +10,8 @@ UnionFind::UnionFind(unsigned int n) : n(n)
     {
         parents[i] = i;
         rank[i] = 1;
+        mapping[classes->nth(i)->get_name()] = i;
+
     }
 }
 
@@ -60,4 +63,15 @@ void UnionFind::union_components(unsigned int i, unsigned int j)
         parents[parentI] = parentJ;
         ++rank[parentI];
     }
+}
+
+bool UnionFind::disjoint(Symbol class1, Symbol class2)
+{
+    return disjoint(mapping[class1], mapping[class2]);
+}
+
+
+void UnionFind::union_components(Symbol class1, Symbol class2)
+{
+    union_components(mapping[class1], mapping[class2]);
 }

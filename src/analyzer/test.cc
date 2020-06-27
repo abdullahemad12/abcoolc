@@ -10,7 +10,6 @@
 #include <semant-errors.h>
 #include <type-table.h>
 #include <environment.h>
-#include <class-validator.h>
 #include <sys/wait.h>
 
 extern Program ast_root;      // root of the abstract syntax tree
@@ -286,6 +285,62 @@ Classes create_valid_graph_without_object(void)
 
     return all;
 }
+
+Classes create_valid_graph_inheriting_SELF_TYPE(void)
+{
+    Symbol Object = idtable.add_string("Object");
+    Symbol no_class  = idtable.add_string(no_type);
+    Symbol myclass1 = idtable.add_string("myclass1");
+    Symbol myclass2 = idtable.add_string("myclass2");
+    Symbol myclass3 = idtable.add_string("myclass3");
+    Symbol myclass4 = idtable.add_string("myclass4");
+    Symbol myclass5 = idtable.add_string("myclass5");
+    Symbol myclass6 = idtable.add_string("myclass6");
+    Symbol myclass7 = idtable.add_string("myclass7");
+    Symbol myclass8 = idtable.add_string("myclass8");
+    Symbol myclass9 = idtable.add_string("myclass9");
+    Symbol self_type = idtable.add_string("SELF_TYPE");
+    Symbol myclass10 = idtable.add_string("myclass10");
+    Symbol _no_class = idtable.add_string("_no_class");
+    Symbol filename = idtable.add_string("filetable");
+
+    Class_ class1 = class_(myclass1, Object, nil_Features(), filename);
+    Class_ class2 = class_(myclass2, self_type, nil_Features(), filename);
+    Class_ class3 = class_(myclass3, myclass1, nil_Features(), filename);
+    Class_ class4 = class_(myclass4, myclass3, nil_Features(), filename);
+    Class_ class5 = class_(myclass5, myclass2, nil_Features(), filename);
+    Class_ class6 = class_(myclass6, myclass5, nil_Features(), filename);
+    Class_ class7 = class_(myclass7, myclass5, nil_Features(), filename);
+    Class_ class8 = class_(myclass8, myclass4, nil_Features(), filename);
+    Class_ class9 = class_(myclass9, myclass4, nil_Features(), filename);
+    Class_ class10 = class_(myclass10, myclass4, nil_Features(), filename);
+	
+
+
+    Classes classes1 = single_Classes(class1);
+    Classes classes2 = single_Classes(class2);
+    Classes classes3 = single_Classes(class3);
+    Classes classes4 = single_Classes(class4);
+    Classes classes5 = single_Classes(class5);
+    Classes classes6 = single_Classes(class6);
+    Classes classes7 = single_Classes(class7);
+    Classes classes8 = single_Classes(class8);
+    Classes classes9 = single_Classes(class9);
+    Classes classes10 = single_Classes(class10);
+    
+    Classes all = append_Classes(classes1, classes2);
+    all = append_Classes(all, classes3);
+    all = append_Classes(all, classes4);
+    all = append_Classes(all, classes5);
+    all = append_Classes(all, classes6);
+    all = append_Classes(all, classes7);
+    all = append_Classes(all, classes8);
+    all = append_Classes(all, classes9);
+    all = append_Classes(all, classes10);
+
+    return all;
+}
+
 
 
 
@@ -646,10 +701,12 @@ Feature create_method2()
 
 void validate_error(Classes classes)
 {
+    TypeTable tb(classes);
+    Program prog = program(classes);
     int pid = fork();
     if(pid == 0)
     {
-        validate(classes);
+        prog->validate_classes();
         exit(0);
     }
     else 
@@ -660,6 +717,24 @@ void validate_error(Classes classes)
     }
 }
 
+// this prevents the progam from exiting
+void validate_success(Classes classes)
+{
+    TypeTable tb(classes);
+    Program prog = program(classes);
+    int pid = fork();
+    if(pid == 0)
+    {
+        prog->validate_classes();
+        exit(0);
+    }
+    else 
+    {
+        int status = 0;
+        waitpid(pid, &status, 0);
+        REQUIRE(status == 0);
+    }
+}
 /*************************************************************************************/
 /*************************************Tests*******************************************/
 /*************************************************************************************/
@@ -980,4 +1055,452 @@ TEST_CASE("Invalid Inheritance detection Test2")
 {
     Classes classes = create_invalid_inheritance_classes2();
     validate_error(classes);
+}
+
+
+TEST_CASE("Basic Class Redefinition detection test 1")
+{
+    char* basic_class = "Int";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    validate_error(classes);
+}
+
+TEST_CASE("SELF TYPE Inheritance detection Test1")
+{
+    Classes classes = create_valid_graph_inheriting_SELF_TYPE();
+    validate_error(classes);
+}
+
+
+
+TEST_CASE("Basic Class Redefinition detection test 2")
+{
+    char* basic_class = "String";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    validate_error(classes);
+
+}
+
+TEST_CASE("Basic Class Redefinition detection test 3")
+{
+    char* basic_class = "Bool";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    validate_error(classes);
+
+}
+
+TEST_CASE("Basic Class Redefinition detection test 4")
+{
+    char* basic_class = "IO";
+    Classes classes = create_basic_class_redefinition(basic_class);
+    validate_error(classes);
+}
+
+TEST_CASE("Basic Class Inheritance detection test 1")
+{
+    char* basic_class = "Bool";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    validate_error(classes);
+
+}
+
+TEST_CASE("Basic Class Inheritance detection test 2")
+{
+    char* basic_class = "String";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    validate_error(classes);
+
+}
+TEST_CASE("Basic Class Inheritance detection test 3")
+{
+    char* basic_class = "Int";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    validate_error(classes);
+
+}
+
+TEST_CASE("Basic Class Inheritance detection test 4")
+{
+    char* basic_class = "IO";
+    Classes classes = create_basic_class_inheritance(basic_class);
+    validate_error(classes);
+
+}
+
+TEST_CASE("TypeTable Contains Test")
+{
+    Classes classes = create_valid_graph();
+    TypeTable ct(classes);
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(ct.contains(classes->nth(i)->get_name()));
+    }
+}
+
+
+TEST_CASE("TypeTable BasicType")
+{
+    Classes classes = create_valid_graph_without_object();
+    TypeTable ct(classes);
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(!ct.is_built_in_type(classes->nth(i)->get_name()));
+    }
+    REQUIRE(ct.is_built_in_type(idtable.add_string("Int")));
+    REQUIRE(ct.is_built_in_type(idtable.add_string("Bool")));
+    REQUIRE(ct.is_built_in_type(idtable.add_string("Str")));
+    REQUIRE(ct.is_built_in_type(idtable.add_string("IO")));
+    REQUIRE(ct.is_built_in_type(idtable.add_string("Object")));
+    REQUIRE(!ct.is_built_in_type(idtable.add_string("SELF_TYPE")));
+
+}
+
+TEST_CASE("TypeTable Reserved Type")
+{
+    Classes classes = create_valid_graph_without_object();
+    TypeTable ct(classes);
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(!ct.is_reserved_identifier(classes->nth(i)->get_name()));
+    }
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Int")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Bool")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Str")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("IO")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Object")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("SELF_TYPE")));
+    REQUIRE(ct.is_reserved_identifier(idtable.add_string("self")));
+
+}
+
+
+TEST_CASE("TypeTable Reserved ID")
+{
+    Classes classes = create_valid_graph();
+    TypeTable ct(classes);
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(!ct.is_reserved_type(classes->nth(i)->get_name()));
+    }
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Int")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Bool")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Str")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("IO")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Object")));
+    REQUIRE(ct.is_reserved_identifier(idtable.add_string("SELF_TYPE")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("self")));
+
+}
+
+TEST_CASE("TypeTable basic Type")
+{
+    Classes classes = create_valid_graph();
+    TypeTable ct(classes);
+
+    for(int i = 0; i < classes->len(); i++)
+    {
+        REQUIRE(!ct.is_reserved_type(classes->nth(i)->get_name()));
+    }
+    REQUIRE(ct.is_reserved_identifier(idtable.add_string("Int")));
+    REQUIRE(ct.is_reserved_identifier(idtable.add_string("Bool")));
+    REQUIRE(ct.is_reserved_identifier(idtable.add_string("Str")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("IO")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("Object")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("SELF_TYPE")));
+    REQUIRE(!ct.is_reserved_identifier(idtable.add_string("self")));
+
+}
+
+
+TEST_CASE("method_class::add_to_env test1")
+{
+    Symbol class_name = idtable.add_string("Class_name");
+    Feature method = create_method1();
+    Environment env;
+    method->add_to_env(class_name, env);
+
+
+    REQUIRE(env.contains_method(class_name, method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_method(class_name, method->get_name());
+
+    // not good style but I need to assert this 
+    REQUIRE((sign ==  *((method_class*) method)));
+
+    env.remove_method(class_name, method->get_name());
+
+    REQUIRE(!env.contains_method(class_name, method->get_name()));
+
+}
+
+
+
+TEST_CASE("method_class::add_to_env test2")
+{
+    // tons of memory leaks :(
+    int t = 100;
+    Environment env;
+    for(int i = 0; i < t; i++)
+    {
+        Symbol class_name = idtable.add_string("Class_name");
+        Feature method = create_method1();
+        method->add_to_env(class_name, env);
+        REQUIRE(env.contains_method(class_name, method->get_name()));
+    }
+    Symbol class_name = idtable.add_string("Class_name");
+    Feature method = create_method1();
+    env.remove_method(class_name, method->get_name());
+    REQUIRE(env.contains_method(class_name, method->get_name()));
+}
+
+TEST_CASE("method_class::add_to_local_env1")
+{
+    Environment env;
+    Symbol class_name = idtable.add_string("local_type");
+    Feature method = create_method1();
+    method->add_to_env(idtable.add_string("SELF_TYOE"), env);
+
+    REQUIRE(env.contains_method(idtable.add_string("SELF_TYOE"), method->get_name()));
+    MethodEnvironment::Signature sign = env.lookup_method(idtable.add_string("SELF_TYOE"), method->get_name());
+
+    // not good style but I need to assert this 
+    REQUIRE((sign ==  *((method_class*) method)));
+
+    env.remove_method(idtable.add_string("SELF_TYOE"), method->get_name());
+
+    REQUIRE(!env.contains_method(idtable.add_string("SELF_TYOE"), method->get_name()));
+}
+
+TEST_CASE("method_class::remove_from_local_env")
+{
+    // attempt two insert two methods with the same name but different parameters
+    Symbol class_name = idtable.add_string("SELF_TYPE");
+    Feature method1 = create_method1();
+
+    Environment env;
+
+    method1->add_to_env(class_name, env);
+
+    REQUIRE(env.contains_method(class_name, method1->get_name()));
+    method1->remove_from_env(env);
+    REQUIRE(!env.contains_method(class_name, method1->get_name()));
+
+}
+
+
+
+TEST_CASE("attribute::add_to_local_env")
+{
+    Symbol self_type = idtable.add_string("SELF_TYPE");
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol attr2 = idtable.add_string("attr2");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+    Feature fattr2 = attr(attr2, type1, no_expr());
+    
+    Environment env;
+
+    fattr1->add_to_env(self_type, env);
+    fattr2->add_to_env(self_type, env);
+
+
+    REQUIRE(env.contains_object(attr1));
+
+    env.remove_object(attr1);
+
+    REQUIRE(env.contains_object(attr2));
+
+    env.remove_object(attr2);
+
+    REQUIRE(!env.contains_object(attr2));
+
+}
+
+
+
+TEST_CASE("Sync_local_environment1")
+{
+    Environment env;
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol attr2 = idtable.add_string("attr2");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+    Feature fattr2 = attr(attr2, type1, no_expr());
+
+    Feature method = create_method1();
+
+    Features f1 = single_Features(fattr1);
+    Features f2 = single_Features(fattr2);
+    Features f3 = single_Features(method);
+    Features features = append_Features(f1, f2);
+    features = append_Features(features, f3);
+
+    Symbol class_name = idtable.add_string("Class1");
+    Symbol parent = idtable.add_string("Object");
+    Symbol filename = idtable.add_string("cool.cl");
+    Class_ class__ = class_(class_name, parent, features, filename);
+
+
+    class__->sync_local_env(env);
+
+
+
+
+
+    REQUIRE(env.contains_method(idtable.add_string("SELF_TYPE"), method->get_name()));
+    REQUIRE(env.contains_object(attr1));
+    REQUIRE(env.contains_object(attr2));
+   
+
+    class__->clean_local_env(env);
+    REQUIRE(!env.contains_method(idtable.add_string("SELF_TYPE"), method->get_name()));
+    REQUIRE(!env.contains_object(attr1));
+    REQUIRE(!env.contains_object(attr2));
+}
+
+TEST_CASE("Sync_local_environment2")
+{
+    Symbol attr1 = idtable.add_string("attr1");
+    Symbol type1 = idtable.add_string("type1");
+
+    Feature fattr1 = attr(attr1, type1, no_expr());
+
+    Feature method = create_method1();
+    Feature fattr2 = attr(method->get_name(), type1, no_expr());
+
+    Features f1 = single_Features(fattr1);
+    Features f2 = single_Features(fattr2);
+    Features f3 = single_Features(method);
+    Features features = append_Features(f1, f3);
+    features = append_Features(features, f2);
+
+    Symbol class_name = idtable.add_string("Class1");
+    Symbol parent = idtable.add_string("Object");
+    Symbol filename = idtable.add_string("cool.cl");
+    Class_ class__ = class_(class_name, parent, features, filename);
+
+    Environment env;
+    class__->sync_local_env(env);
+
+
+
+    Symbol local_class = idtable.add_string("SELF_TYPE");
+    REQUIRE(env.contains_method(local_class, method->get_name()));
+    REQUIRE(env.contains_object(attr1));
+    
+    class__->clean_local_env(env);
+    REQUIRE(!env.contains_method(local_class, method->get_name()));
+    REQUIRE(!env.contains_object(attr1));
+}
+
+
+
+TEST_CASE("Method::synch_local_environment1")
+{
+    Symbol local_class = idtable.add_string("SELF_TYPE");
+    Symbol name = idtable.add_string("method_name");
+    Symbol ret_type = idtable.add_string("Type");
+    Symbol id1 = idtable.add_string("id1");
+    Symbol id2 = idtable.add_string("id2");
+    Symbol id3 = idtable.add_string("id3");
+    Symbol id4 = idtable.add_string("id4");
+    Symbol id5 = idtable.add_string("id5");
+    Symbol self = idtable.add_string("self");
+    Symbol type1 = idtable.add_string("Type1");
+    Symbol type2 = idtable.add_string("Type2");
+    Symbol type3 = idtable.add_string("Type1");
+    Symbol type4 = idtable.add_string("Type3");
+    Symbol type5 = idtable.add_string("Type3");
+    
+    Formal formal1 = formal(id1, type1);
+    Formal formal2 = formal(id2, type2);
+    Formal formal3 = formal(id3, type3);
+    Formal formal4 = formal(id4, type4);
+    Formal formal5 = formal(id5, type5);
+
+    Formals sing1 = single_Formals(formal1);
+    Formals sing2 = single_Formals(formal2);
+    Formals sing3 = single_Formals(formal3);
+    Formals sing4 = single_Formals(formal4);
+    Formals sing5 = single_Formals(formal5);
+
+    Formals formals = append_Formals(sing1, sing2);
+    formals = append_Formals(formals, sing3);
+    formals = append_Formals(formals, sing4);
+    formals = append_Formals(formals, sing5);
+
+    method_class* meth = (method_class*) method(name, formals, ret_type, no_expr());
+
+    Environment env;
+    meth->sync_environment(env);
+
+    REQUIRE(env.contains_object(id1));
+    REQUIRE(env.contains_object(id2));
+    REQUIRE(env.contains_object(id3));
+    REQUIRE(env.contains_object(id4));
+    REQUIRE(env.contains_object(id5));
+    REQUIRE(env.contains_object(self));
+
+    REQUIRE(env.lookup_object(id1) == type1);
+    REQUIRE(env.lookup_object(id2) == type2);
+    REQUIRE(env.lookup_object(id3) == type3);
+    REQUIRE(env.lookup_object(id4) == type4);
+    REQUIRE(env.lookup_object(id5) == type5);
+    REQUIRE(env.lookup_object(self) == local_class);
+}
+
+
+TEST_CASE("Method::clean_local_environment3")
+{
+    Symbol name = idtable.add_string("method_name");
+    Symbol ret_type = idtable.add_string("Type");
+    Symbol id1 = idtable.add_string("id1");
+    Symbol id2 = idtable.add_string("id1");
+    Symbol id3 = idtable.add_string("id3");
+    Symbol id4 = idtable.add_string("id3");
+    Symbol id5 = idtable.add_string("id5");
+    Symbol type1 = idtable.add_string("Type1");
+    Symbol type2 = idtable.add_string("Type2");
+    Symbol type3 = idtable.add_string("Type1");
+    Symbol type4 = idtable.add_string("Type3");
+    Symbol type5 = idtable.add_string("Type3");
+    Symbol self = idtable.add_string("self");
+
+    Formal formal1 = formal(id1, type1);
+    Formal formal2 = formal(id2, type2);
+    Formal formal3 = formal(id3, type3);
+    Formal formal4 = formal(id4, type4);
+    Formal formal5 = formal(id5, type5);
+
+    Formals sing1 = single_Formals(formal1);
+    Formals sing2 = single_Formals(formal2);
+    Formals sing3 = single_Formals(formal3);
+    Formals sing4 = single_Formals(formal4);
+    Formals sing5 = single_Formals(formal5);
+
+    Formals formals = append_Formals(sing1, sing2);
+    formals = append_Formals(formals, sing3);
+    formals = append_Formals(formals, sing4);
+    formals = append_Formals(formals, sing5);
+
+    method_class* meth = (method_class*) method(name, formals, ret_type, no_expr());
+
+
+    Environment env;
+    meth->sync_environment(env);
+
+
+
+    meth->clean_environment(env);
+
+    REQUIRE(!env.contains_object(id1));
+    REQUIRE(!env.contains_object(id2));
+    REQUIRE(!env.contains_object(id3));
+    REQUIRE(!env.contains_object(id4));
+    REQUIRE(!env.contains_object(id5));
+    REQUIRE(!env.contains_object(self));
 }
