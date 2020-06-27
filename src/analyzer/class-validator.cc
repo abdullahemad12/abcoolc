@@ -12,6 +12,7 @@ Classes install_basic_classes(Classes classes);
 Classes validate(Classes classes)
 {
     initialize_constants();
+    Symbol sym = NULL; 
     exit(1);
     return classes;
 }

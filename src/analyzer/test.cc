@@ -644,7 +644,21 @@ Feature create_method2()
     return meth;
 } 
 
-
+void validate_error(Classes classes)
+{
+    int pid = fork();
+    if(pid == 0)
+    {
+        validate(classes);
+        exit(0);
+    }
+    else 
+    {
+        int status = 0;
+        waitpid(pid, &status, 0);
+        REQUIRE(status == 256);
+    }
+}
 
 /*************************************************************************************/
 /*************************************Tests*******************************************/
@@ -946,19 +960,24 @@ TEST_CASE("get_euler_walk")
 TEST_CASE("Class Redefinition detection Test 1")
 {
    Classes classes = create_redefinition_graph1();
-
-   char* expected_name = "myclass6";
-   int pid = fork();
-   if(pid = 0)
-   {
-       validate(classes);
-   }
-   else 
-   {
-        int status = 0;
-        waitpid(pid, &status, 0);
-        cout << status;
-        REQUIRE(WIFSIGNALED(status));
-   }
+   validate_error(classes);
 }
 
+TEST_CASE("Class Redefinition detection Test 2")
+{
+    Classes classes = create_redefinition_graph2();
+   validate_error(classes);
+}
+
+
+TEST_CASE("Invalid Inheritance detection Test1")
+{
+    Classes classes = create_invalid_inheritance_classes1();
+    validate_error(classes);
+}
+
+TEST_CASE("Invalid Inheritance detection Test2")
+{
+    Classes classes = create_invalid_inheritance_classes2();
+    validate_error(classes);
+}

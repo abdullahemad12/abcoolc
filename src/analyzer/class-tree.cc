@@ -25,7 +25,7 @@ ClassTree::ClassTree(Classes classes, Symbol root_symbol)
   
   // declarations
   vector<pair<Symbol, Symbol>> edges;
-  vector<Node*> euler_trip_nodes;
+  vector<ClassTree::Node*> euler_trip_nodes;
   
   // initialization
   construct_graph(classes, root_symbol, edges);
@@ -36,7 +36,7 @@ ClassTree::ClassTree(Classes classes, Symbol root_symbol)
 
 void ClassTree::construct_graph(Classes classes, Symbol root_symbol, vector<pair<Symbol, Symbol>>& edges)
 {   
-    unordered_map<Symbol, Node*> nodes;
+    unordered_map<Symbol, ClassTree::Node*> nodes;
     create_nodes(classes, nodes);
     // set the root and size
     assert(MAP_CONTAINS(nodes, root_symbol));
@@ -44,7 +44,7 @@ void ClassTree::construct_graph(Classes classes, Symbol root_symbol, vector<pair
     this->n = nodes.size();
     nodes[No_class] = NULL;
     // adds child to the parent and creates a new edge
-    for(int i = 0; i < n; i++)
+    for(int i = 0, n = classes->len(); i < n; i++)
     {
       Class_ class_ = classes->nth(i);
       Symbol name = class_->get_name();

@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.3.  */
+/* A Bison parser, made by GNU Bison 3.6.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_COOL_YY_COOL_TAB_H_INCLUDED
 # define YY_COOL_YY_COOL_TAB_H_INCLUDED
@@ -44,40 +45,48 @@
 extern int cool_yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    CLASS = 258,
-    ELSE = 259,
-    FI = 260,
-    IF = 261,
-    IN = 262,
-    INHERITS = 263,
-    LET = 264,
-    LOOP = 265,
-    POOL = 266,
-    THEN = 267,
-    WHILE = 268,
-    CASE = 269,
-    ESAC = 270,
-    OF = 271,
-    DARROW = 272,
-    NEW = 273,
-    ISVOID = 274,
-    STR_CONST = 275,
-    INT_CONST = 276,
-    BOOL_CONST = 277,
-    TYPEID = 278,
-    OBJECTID = 279,
-    ASSIGN = 280,
-    NOT = 281,
-    LE = 282,
-    ERROR = 283
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 284,                 /* "invalid token"  */
+    CLASS = 258,                   /* CLASS  */
+    ELSE = 259,                    /* ELSE  */
+    FI = 260,                      /* FI  */
+    IF = 261,                      /* IF  */
+    IN = 262,                      /* IN  */
+    INHERITS = 263,                /* INHERITS  */
+    LET = 264,                     /* LET  */
+    LOOP = 265,                    /* LOOP  */
+    POOL = 266,                    /* POOL  */
+    THEN = 267,                    /* THEN  */
+    WHILE = 268,                   /* WHILE  */
+    CASE = 269,                    /* CASE  */
+    ESAC = 270,                    /* ESAC  */
+    OF = 271,                      /* OF  */
+    DARROW = 272,                  /* DARROW  */
+    NEW = 273,                     /* NEW  */
+    ISVOID = 274,                  /* ISVOID  */
+    STR_CONST = 275,               /* STR_CONST  */
+    INT_CONST = 276,               /* INT_CONST  */
+    BOOL_CONST = 277,              /* BOOL_CONST  */
+    TYPEID = 278,                  /* TYPEID  */
+    OBJECTID = 279,                /* OBJECTID  */
+    ASSIGN = 280,                  /* ASSIGN  */
+    NOT = 281,                     /* NOT  */
+    LE = 282,                      /* LE  */
+    ERROR = 283                    /* ERROR  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 284
 #define CLASS 258
 #define ELSE 259
 #define FI 260
@@ -127,7 +136,7 @@ union YYSTYPE
       char *error_msg;
     
 
-#line 131 "cool.tab.h"
+#line 140 "cool.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
