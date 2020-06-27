@@ -1,7 +1,7 @@
-#ifndef CLASS_TABLE_H_
-#define CLASS_TABLE_H_
+#ifndef _TYPE_TABLE_H_
+#define _TYPE_TABLE_H_
 
-#include <unordered_map>
+#include <unordered_set>
 #include <cool-tree.h>
 
 using namespace std;
@@ -80,41 +80,57 @@ static void initialize_constants(void)
 }
 
 
-class ClassTable
+class TypeTable
 {
     private:
-        std::unordered_map<Symbol, Class_> classes;
-        bool is_init = false;
-    protected:
-        ClassTable() { }
-        ~ClassTable() { }
-        /*delete those methods to avoid unwanted errors */
-        ClassTable(ClassTable const&) = delete;
-        void operator=(ClassTable const&) = delete;
-
-        
-
-    private:
-        void check_for_invalid_inheritance(Classes classes);
-        void check_for_invalid_definitions(Classes classes);
-        Classes install_basic_classes(Classes classes);
+        unordered_set<Symbol> all_defined_types;
+        // those you cannot inherit
+        unordered_set<Symbol> basic_types;
+        // those you cannot redefine 
+        unordered_set<Symbol> reserved_types;
+        // usage of those are restricted
+        unordered_set<Symbol> reserved_identifiers;
+        // this cannot be redefined
+        unordered_set<Symbol> built_in_types;
 
     public:
-        Classes init(Classes classes);
-        auto begin(void) { return classes.begin(); }
-        auto end(void) { return  classes.end(); }
-        bool contains(Symbol class_) { return classes.find(class_) != classes.end(); };
-        Class_ operator[](Symbol sym) { return classes[sym]; }
+        TypeTable(Classes classes);
         /**
-         * References: https://stackoverflow.com/a/30687399/6548856
-         */
-        static ClassTable& instance()
-        {
-            static ClassTable t;
-            return t;
-        }
+          * @brief checks if the given type exists in the type table. the type can be 
+          *        built-in or user defined
+          * @param type 
+          * @return true if it is found (i.e defined)
+          */
+        bool contains(Symbol type);
+        /**
+          * @brief checks if the given symbol is one of the basic types 
+          * @param type
+          * @return true if type is a basic type
+          */ 
+        bool is_basic_type(Symbol type);
+        /**
+          * @brief checks if the given symbol is one of the reserved types
+          * @param type
+          * @return true if type is a reserved type
+          */ 
+        bool is_reserved_type(Symbol type);
+
+        /**
+         * @brief checks if the given type is one of the built-in types
+         * @param id
+         * @return true if type is a built-in identifier
+         */ 
+        bool is_built_in_type(Symbol type);
+
+        /**
+         * @brief checks if the given identifier is one of the reserved identifiers
+         * @param id
+         * @return true if type is a reserved identifier
+         */ 
+        bool is_reserved_identifier(Symbol id);
+
 };
 
 
 
-#endif /*CLASS_TABLE_H_*/
+#endif /*_TYPE_TABLE_H_*/

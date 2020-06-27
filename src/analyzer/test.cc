@@ -29,19 +29,6 @@ using namespace std;
  * these classes allows instantiating instances    *
  * of the singleton class just for testing puposes *
  ***************************************************/
-class ClassTreeWrapper : public ClassTree
-{
-    public:
-        ClassTreeWrapper() { }
-        ~ClassTreeWrapper() { }
-};
-
-class ClassTableWrapper : public ClassTable
-{
-    public:
-        ClassTableWrapper() { }
-        ~ClassTableWrapper() { }
-};
 
 class ObjectEnvironmentWrapper : public ObjectEnvironment
 {
@@ -145,7 +132,7 @@ Classes create_cyclic_classes(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol No_class = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -191,7 +178,7 @@ Classes create_valid_graph(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol no_class  = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -248,7 +235,7 @@ Classes create_valid_graph_without_object(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol no_class  = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -304,7 +291,7 @@ Classes create_redefinition_graph1(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol no_class  = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -360,7 +347,7 @@ Classes create_redefinition_graph2(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol No_class = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -403,7 +390,7 @@ Classes create_invalid_inheritance_classes1(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol No_class = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -448,7 +435,7 @@ Classes create_invalid_inheritance_classes2(void)
 {
     Symbol Object = idtable.add_string("Object");
     Symbol no_class  = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -505,7 +492,7 @@ Classes create_invalid_inheritance_classes2(void)
 Classes create_basic_class_redefinition(char* basic_class)
 {
     Symbol no_class  = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -559,7 +546,7 @@ Classes create_basic_class_redefinition(char* basic_class)
 Classes create_basic_class_inheritance(char* basic_class)
 {
     Symbol no_class  = idtable.add_string(no_type);
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -828,33 +815,12 @@ TEST_CASE("Multiple insertions in Method environment")
     env.remove(myclass, method);
     REQUIRE(!env.contains(myclass, method));
 }
-TEST_CASE("Cyclic graph Test")
-{
-    Classes classes = create_cyclic_classes();
-    ClassTreeWrapper ct;
-    Symbol object = idtable.add_string("Object");
-    
-    try
-    {
-        ct.init(classes, object);
-        REQUIRE(false);
-    }
-    catch(const CyclicClassException& e)
-    {
-        REQUIRE(true);
-    }
-    catch(const std::exception& e)
-    {
-        REQUIRE(false);
-    }
-    
-}
 
 TEST_CASE("LUB Operation")
 {
     Classes classes = create_valid_graph();
-    ClassTreeWrapper ct;
-    Symbol myclass1 = idtable.add_string("Main");
+    ClassTree ct(classes);
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -900,7 +866,7 @@ TEST_CASE("is_derived check")
 {
     Classes classes = create_valid_graph();
     ClassTreeWrapper ct;
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -931,7 +897,7 @@ TEST_CASE("get_euler_walk")
     Classes classes = create_valid_graph();
     ClassTreeWrapper ct;
 
-    Symbol myclass1 = idtable.add_string("Main");
+    Symbol myclass1 = idtable.add_string("myclass1");
     Symbol myclass2 = idtable.add_string("myclass2");
     Symbol myclass3 = idtable.add_string("myclass3");
     Symbol myclass4 = idtable.add_string("myclass4");
@@ -1052,7 +1018,7 @@ TEST_CASE("Invalid Inheritance detection Test2")
     }
     catch(UndefinedClassException& excep)
     {
-        Symbol expected = idtable.add_string("Main");
+        Symbol expected = idtable.add_string("myclass1");
         REQUIRE(excep.get_faulty_class() == expected);
     }
     catch(exception& excep)

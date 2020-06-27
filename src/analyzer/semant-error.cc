@@ -1,5 +1,6 @@
-#include <exceptions.h>
+#include <semant-errors.h>
 #include <class-table.h>
+#include <cool-tree.h>
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -15,53 +16,172 @@
 //       print a line number and filename
 //
 ///////////////////////////////////////////////////////////////////
-ostream& SemantExceptionHandler::semant_error(Class_ c)
+
+ostream& SemantErrorHandler::semant_error(Class_ c)
 {                                                             
     return semant_error(c->get_filename(),c);
 }    
 
-ostream& SemantExceptionHandler::semant_error(Symbol filename, tree_node *t)
+ostream& SemantErrorHandler::semant_error(Symbol filename, tree_node *t)
 {
     error_stream << filename << ":" << t->get_line_number() << ": ";
     return semant_error();
 }
 
-ostream& SemantExceptionHandler::semant_error()                  
+ostream& SemantErrorHandler::semant_error()                  
 {                                                 
     semant_errors++;                            
     return error_stream;
 } 
 
-int SemantExceptionHandler::report_all(void)
+void SemantErrorHandler::report(SemantError& err)
 {
-    ClassTable& classtable = ClassTable::instance();
-    int n = container.size();
-    for(AnalysisException* exp : container)
-    {
-        Symbol classname = exp->get_faulty_class();
-        Symbol filename = classtable[classname]->get_filename();
-        tree_node* node = exp->get_faulty_node();
-        auto& stream = semant_error(filename, node);
-        stream << exp->what() << endl;
-        delete exp;
-    }
-    container.clear();
-    return n;
+    Class_ class_ = err.get_class();
+    Symbol filename = class_->get_filename();
+    tree_node* node = err.get_faulty_node();
+    auto& stream = semant_error(filename, node);
+    stream << err.what() << endl;
 }
 
-void SemantExceptionHandler::report_one(Classes classes, GraphException& exp)
+void SemantErrorHandler::report_fatal(SemantError& err)
 {
-    Symbol class_name = exp.get_faulty_class();
-    int n = classes->len();
-    for(int i = 0; i < n; i++)
+    Class_ class_ = err.get_class();
+    Symbol filename = class_->get_filename();
+    tree_node* node = err.get_faulty_node();
+    auto& stream = semant_error(filename, node);
+    stream << err.what() << endl;
+    terminate_on_errors();
+}
+void SemantErrorHandler::report_fatal(UndefinedMainError& err)
+{
+    auto& stream = semant_error();
+    stream << err.what() << endl;
+    terminate_on_errors();
+}
+
+void SemantErrorHandler::terminate_on_errors(void)
+{
+    if(semant_errors)
     {
-        Class_ class_ = classes->nth(i);
-        if(class_->get_name() == class_name) {
-            auto& err = semant_error(class_);
-            err << exp.what() << std::endl;
-            break;
-        }
+        cerr << "Compilation halted due to static semantic errors." << endl;
+        exit(1);
     }
 }
 
 
+/************************************
+ * 
+ *  constructors for Errors
+ * 
+ ************************************/
+
+
+ClassRedefinitionError::ClassRedefinitionError(Class_ class_, tree_node* faulty_node) : SemantError(class_, faulty_node)
+{ 
+    msg << "class " << class_->get_name() << " is defined multiple times";
+}
+
+CyclicClassError::CyclicClassError(Class_ class_, tree_node* faulty_node) : SemantError(class_, faulty_node)
+{ 
+    msg << "class " << class_->get_name() << " causes a dependency cycle";
+}  
+
+UndefinedClassError::UndefinedClassError(Class_ class_, tree_node* faulty_node, Symbol undefined_class) 
+                                        : SemantError(class_, faulty_node)
+{
+    this->msg << "class " << class_->get_name() << 
+                            " inherits from undefined class " << undefined_class;
+}
+
+BasicClassRedefinitionError::BasicClassRedefinitionError(Class_ class_, tree_node* faulty_node) : SemantError(class_, faulty_node)
+{
+    msg << "Basic Class " << class_->get_name() << " cannot be redefined"; 
+}
+
+BasicClassInheritanceError::BasicClassInheritanceError(Class_ class_, tree_node* faulty_node, Symbol basic_class) 
+                                                    : SemantError(class_, faulty_node)
+{
+    msg << "Class " << class_->get_name() 
+        << "cannot inherit from built-in class " << basic_class->get_string();
+}
+
+ReservedInheritanceError::ReservedInheritanceError(Class_ class_, tree_node* faulty_node, Symbol reserved)
+                                     : SemantError(class_, faulty_node)
+{
+    msg << "Class " << class_
+            << " is trying to inherit from reserved type " << reserved;
+}
+
+ReservedClassDeclarationError::ReservedClassDeclarationError(Class_ class_, tree_node* faulty_node, Symbol reserved)  
+                             : SemantError(class_, faulty_node)
+{
+    msg << reserved << " cannot be declared as a class";
+}
+
+
+string UndefinedMainError::what(void) 
+{ 
+    return "Main Class is not defined."; 
+}
+
+
+TypeMismathcError::TypeMismathcError(Class_ faulty_class, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
+                   SemantError(class_, faulty_node) 
+{
+    msg <<  "expected type " << expected_symbol->get_string() << " but got " << faulty_symbol->get_string();
+}
+
+
+UndefinedTypeError::UndefinedTypeError(Class_ class_, tree_node* faulty_node, Symbol type) :
+                           SemantError(class_, faulty_node)
+{
+    msg << type->get_string() << " does not name a valid Type";
+}
+
+SelfTypeAsArgumentError::SelfTypeAsArgumentError(Class_ class_, tree_node* faulty_node) :
+                                    SemantError(class_, faulty_node) 
+{
+    msg << "SELF_TYPE cannot be declared as a method argument type";
+}
+
+UnexpectedNumberOfArgsError::UnexpectedNumberOfArgsError(Class_ class_, tree_node* faulty_node, int n_expected, int n_given) :
+                            SemantError(class_, faulty_node)
+{
+    msg << "Expects " << n_expected << " arguments but was given " << n_given; 
+}
+
+UndefinedAttributeError::UndefinedAttributeError(Class_ class_, tree_node* faulty_node, Symbol identifier) :    
+                                        SemantError(class_, faulty_node)
+{
+    msg << "attribute " << identifier << " is not defined in this context";
+}
+
+UndefinedMethodError::UndefinedMethodError(Class_ class_, tree_node* faulty_node, Symbol method) :
+                            SemantError(class_, faulty_node)
+{
+    msg << "method " << method << " is not defined in this context";
+}
+
+AttributeRedefinitionError::AttributeRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol identifier) : 
+                                    SemantError(class_, faulty_node)
+{
+    msg << "redefinition of attribute " << identifier << " is not allowed";
+}
+
+MethodRedefinitionError::MethodRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol method) : 
+                                    SemantError(class_, faulty_node)
+{
+    msg << "redefinition of method: " << method << " is not allowed";
+}
+
+InconsistentSignatureError::InconsistentSignatureError(Class_ class_, tree_node* faulty_node, Symbol method) :
+                                        SemantError(class_, faulty_node)
+{   
+    msg << "cannot override method " << method << " with a different signature";
+} 
+
+InvalidDispatchError::InvalidDispatchError(Class_ class_, tree_node* faulty_node, Symbol undefined_class) :
+                                SemantError(class_, faulty_node)
+{   
+    msg << "you are trying to call method in undefined Class " << undefined_class;
+}  

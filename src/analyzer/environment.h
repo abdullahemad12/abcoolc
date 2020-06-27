@@ -20,43 +20,24 @@ using namespace std;
 
 class Environment
 {
-    protected:
-        Environment() { }
-        ~Environment() { }
         /*delete those methods to avoid unwanted errors */
         Environment(Environment const&) = delete;
         void operator=(Environment const&) = delete;
-
-
     private:
-        MethodEnvironment local_method_env;
-        ObjectEnvironment local_object_env;
-        MethodEnvironment global_method_env;
-        Symbol resolve_type(Symbol type);
-        void resolve_signature_type(MethodSignature& sign);
-    public:
-        Symbol current_class;
-        void add_local(Symbol name, Symbol type);
-        void add_local(Symbol name, vector<Symbol> formals, Symbol return_type);
-        void add_global(Symbol class_name, Symbol name, vector<Symbol> formals, Symbol return_type);
-        void remove_local_method(Symbol name);
-        void remove_global_method(Symbol class_name, Symbol name);
-        void remove_local_object(Symbol name);
-        bool contains_local_object(Symbol name);
-        bool contains_local_method(Symbol name);
-        bool contains_global_method(Symbol class_name, Symbol name);
-        Symbol lookup_local_object(Symbol name);
-        MethodEnvironment::Signature lookup_local_method(Symbol name);
-        MethodEnvironment::Signature lookup_global_method(Symbol class_name, Symbol name);
+        ObjectEnvironment object_env;
+        MethodEnvironment method_env;
 
-        /**
-         * References: https://stackoverflow.com/a/30687399/6548856
-         */
-        static Environment& instance()
-        {
-            static Environment t;
-            return t;
-        }
-        
+    public:
+        Environment() { }
+        ~Environment() { }
+        Symbol current_class;
+        void add_object(Symbol name, Symbol type);
+        void add_method(Class_ class_,  method_class* method);
+        void remove_object(Symbol name);
+        void remove_method(Symbol class_name, Symbol method_name);
+        bool contains_object(Symbol name);
+        bool contains_method(Symbol class_name, Symbol name);
+        Symbol lookup_object(Symbol name);
+        MethodSignature lookup_method(Symbol class_name, Symbol name);
 };
 #endif /*_ENVIRONMENT_H*/

@@ -2,7 +2,6 @@
 #define CLASS_TREE_H_
 
 #include <cool-tree.h>
-#include <exceptions.h>
 #include <method-environment.h>
 #include <object-environment.h>
 #include <unordered_map>
@@ -94,33 +93,30 @@ class ClassTree
         /*the number of nodes in the tree*/
         int n;
 
-        // just used to catch errors 
-        bool is_init = false;
-
         /*
          * returns the edges in the graph for cycle detection represented by their
          * index in nodes. This is enough for Kruskal algorithm
          */
         void create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::Node*>& nodes);
         void construct_graph(Classes classes, Symbol root_symbol, vector<pair<Symbol, Symbol>>& edges);
-        /*
-         * runs Kruskals algorithm
-         * does not return any thing but might throw a fatal exception
-         */
-        void check_for_cycles(vector<pair<Symbol, Symbol>>& edges);
         void compute_first_occurance(void);
 
       protected:
-        ClassTree() { }
-        ~ClassTree();
+
         /*delete those methods to avoid unwanted errors */
         ClassTree(ClassTree const&) = delete;
         void operator=(ClassTree const&) = delete;
 
-
-
-
       public:
+        /**
+          * @brief creates the graph using the given classes
+          * @requires: classtable to be initialized 
+          * @modifies: this
+          * @param Classes the classes in the program + basic classes
+          * @param root the root of the of the tree
+          */ 
+        ClassTree(Classes classes, Symbol root);
+        ~ClassTree();
         /**
           * @brief least upper bound (lub) operation as defined in the manual
           *          basically, it calculates the Least common ancestor of the 
@@ -143,15 +139,7 @@ class ClassTree
          */ 
         bool is_derived(Symbol derived, Symbol base);
 
-        /**
-          * @brief creates the graph using the given classes
-          * @requires: classtable to be initialized 
-          * @modifies: this
-          * @param Classes the classes in the program + basic classes
-          * @param root the root of the of the tree
-          */ 
-        void init(Classes classes, Symbol root);
-
+  
         /**
           * Iterator functions 
           * iterates over the the nodes in the tree in an euler walk order
@@ -159,14 +147,6 @@ class ClassTree
           */
         auto begin() { return euler_trip.begin(); }
         auto end() { return euler_trip.end(); }
-        /**
-          * References: https://stackoverflow.com/a/30687399/6548856
-          */
-        static ClassTree& instance()
-        {
-            static ClassTree t;
-            return t;
-        }
 };
 
 /**
