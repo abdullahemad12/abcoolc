@@ -17,7 +17,9 @@
 
 #include "stringtab.h"
 #include "cool-io.h"
-
+#include <vector>
+class TypeTable;
+class Environment;
 /////////////////////////////////////////////////////////////////////
 //
 //  tree_node
@@ -57,9 +59,17 @@ public:
     virtual tree_node *copy() = 0;
     virtual ~tree_node() { }
     virtual void dump(ostream& stream, int n) = 0;
+    virtual void validate(TypeTable& type_table) = 0;
+    virtual void scope_check(TypeTable& type_table, Environment& env) = 0;
+    virtual void type_check(TypeTable& type_table, Environment& env) = 0;
+    /**
+      * @brief gets a list of the children of this node if any
+      * Note: this is only used for validation as a BFS traversal is to validate
+      *       classes first
+      */ 
+    virtual std::vector<tree_node*> get_children() = 0;
     int get_line_number();
     tree_node *set(tree_node *);
-    bool type_check(Symbol given_type, Symbol inferred_type);
 };
 
 ///////////////////////////////////////////////////////////////////
@@ -115,6 +125,16 @@ public:
 
 template <class Elem> class list_node : public tree_node {
 public:
+    void validate(TypeTable& type_table) { assert(false); };
+    void scope_check(TypeTable& type_table, Environment& env) { assert(false); };
+    void type_check(TypeTable& type_table, Environment& env) { assert(false); };
+    std::vector<tree_node*> get_children() 
+    { 
+        assert(false);
+        std::vector<tree_node*> empty;
+        return empty;
+    };
+
     tree_node *copy()            { return copy_list(); }
     Elem nth(int n);
     //

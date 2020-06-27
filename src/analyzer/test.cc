@@ -706,7 +706,7 @@ void validate_error(Classes classes)
     int pid = fork();
     if(pid == 0)
     {
-        prog->validate_classes();
+        prog->validate(tb);
         exit(0);
     }
     else 
@@ -725,7 +725,7 @@ void validate_success(Classes classes)
     int pid = fork();
     if(pid == 0)
     {
-        prog->validate_classes();
+        prog->validate(tb);
         exit(0);
     }
     else 
