@@ -13,8 +13,7 @@
 #include "cool-tree.handcode.h"
 #include <vector>
 
-class Environment;
-class TypeTable;
+
 // define the class for phylum
 // define simple phylum - Program
 typedef class Program_class *Program;
@@ -141,6 +140,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
 
 #ifdef Program_SHARED_EXTRAS
@@ -170,6 +170,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -202,6 +203,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -232,6 +234,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
 
 
@@ -259,6 +262,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -289,6 +293,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -317,6 +322,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -349,6 +355,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -379,6 +386,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -409,6 +417,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -437,6 +446,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -465,6 +475,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -490,6 +501,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -522,6 +534,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -550,6 +563,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -578,6 +592,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -606,6 +621,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -634,6 +650,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -660,6 +677,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -688,6 +706,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -716,6 +735,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -744,6 +764,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -770,6 +791,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -796,6 +818,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -822,6 +845,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -848,6 +872,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -874,6 +899,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -900,6 +926,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -924,6 +951,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 
@@ -950,6 +978,7 @@ public:
    void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
 

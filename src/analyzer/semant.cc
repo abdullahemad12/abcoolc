@@ -33,7 +33,9 @@ void terminate_on_errors(void);
  */
 void program_class::semant()
 {
+    propagate_containing_class(NULL);
     initialize_constants();
+    install_basic_classes();
 }
 
 

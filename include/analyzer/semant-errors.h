@@ -82,6 +82,11 @@ class ReservedClassDeclarationError : public SemantError
         ReservedClassDeclarationError(Class_ class_, tree_node* faulty_node, Symbol reserved);
 };
 
+class ReservedIdentifierMisuseError : public SemantError 
+{
+    public:
+        ReservedIdentifierMisuseError(Class_ class_, tree_node* faulty_node, Symbol reserved);
+};
 class UndefinedMainError
 {
     public:
@@ -139,17 +144,12 @@ class UndefinedMethodError : public SemantError
     UndefinedMethodError(Class_ class_, tree_node* faulty_node, Symbol method);
 };
 
-class AttributeRedefinitionError : public SemantError
+class FeatureRedefinitionError : public SemantError
 {
     public:
-    AttributeRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol identifier);
+    FeatureRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol identifier);
 };
 
-class MethodRedefinitionError : public SemantError
-{
-    public:
-    MethodRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol method);
-};
 
 class InconsistentSignatureError : public SemantError
 {

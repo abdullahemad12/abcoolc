@@ -161,17 +161,12 @@ UndefinedMethodError::UndefinedMethodError(Class_ class_, tree_node* faulty_node
     msg << "method " << method << " is not defined in this context";
 }
 
-AttributeRedefinitionError::AttributeRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol identifier) : 
+FeatureRedefinitionError::FeatureRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol identifier) : 
                                     SemantError(class_, faulty_node)
 {
-    msg << "redefinition of attribute " << identifier << " is not allowed";
+    msg << "redefinition of feature " << identifier << " is not allowed";
 }
 
-MethodRedefinitionError::MethodRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol method) : 
-                                    SemantError(class_, faulty_node)
-{
-    msg << "redefinition of method: " << method << " is not allowed";
-}
 
 InconsistentSignatureError::InconsistentSignatureError(Class_ class_, tree_node* faulty_node, Symbol method) :
                                         SemantError(class_, faulty_node)
@@ -183,4 +178,10 @@ InvalidDispatchError::InvalidDispatchError(Class_ class_, tree_node* faulty_node
                                 SemantError(class_, faulty_node)
 {   
     msg << "you are trying to call method in undefined Class " << undefined_class;
-}  
+}
+
+ReservedIdentifierMisuseError::ReservedIdentifierMisuseError(Class_ class_, tree_node* faulty_node, Symbol reserved)
+                            : SemantError(class_, faulty_node)
+{
+    msg << "Reserved identifier " << reserved << " cannot be used in this context";
+}

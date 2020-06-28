@@ -61,8 +61,7 @@ private:							\
 void install_basic_classes();	\
 void redefintions_detection();	\
 void missing_main_detection();	\
-void cycle_detection();\
-void class_prechecks();
+void cycle_detection();
 
 ////////////////////////
 // Synch and clean adds and removes all the features 
@@ -103,10 +102,8 @@ virtual void dump_with_types(ostream&,int) = 0; 				\
 virtual void add_to_env(Symbol class_name, Environment& env) = 0;							\
 virtual void remove_from_env(Environment& env) = 0;						\
 virtual Symbol get_name() = 0; \
-bool is_duplicate() { return duplicate; } \
 virtual Symbol get_type() = 0; \
-protected: \
-bool duplicate = false;													
+bool is_duplicate = false;													
 
 
 #define Feature_SHARED_EXTRAS                                       \
@@ -116,7 +113,7 @@ void remove_from_env(Environment& env);						\
 Symbol get_name() { return name; };					\
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
-void formal_redefinition_check(TypeTable& typetable); \
+void formal_redefinition_detection(TypeTable& typetable); \
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;		\
@@ -124,9 +121,7 @@ virtual Symbol get_name(void) = 0;				\
 virtual Symbol get_type_decl(void) = 0;		\
 virtual void add_to_env(Environment& env) = 0;		\
 virtual void remove_from_env(Environment& env) = 0;	\
-bool is_duplicate() { return duplicate; } 	\
-protected:									\
-bool duplicate = false;								
+bool is_duplicate = false;								
 
 #define formal_EXTRAS                           \
 void dump_with_types(ostream&,int);				\
@@ -136,7 +131,7 @@ void add_to_env(Environment& env);			 \
 void remove_from_env(Environment& env);		 \
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
-
+void reserved_type_misuse_detection(TypeTable& typetable);
 
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \

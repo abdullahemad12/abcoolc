@@ -20,6 +20,9 @@
 #include <vector>
 class TypeTable;
 class Environment;
+class Class__class;
+typedef class Class__class *Class_;
+
 /////////////////////////////////////////////////////////////////////
 //
 //  tree_node
@@ -54,6 +57,7 @@ class Environment;
 class tree_node {
 protected:
     int line_number;            // stash the line number when node is made
+    Class_ containing_class; // the class that contains this tree
 public:
     tree_node();
     virtual tree_node *copy() = 0;
@@ -62,12 +66,14 @@ public:
     virtual void validate(TypeTable& type_table) = 0;
     virtual void scope_check(TypeTable& type_table, Environment& env) = 0;
     virtual void type_check(TypeTable& type_table, Environment& env) = 0;
+    virtual void propagate_containing_class(Class_ class_) = 0;
     /**
       * @brief gets a list of the children of this node if any
       * Note: this is only used for validation as a BFS traversal is to validate
       *       classes first
       */ 
     virtual std::vector<tree_node*> get_children() = 0;
+    Class_ get_containing_class() { return containing_class; }
     int get_line_number();
     tree_node *set(tree_node *);
 };
