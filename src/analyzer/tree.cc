@@ -28,6 +28,7 @@ int node_lineno = 1;
 tree_node::tree_node()
 {
     line_number = node_lineno;
+    faulty = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -46,4 +47,17 @@ int tree_node::get_line_number()
 tree_node *tree_node::set(tree_node *t) {
    line_number = t->line_number;
    return this;
+}
+
+// this gets the class that contains this node
+Class_ tree_node::get_containing_class()
+{
+    return containing_class;
+}
+
+// if this is true, then this node could not be 
+// corrected for later stages and shall be ignored 
+bool tree_node::is_faulty()
+{
+    return faulty;
 }

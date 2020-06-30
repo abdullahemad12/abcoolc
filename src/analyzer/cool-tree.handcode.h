@@ -77,7 +77,7 @@ virtual void sync_local_env(Environment& env) = 0; \
 virtual void clean_local_env(Environment& env) = 0; \
 virtual void sync_global_env(Environment& env) = 0; \
 virtual bool is_main() = 0;				\
-
+virtual void duplication_detected() = 0;
 
 #define class__EXTRAS                               \
 Symbol get_filename() { return filename; }           \
@@ -88,6 +88,7 @@ void dump_with_types(ostream&,int);                    	\
 void sync_local_env(Environment& env); 						\
 void clean_local_env(Environment& env); 					\
 void sync_global_env(Environment& env);				\
+void duplication_detected();			\
 private:					\
 bool is_main();				\
 void undefined_type_detection(TypeTable& tb);		\
@@ -103,8 +104,7 @@ virtual void add_to_env(Symbol class_name, Environment& env) = 0;							\
 virtual void remove_from_env(Environment& env) = 0;						\
 virtual Symbol get_name() = 0; \
 virtual Symbol get_type() = 0; \
-bool is_duplicate = false;													
-
+virtual void duplication_detected() = 0; 
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    \
@@ -114,6 +114,7 @@ Symbol get_name() { return name; };					\
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
 void formal_redefinition_detection(TypeTable& typetable); \
+void duplication_detected(); 
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;		\
@@ -121,7 +122,7 @@ virtual Symbol get_name(void) = 0;				\
 virtual Symbol get_type_decl(void) = 0;		\
 virtual void add_to_env(Environment& env) = 0;		\
 virtual void remove_from_env(Environment& env) = 0;	\
-bool is_duplicate = false;								
+virtual void duplication_detected() = 0;
 
 #define formal_EXTRAS                           \
 void dump_with_types(ostream&,int);				\
@@ -131,7 +132,8 @@ void add_to_env(Environment& env);			 \
 void remove_from_env(Environment& env);		 \
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
-void reserved_type_misuse_detection(TypeTable& typetable);
+void reserved_type_misuse_detection(TypeTable& typetable); \
+void duplication_detected();
 
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \
@@ -162,12 +164,8 @@ Expression_class() { type = (Symbol) NULL; } \
 
 #define Expression_SHARED_EXTRAS           \
 void dump_with_types(ostream&,int);  \
-void undefined_identifier_check(); \
-void reserved_symbols_misuse_check(TypeTable& typetable);\
-void undefined_types_check(TypeTable& typetable); \
-void redefinition_check(TypeTable& typetable); \
-virtual void reserved_symbols_misuse_detection(TypeTable& typetable);\
-virtual void undefined_types_detection(TypeTable& typetable); \
+void reserved_symbols_misuse_detection(TypeTable& typetable);\
+void undefined_types_detection(TypeTable& typetable); \
 
 #define method_EXTRAS			  \
 Formals& get_formals() { return formals; } \

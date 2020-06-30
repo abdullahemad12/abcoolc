@@ -48,7 +48,7 @@ public:
 typedef class Feature_class *Feature;
 
 class Feature_class : public tree_node {
-public:
+  public:
    tree_node *copy()		 { return copy_Feature(); }
    virtual Feature copy_Feature() = 0;
 
@@ -60,7 +60,6 @@ public:
 
 // define simple phylum - Formal
 typedef class Formal_class *Formal;
-
 class Formal_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Formal(); }

@@ -58,6 +58,7 @@ class tree_node {
 protected:
     int line_number;            // stash the line number when node is made
     Class_ containing_class; // the class that contains this tree
+    bool faulty; // if this is set at any stage, this node is ignored at all the later stages 
 public:
     tree_node();
     virtual tree_node *copy() = 0;
@@ -73,7 +74,8 @@ public:
       *       classes first
       */ 
     virtual std::vector<tree_node*> get_children() = 0;
-    Class_ get_containing_class() { return containing_class; }
+    Class_ get_containing_class();
+    bool is_faulty();
     int get_line_number();
     tree_node *set(tree_node *);
 };

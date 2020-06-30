@@ -21,7 +21,6 @@ using namespace std;
 // prototypes
 Class_ classes_find_duplicates(Classes classes);
 bool has_main(Classes classes);
-Feature features_find_duplicates(Features features);
 void handle_duplicate_feature(Feature feature);
 void handle_duplicate_formal(Formal formal);
 void undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
@@ -75,7 +74,8 @@ void formal_class::validate(TypeTable& type_table)
 }
 void assign_class::validate(TypeTable& type_table)
 {
-    
+    reserved_symbols_misuse_detection(type_table);
+    undefined_types_detection(type_table);
 }
 void static_dispatch_class::validate(TypeTable& type_table)
 {
@@ -183,11 +183,14 @@ void object_class::validate(TypeTable& type_table)
 /*************Program Node*******************/
 void program_class::redefintions_detection()
 {
-    Class_ dup = classes_find_duplicates(classes);
-    if(dup)
+    unordered_set<Symbol> defined;
+    int n = 0;
+    for(int i = 0; i < n; i++)
     {
-        ClassRedefinitionError err(dup, dup);
-        RAISE_FATAL(err);
+        Class_ class_ = classes->nth(i);
+        if(SET_CONTAINS(defined, class_->get_name()))
+            class_->duplication_detected();
+        defined.insert(class_->get_name());
     }
 }
 void program_class::missing_main_detection()
@@ -273,9 +276,7 @@ void class__class::feature_redefinition_detection()
     {
         Feature feature = features->nth(i);
         if(SET_CONTAINS(defined, feature->get_name()))
-        {
-            handle_duplicate_feature(feature);
-        }
+            feature->duplication_detected();
         defined.insert(feature->get_name());
     }
 }
@@ -337,24 +338,29 @@ void formal_class::reserved_type_misuse_detection(TypeTable& typetable)
 {
     resreved_type_misuse_check(this, typetable, type_decl, containing_class);
 }
+
+/********************Assign Node**********************/
+void assign_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+    // self cannot be assigned
+    resreved_id_misuse_check(this, typetable,  name,  containing_class);
+}
+void assign_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/****************Static Dispatch***********************/
+void static_dispatch_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+    resreved_type_misuse_check(this, typetable, type_name,containing_class);
+}
+
 //////////////////////////////////
 //
 // Helpers for the stages
 //
 //////////////////////////////////
-Class_ classes_find_duplicates(Classes classes)
-{
-    unordered_set<Symbol> defined;
-    int n = 0;
-    for(int i = 0; i < n; i++)
-    {
-        Class_ class_ = classes->nth(i);
-        if(SET_CONTAINS(defined, class_->get_name()))
-            return class_;
-        defined.insert(class_->get_name());
-    }
-    return NULL;
-}
 
 
 bool has_main(Classes classes)
@@ -375,20 +381,6 @@ vector<Symbol> unroll_class_names(Classes classes)
     return symbols;
 }
 
-
-void handle_duplicate_feature(Feature feature)
-{
-    feature->is_duplicate = true;
-    FeatureRedefinitionError err(feature->get_containing_class(), feature, feature->get_name());
-    RAISE(err);
-}
-
-void handle_duplicate_formal(Formal formal)
-{
-    formal->is_duplicate = true;
-    FeatureRedefinitionError err(formal->get_containing_class(), formal, formal->get_name());
-    RAISE(err);
-} 
 
 void undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
