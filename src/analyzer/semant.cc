@@ -9,6 +9,7 @@
 #include <class-tree.h>
 #include <cassert>
 #include <environment.h>
+#include <queue>
 
 extern int semant_debug;
 extern char *curr_filename;
@@ -33,14 +34,47 @@ void terminate_on_errors(void);
  */
 void program_class::semant()
 {
+    TypeTable typetable(classes);
+    Environment env;
+
     propagate_containing_class(NULL);
+    validate_all(typetable);
     initialize_constants();
     install_basic_classes();
+
+    ClassTree class_tree(classes, Object);
+    scope_check(class_tree, typetable, env);
+    type_check(class_tree, typetable, env);
 }
 
 
+///////////////////////////////////////////////////////////////
+// To make sure classes are validated first (since class errors
+// are fatal). The validation on the AST is done in a BFS fashion
+// this requires propagate_containing_class to be called first 
+// since there is no other way to know which class contains the 
+// error if we are doing a BFS
+////////////////////////////////////////////////////////////////
+/**
+  * @brief calls validate on all the nodes in the AST
+  * @modifies: AST
+  * @requires: prograpagate_containing_class to be called first
+  * @param TypeTable the type table initialized with all the classes
+  */ 
+void program_class::validate_all(TypeTable& typetable)
+{
+    queue<tree_node*> q; 
+    q.push(this);
+    unordered_set<tree_node*> visited = { this };
 
+    while(!q.empty())
+    {
+        tree_node* cur = q.front();
+        q.pop();
+        //cur->validate();
 
+    }
+} 
 
 
 //////////////////////////////////////////////////////////////

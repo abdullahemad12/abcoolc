@@ -137,8 +137,8 @@ public:
    Program copy_Program();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
 
@@ -167,8 +167,8 @@ public:
    Class_ copy_Class_();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -200,8 +200,8 @@ public:
    Feature copy_Feature();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -231,8 +231,8 @@ public:
    Feature copy_Feature();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
 
@@ -259,8 +259,8 @@ public:
    Formal copy_Formal();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -290,8 +290,8 @@ public:
    Case copy_Case();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -318,8 +318,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -350,8 +350,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -380,8 +380,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -410,8 +410,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -438,8 +438,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -466,8 +466,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -491,8 +491,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -523,8 +523,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -551,8 +551,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -579,8 +579,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -607,8 +607,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -635,8 +635,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -661,8 +661,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -689,8 +689,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -717,8 +717,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -745,8 +745,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -771,8 +771,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -797,8 +797,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -823,8 +823,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -849,8 +849,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -875,8 +875,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -901,8 +901,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -925,8 +925,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();
@@ -951,8 +951,8 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(TypeTable& type_table, Environment& env);
-   void type_check(TypeTable& type_table, Environment& env);
+   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
    std::vector<tree_node*> get_children();

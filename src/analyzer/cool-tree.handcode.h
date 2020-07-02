@@ -61,7 +61,8 @@ private:							\
 void install_basic_classes();	\
 void redefintions_detection();	\
 void missing_main_detection();	\
-void cycle_detection();
+void cycle_detection();	\
+void validate_all(TypeTable& typetable);
 
 ////////////////////////
 // Synch and clean adds and removes all the features 
