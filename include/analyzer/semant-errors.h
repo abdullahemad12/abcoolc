@@ -163,7 +163,11 @@ class InvalidDispatchError : public SemantError
         InvalidDispatchError(Class_ class_, tree_node* faulty_node, Symbol undefined_class);
 };
 
-
+class FormalRedefinitionError : public SemantError
+{
+    public: 
+        FormalRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol faulty_formal);
+};
 
 
 /*********************************************************************************************

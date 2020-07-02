@@ -78,7 +78,7 @@ class Expression_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Expression(); }
    virtual Expression copy_Expression() = 0;
-
+   void validate(TypeTable& type_table);
 #ifdef Expression_EXTRAS
    Expression_EXTRAS
 #endif
@@ -318,7 +318,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -351,7 +350,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -382,7 +380,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -413,7 +410,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -442,7 +438,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -471,7 +466,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -497,7 +491,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -530,7 +523,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -559,7 +551,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -588,7 +579,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -617,7 +607,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -646,7 +635,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -673,7 +661,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -702,7 +689,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -731,7 +717,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -760,7 +745,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -787,7 +771,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -814,7 +797,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -841,7 +823,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -868,7 +849,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -895,7 +875,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -922,7 +901,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
@@ -947,7 +925,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);

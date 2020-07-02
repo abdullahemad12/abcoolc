@@ -104,7 +104,7 @@ virtual void add_to_env(Symbol class_name, Environment& env) = 0;							\
 virtual void remove_from_env(Environment& env) = 0;						\
 virtual Symbol get_name() = 0; \
 virtual Symbol get_type() = 0; \
-virtual void duplication_detected() = 0; 
+void duplication_detected();
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    \
@@ -114,7 +114,6 @@ Symbol get_name() { return name; };					\
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
 void formal_redefinition_detection(TypeTable& typetable); \
-void duplication_detected(); 
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;		\
@@ -157,7 +156,8 @@ Expression set_type(Symbol s) { type = s; return this; } \
 virtual void dump_with_types(ostream&,int) = 0;  \
 void dump_type(ostream&, int);               \
 Expression_class() { type = (Symbol) NULL; } \
-
+virtual void reserved_symbols_misuse_detection(TypeTable& typetable) = 0;\
+virtual void undefined_types_detection(TypeTable& typetable) = 0; \
 
 
 

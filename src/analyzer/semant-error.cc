@@ -185,3 +185,10 @@ ReservedIdentifierMisuseError::ReservedIdentifierMisuseError(Class_ class_, tree
 {
     msg << "Reserved identifier " << reserved << " cannot be used in this context";
 }
+
+
+FormalRedefinitionError::FormalRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol faulty_formal)
+                        : SemantError(class_, faulty_node)
+{
+    msg << "Redefinition of method argument " << faulty_formal;
+}

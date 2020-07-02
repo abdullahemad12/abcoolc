@@ -15,6 +15,8 @@ sem_err.report_fatal((err));
 SemantErrorHandler& sem_err = SemantErrorHandler::instance();\
 sem_err.report((err));
 
+#define OBJECT idtable.add_string("Object")
+
 using namespace std;
 
 
@@ -23,9 +25,11 @@ Class_ classes_find_duplicates(Classes classes);
 bool has_main(Classes classes);
 void handle_duplicate_feature(Feature feature);
 void handle_duplicate_formal(Formal formal);
-void undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
-void resreved_id_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
-void resreved_type_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
+
+// these checks return true if the an error was detected
+bool undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
+bool resreved_id_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
+bool resreved_type_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class);
 
 
 
@@ -72,108 +76,11 @@ void formal_class::validate(TypeTable& type_table)
     undefined_types_detection(type_table);
     reserved_type_misuse_detection(type_table);
 }
-void assign_class::validate(TypeTable& type_table)
+void Expression_class::validate(TypeTable& type_table)
 {
     reserved_symbols_misuse_detection(type_table);
     undefined_types_detection(type_table);
 }
-void static_dispatch_class::validate(TypeTable& type_table)
-{
-    
-}
-void dispatch_class::validate(TypeTable& type_table)
-{
-    
-}
-void cond_class::validate(TypeTable& type_table)
-{
-    
-}
-void loop_class::validate(TypeTable& type_table)
-{
-    
-}
-void typcase_class::validate(TypeTable& type_table)
-{
-    
-}
-void branch_class::validate(TypeTable& type_table)
-{
-    
-}
-void block_class::validate(TypeTable& type_table)
-{
-    
-}
-void let_class::validate(TypeTable& type_table)
-{
-    
-}
-void plus_class::validate(TypeTable& type_table)
-{
-    
-}
-void sub_class::validate(TypeTable& type_table)
-{
-    
-}
-void mul_class::validate(TypeTable& type_table)
-{
-    
-}
-void divide_class::validate(TypeTable& type_table)
-{
-    
-}
-void neg_class::validate(TypeTable& type_table)
-{
-    
-}
-void lt_class::validate(TypeTable& type_table)
-{
-    
-}
-void eq_class::validate(TypeTable& type_table)
-{
-    
-}
-void leq_class::validate(TypeTable& type_table)
-{
-    
-}
-void comp_class::validate(TypeTable& type_table)
-{
-    
-}
-void int_const_class::validate(TypeTable& type_table)
-{
-    
-}
-void bool_const_class::validate(TypeTable& type_table)
-{
-    
-}
-void string_const_class::validate(TypeTable& type_table)
-{
-    
-}
-void new__class::validate(TypeTable& type_table)
-{
-    
-}
-void isvoid_class::validate(TypeTable& type_table)
-{
-    
-}
-void no_expr_class::validate(TypeTable& type_table)
-{
-    
-}
-void object_class::validate(TypeTable& type_table)
-{
-    
-}
-
 
 
 //////////////////////////////////
@@ -280,18 +187,34 @@ void class__class::feature_redefinition_detection()
         defined.insert(feature->get_name());
     }
 }
+void class__class::duplication_detected()
+{
+    this->faulty = true;
+    ClassRedefinitionError err(this, this);
+    RAISE_FATAL(err);
+}
+
+/********Feature Node*******/
+void Feature_class::duplication_detected()
+{
+    faulty = true;
+    FeatureRedefinitionError err(containing_class, this, get_name());
+    RAISE(err);
+}
 
 /*******Method Node********/
 void method_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
     // Methods are allowed to have SELF_TYPE as return or any other Type
     // but cannot have self as a name
-    resreved_id_misuse_check(this, typetable, name, containing_class);
+    faulty = resreved_id_misuse_check(this, typetable, name, containing_class);
 
 }
 void method_class::undefined_types_detection(TypeTable& typetable)
 {
-    undefined_types_check(this, typetable, return_type, containing_class);
+    bool err = undefined_types_check(this, typetable, return_type, containing_class);
+    if(err) 
+        return_type = OBJECT;
 }
 void method_class::formal_redefinition_detection(TypeTable& typetable)
 {
@@ -301,9 +224,7 @@ void method_class::formal_redefinition_detection(TypeTable& typetable)
     {
         Formal formal = formals->nth(i);
         if(SET_CONTAINS(defined, formal->get_name()))
-        {
-            handle_duplicate_formal(formal);
-        }
+            formal->duplication_detected();
         defined.insert(formal->get_name());
     }
 }
@@ -312,11 +233,13 @@ void method_class::formal_redefinition_detection(TypeTable& typetable)
 /***************Attribute Node******************/
 void attr_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
-    resreved_id_misuse_check(this,  typetable,  name, containing_class);
+    faulty = resreved_id_misuse_check(this,  typetable,  name, containing_class);
 }
 void attr_class::undefined_types_detection(TypeTable& typetable)
 {
-    undefined_types_check(this, typetable, type_decl, containing_class);
+    bool err = undefined_types_check(this, typetable, type_decl, containing_class);
+    if(err)
+        type_decl = OBJECT;
 }
 void attr_class::formal_redefinition_detection(TypeTable& typetable)
 {
@@ -327,23 +250,33 @@ void attr_class::formal_redefinition_detection(TypeTable& typetable)
 /****************Formals Node************************/
 void formal_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
-    resreved_id_misuse_check(this,  typetable, name, containing_class);
+    faulty = resreved_id_misuse_check(this,  typetable, name, containing_class);
 }
 
 void formal_class::undefined_types_detection(TypeTable& typetable)
 {
-    undefined_types_check(this, typetable, type_decl, containing_class);
+    bool err = undefined_types_check(this, typetable, type_decl, containing_class);
+    if(err)
+        type_decl = OBJECT;
 }
 void formal_class::reserved_type_misuse_detection(TypeTable& typetable)
 {
-    resreved_type_misuse_check(this, typetable, type_decl, containing_class);
+    bool err = resreved_type_misuse_check(this, typetable, type_decl, containing_class);
+    if(err)
+        type_decl = OBJECT;
 }
 
+void formal_class::duplication_detected()
+{
+    faulty = true;
+    FormalRedefinitionError err(containing_class, this, name);
+    RAISE(err);
+}
 /********************Assign Node**********************/
 void assign_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
     // self cannot be assigned
-    resreved_id_misuse_check(this, typetable,  name,  containing_class);
+    faulty = resreved_id_misuse_check(this, typetable,  name,  containing_class);
 }
 void assign_class::undefined_types_detection(TypeTable& typetable)
 {
@@ -353,8 +286,90 @@ void assign_class::undefined_types_detection(TypeTable& typetable)
 /****************Static Dispatch***********************/
 void static_dispatch_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
-    resreved_type_misuse_check(this, typetable, type_name,containing_class);
+    bool err = resreved_type_misuse_check(this, typetable, type_name,containing_class);
+    if(err)
+        type_name = OBJECT;
+    faulty = resreved_id_misuse_check(this, typetable, name, containing_class);
 }
+
+void static_dispatch_class::undefined_types_detection(TypeTable& typetable)
+{
+    bool err = undefined_types_check(this, typetable, type_name, containing_class);
+    if(err)
+        type_name = OBJECT;
+}
+
+/*************Dynamic Dispatch************************/
+void dispatch_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+    bool err = resreved_type_misuse_check(this, typetable, type_name,containing_class);
+}
+
+void dispatch_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+/*************conditional**************************/
+
+void cond_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void cond_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*************Loop*********************************/
+void loop_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void loop_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*************Block******************************/
+
+void block_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void block_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*************Let*******************************/
+
+void let_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+    faulty = resreved_id_misuse_check(this, typetable, identifier, containing_class);
+}
+
+void let_class::undefined_types_detection(TypeTable& typetable)
+{
+    bool err = undefined_types_check(this, typetable, type, containing_class);
+    if(err)
+        type = OBJECT;
+}
+
+/**********TypeCase********************************/
+
+void typcase_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void typcase_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
 
 //////////////////////////////////
 //
@@ -382,29 +397,35 @@ vector<Symbol> unroll_class_names(Classes classes)
 }
 
 
-void undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
+bool undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
     if(!typetable.contains(name))
     {
         UndefinedTypeError err(containing_class, node, name);
         RAISE(err);
+        return true;
     }
+    return false;
 }
 
-void resreved_id_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
+bool resreved_id_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
     if(typetable.is_reserved_identifier(name))
     {
         ReservedIdentifierMisuseError err(containing_class, node, name);
         RAISE(err);
+        return true;
     }
+    return false;
 }
 
-void resreved_type_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
+bool resreved_type_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
     if(typetable.is_reserved_type(name))
     {
         ReservedIdentifierMisuseError err(containing_class, node, name);
         RAISE(err);
+        return true;
     }
+    return false;
 }
