@@ -34,19 +34,19 @@ vector<Symbol> extract_formals_type(Formals formals);
 
 void method_class::add_to_env(Symbol class_name, Environment& env)
 {
-    if(!duplicate)
+    if(!faulty)
         env.add_method(class_name, this);
 }
 
 void attr_class::add_to_env(Symbol class_name, Environment& env)
 {
-    if(!duplicate)
+    if(!faulty)
         env.add_object(name, type_decl);
 }
 
 void formal_class::add_to_env(Environment& env)
 {
-    if(!duplicate)
+    if(!faulty)
         env.add_object(name, type_decl);
 }
 
@@ -57,19 +57,19 @@ void formal_class::add_to_env(Environment& env)
 
 void method_class::remove_from_env(Environment& env)
 {
-    if(!duplicate)
+    if(!faulty)
         env.remove_method(idtable.add_string("SELF_TYPE"), name);
 }
 
 void attr_class::remove_from_env(Environment& env)
 {
-    if(!duplicate)
+    if(!faulty)
         env.remove_object(name);
 }
 
 void formal_class::remove_from_env(Environment& env)
 {
-    if(!duplicate)
+    if(!faulty)
         env.remove_object(name);
 }
 

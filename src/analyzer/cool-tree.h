@@ -951,7 +951,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void validate(TypeTable& type_table);
    void scope_check(TypeTable& type_table, Environment& env);
    void type_check(TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);

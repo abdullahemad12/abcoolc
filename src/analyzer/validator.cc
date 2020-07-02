@@ -83,6 +83,12 @@ void Expression_class::validate(TypeTable& type_table)
 }
 
 
+void branch_class::validate(TypeTable& type_table)
+{
+    reserved_symbols_misuse_detection(type_table);
+    undefined_types_detection(type_table);
+}
+
 //////////////////////////////////
 //    Validation stages 
 //////////////////////////////////
@@ -370,6 +376,200 @@ void typcase_class::undefined_types_detection(TypeTable& typetable)
 
 }
 
+
+/**********CaseBranch*******************************/
+void branch_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+    resreved_id_misuse_check(this, typetable, name, containing_class);
+}
+
+void branch_class::undefined_types_detection(TypeTable& typetable)
+{
+    bool err = undefined_types_check(this, typetable, type_decl, containing_class);
+    if(err)
+        type_decl = OBJECT;
+}
+
+/**********new*************************************/
+void new__class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+    
+}
+
+void new__class::undefined_types_detection(TypeTable& typetable)
+{
+    bool err = undefined_types_check(this, typetable, type, containing_class);
+    if(err)
+        type = OBJECT;
+}
+
+
+/********isvoid***********************************/
+void isvoid_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void isvoid_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/********plus**************************************/
+void plus_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void plus_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/********Minus**************************************/
+void sub_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void sub_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+
+/********Multiply***********************************/
+void mul_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void mul_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*********division**********************************/
+void divide_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void divide_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*********compliment***************************************/
+void comp_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void comp_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*******Less than**********************************/
+void lt_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void lt_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+
+/********less than or Equal***************************/
+void leq_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void leq_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*******Equals***************************************/
+void eq_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void eq_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/******negation******************************************/
+void neg_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void neg_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+
+/******expr*********************************************/
+void object_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+void object_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*******Integer*****************************************/
+void int_const_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void int_const_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*******String*****************************************/
+void string_const_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void string_const_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/*******bool*******************************************/
+void bool_const_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void bool_const_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
+
+/******no expr******************************************/
+void no_expr_class::reserved_symbols_misuse_detection(TypeTable& typetable)
+{
+
+}
+
+void no_expr_class::undefined_types_detection(TypeTable& typetable)
+{
+
+}
 
 //////////////////////////////////
 //
