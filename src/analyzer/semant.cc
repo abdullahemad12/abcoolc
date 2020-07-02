@@ -71,10 +71,16 @@ void program_class::validate_all(TypeTable& typetable)
     {
         tree_node* cur = q.front();
         q.pop();
-        //cur->validate();
-
+        cur->validate(typetable);
+        vector<tree_node*> children = cur->get_children();
+        for(auto child : children)
+        {
+            assert(visited.find(child) == visited.end());
+            visited.insert(child);
+            q.push(child);
+        }
     }
-} 
+}
 
 
 //////////////////////////////////////////////////////////////
