@@ -87,6 +87,12 @@ class ReservedIdentifierMisuseError : public SemantError
     public:
         ReservedIdentifierMisuseError(Class_ class_, tree_node* faulty_node, Symbol reserved);
 };
+
+class UndefinedMainMethodError : public SemantError
+{
+    public:
+        UndefinedMainMethodError(Class_ class_, tree_node* faulty_node);
+};
 class UndefinedMainError
 {
     public:

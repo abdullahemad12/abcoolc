@@ -97,7 +97,8 @@ void name_reserved_detection(TypeTable& tb);	\
 void inheritance_reserved_detection(TypeTable& tb);	\
 void basic_class_inheritance_detection(TypeTable& tb);		\
 void builtin_class_redefinition(TypeTable& tb);			\
-void feature_redefinition_detection();
+void feature_redefinition_detection();			\
+void has_main();
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 				\
@@ -105,6 +106,7 @@ virtual void add_to_env(Symbol class_name, Environment& env) = 0;							\
 virtual void remove_from_env(Environment& env) = 0;						\
 virtual Symbol get_name() = 0; \
 virtual Symbol get_type() = 0; \
+virtual bool is_main() = 0; \
 void duplication_detected();
 
 #define Feature_SHARED_EXTRAS                                       \
@@ -115,6 +117,7 @@ Symbol get_name() { return name; };					\
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
 void formal_redefinition_detection(TypeTable& typetable); \
+bool is_main();
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;		\

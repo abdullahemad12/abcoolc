@@ -51,6 +51,7 @@ void program_class::validate(TypeTable& type_table)
 }
 void class__class::validate(TypeTable& type_table)
 {
+    has_main();
     undefined_type_detection(type_table);
     name_reserved_detection(type_table);
     inheritance_reserved_detection(type_table);
@@ -97,7 +98,7 @@ void branch_class::validate(TypeTable& type_table)
 void program_class::redefintions_detection()
 {
     unordered_set<Symbol> defined;
-    int n = 0;
+    int n = classes->len();
     for(int i = 0; i < n; i++)
     {
         Class_ class_ = classes->nth(i);
@@ -122,7 +123,7 @@ void program_class::cycle_detection()
     {
         Class_ class_ = classes->nth(i);
         Symbol name = class_->get_name();
-        Symbol parent = class_->get_name();
+        Symbol parent = class_->get_parent();
         if(parent)
         {
             if(!uf.disjoint(name, parent))
@@ -140,7 +141,20 @@ void program_class::cycle_detection()
 bool class__class::is_main()
 {
     return idtable.add_string("Main") == name;
-}			
+}
+
+void class__class::has_main()
+{
+    if(!is_main())
+        return;
+    
+    int n = features->len();
+    for(int i = 0; i < n; i++)
+        if(features->nth(i)->is_main())
+            return;
+    UndefinedMainMethodError err(this, this);
+    RAISE(err);
+}
 void class__class::undefined_type_detection(TypeTable& tb)
 {
     if(!tb.contains(parent))
@@ -184,7 +198,7 @@ void class__class::builtin_class_redefinition(TypeTable& tb)
 void class__class::feature_redefinition_detection()
 {
     unordered_set<Symbol> defined;
-    int n = 0;
+    int n = features->len();
     for(int i = 0; i < n; i++)
     {
         Feature feature = features->nth(i);
@@ -200,6 +214,7 @@ void class__class::duplication_detected()
     RAISE_FATAL(err);
 }
 
+
 /********Feature Node*******/
 void Feature_class::duplication_detected()
 {
@@ -209,6 +224,11 @@ void Feature_class::duplication_detected()
 }
 
 /*******Method Node********/
+
+bool method_class::is_main()
+{
+    return name == idtable.add_string("main");
+}
 void method_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
     // Methods are allowed to have SELF_TYPE as return or any other Type
@@ -225,7 +245,7 @@ void method_class::undefined_types_detection(TypeTable& typetable)
 void method_class::formal_redefinition_detection(TypeTable& typetable)
 {
     unordered_set<Symbol> defined;
-    int n = 0;
+    int n = formals->len();
     for(int i = 0; i < n; i++)
     {
         Formal formal = formals->nth(i);
@@ -237,6 +257,10 @@ void method_class::formal_redefinition_detection(TypeTable& typetable)
 
 
 /***************Attribute Node******************/
+bool is_main()
+{
+    return false;
+}
 void attr_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
     faulty = resreved_id_misuse_check(this,  typetable,  name, containing_class);

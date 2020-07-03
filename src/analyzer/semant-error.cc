@@ -192,3 +192,9 @@ FormalRedefinitionError::FormalRedefinitionError(Class_ class_, tree_node* fault
 {
     msg << "Redefinition of method argument " << faulty_formal;
 }
+
+UndefinedMainMethodError::UndefinedMainMethodError(Class_ class_, tree_node* faulty_node) 
+                        : SemantError(class_, faulty_node)
+{
+    msg << "Missing the main Method in class Main";
+}
