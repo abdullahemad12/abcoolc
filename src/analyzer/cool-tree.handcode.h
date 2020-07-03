@@ -51,8 +51,7 @@ typedef Cases_class *Cases;
 
 #define Program_EXTRAS                          \
 virtual void dump_with_types(ostream&, int) = 0;\
-virtual void semant() = 0;						\
-virtual void install_basic_classes() = 0;			
+virtual void semant() = 0;			
 
 #define program_EXTRAS                          \
 void semant();     				\
@@ -62,6 +61,7 @@ void install_basic_classes();	\
 void redefintions_detection();	\
 void missing_main_detection();	\
 void cycle_detection();	\
+void builtin_duplication_detection(TypeTable& typetable); \
 void validate_all(TypeTable& typetable);
 
 ////////////////////////
@@ -78,7 +78,8 @@ virtual void sync_local_env(Environment& env) = 0; \
 virtual void clean_local_env(Environment& env) = 0; \
 virtual void sync_global_env(Environment& env) = 0; \
 virtual bool is_main() = 0;				\
-virtual void duplication_detected() = 0;
+virtual void duplication_detected() = 0; \
+virtual void builtin_duplication_detected() = 0;
 
 #define class__EXTRAS                               \
 Symbol get_filename() { return filename; }           \
@@ -90,13 +91,13 @@ void sync_local_env(Environment& env); 						\
 void clean_local_env(Environment& env); 					\
 void sync_global_env(Environment& env);				\
 void duplication_detected();			\
+void builtin_duplication_detected();			\
 private:					\
 bool is_main();				\
 void undefined_type_detection(TypeTable& tb);		\
 void name_reserved_detection(TypeTable& tb);	\
 void inheritance_reserved_detection(TypeTable& tb);	\
 void basic_class_inheritance_detection(TypeTable& tb);		\
-void builtin_class_redefinition(TypeTable& tb);			\
 void feature_redefinition_detection();			\
 void has_main();
 

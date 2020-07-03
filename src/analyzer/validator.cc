@@ -45,6 +45,7 @@ bool resreved_type_misuse_check(tree_node* node, TypeTable& typetable, Symbol na
 ////////////////////////////////////////////////////////
 void program_class::validate(TypeTable& type_table)
 {
+    builtin_duplication_detection(type_table);
     redefintions_detection();
     missing_main_detection();
     cycle_detection();
@@ -56,7 +57,6 @@ void class__class::validate(TypeTable& type_table)
     name_reserved_detection(type_table);
     inheritance_reserved_detection(type_table);
     basic_class_inheritance_detection(type_table);
-    builtin_class_redefinition(type_table);
     feature_redefinition_detection();
 }
 void method_class::validate(TypeTable& type_table)
@@ -95,6 +95,20 @@ void branch_class::validate(TypeTable& type_table)
 //////////////////////////////////
 
 /*************Program Node*******************/
+void program_class::builtin_duplication_detection(TypeTable& typetable)
+{
+    unordered_set<Symbol> defined;
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Class_ class_ = classes->nth(i);
+        Symbol class_name = class_->get_name();
+        if(SET_CONTAINS(defined, class_name))
+            class_->builtin_duplication_detected();
+        if(typetable.is_built_in_type(class_name))
+            defined.insert(class_name);
+    }
+}
 void program_class::redefintions_detection()
 {
     unordered_set<Symbol> defined;
@@ -187,13 +201,10 @@ void class__class::basic_class_inheritance_detection(TypeTable& tb)
         RAISE_FATAL(err);
     }
 }	
-void class__class::builtin_class_redefinition(TypeTable& tb)
+void class__class::builtin_duplication_detected()
 {
-    if(tb.is_built_in_type(name))
-    {
-        BasicClassRedefinitionError err(this, this);
-        RAISE_FATAL(err);
-    }
+    BasicClassRedefinitionError err(this, this);
+    RAISE_FATAL(err);
 }		
 void class__class::feature_redefinition_detection()
 {

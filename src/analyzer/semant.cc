@@ -36,11 +36,10 @@ void program_class::semant()
 {
     TypeTable typetable(classes);
     Environment env;
-
+    install_basic_classes();
     propagate_containing_class(NULL);
     validate_all(typetable);
     initialize_constants();
-    install_basic_classes();
 
     ClassTree class_tree(classes, Object);
     scope_check(class_tree, typetable, env);
