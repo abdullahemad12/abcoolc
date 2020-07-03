@@ -51,10 +51,10 @@ void ClassTree::construct_graph(Classes classes, Symbol root_symbol, vector<pair
       Symbol parent = class_->get_parent();
       // catch bugs
       assert(MAP_CONTAINS(nodes, name));
-      assert(MAP_CONTAINS(nodes, parent));
       
       if(nodes[parent] != NULL)
       {
+        assert(MAP_CONTAINS(nodes, parent));
         nodes[parent]->children.push_back(nodes[name]);
         // create edge
         pair<Symbol, Symbol> p(parent, name);

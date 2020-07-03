@@ -44,6 +44,11 @@ void program_class::semant()
     ClassTree class_tree(classes, Object);
     scope_check(class_tree, typetable, env);
     type_check(class_tree, typetable, env);
+
+    uninstall_basic_classes();
+
+    SemantErrorHandler& sem_err = SemantErrorHandler::instance();
+    sem_err.terminate_on_errors();
 }
 
 

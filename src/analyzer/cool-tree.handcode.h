@@ -57,7 +57,9 @@ virtual void semant() = 0;
 void semant();     				\
 void dump_with_types(ostream&, int);  	\
 private:							\
+Classes original_classes; \
 void install_basic_classes();	\
+void uninstall_basic_classes(); \
 void redefintions_detection();	\
 void missing_main_detection();	\
 void cycle_detection();	\

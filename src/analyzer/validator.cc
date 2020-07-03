@@ -268,7 +268,7 @@ void method_class::formal_redefinition_detection(TypeTable& typetable)
 
 
 /***************Attribute Node******************/
-bool is_main()
+bool attr_class::is_main()
 {
     return false;
 }

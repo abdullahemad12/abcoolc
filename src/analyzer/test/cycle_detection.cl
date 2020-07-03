@@ -1,5 +1,8 @@
 class Main {
- 
+ 	main() : Int
+ 	{
+ 		0
+ 	};
 };
 
 class A inherits F{
@@ -26,7 +29,7 @@ class E inherits D
 
 };
 
-class F inherits Object
+class F inherits F
 {
 
 };

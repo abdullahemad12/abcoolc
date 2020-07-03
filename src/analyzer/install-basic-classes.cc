@@ -3,13 +3,13 @@
 
 //////////////////////////////////////
 // 
-//  Installing basic Classes
+//  Installing and uninstalling basic Classes
 //
 /////////////////////////////////////
 // use this to initialize the inheritence tree
 void program_class::install_basic_classes() 
 {
-
+    original_classes = classes;
     initialize_constants();
     // The tree package uses these globals to annotate the classes built below.
    // curr_lineno  = 0;
@@ -115,4 +115,10 @@ void program_class::install_basic_classes()
         classes = append_Classes(classes, single_Classes(Int_class));
         classes = append_Classes(classes, single_Classes(Bool_class));
         classes = append_Classes(classes, single_Classes(Str_class));
+}
+
+
+void program_class::uninstall_basic_classes()
+{
+    classes = original_classes;
 }
