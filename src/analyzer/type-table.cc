@@ -23,10 +23,10 @@ TypeTable::TypeTable(Classes classes)
     
     basic_types = {Int, Str, Bool};
     built_in_types = {Int, Str, Bool, Object, IO};
-    reserved_types = { SELF_TYPE };
+    reserved_types = { SELF_TYPE, prim_slot };
     reserved_identifiers = { self };
 
-    vector<Symbol> all_special_types = {Int, Str, Bool, Object, IO};
+    vector<Symbol> all_special_types = {prim_slot, SELF_TYPE, Int, Str, Bool, Object, IO};
     for(auto type : all_special_types)
         all_defined_types.insert(type);
 }
