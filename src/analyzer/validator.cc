@@ -171,7 +171,7 @@ void class__class::has_main()
 }
 void class__class::undefined_type_detection(TypeTable& tb)
 {
-    if(!tb.contains(parent))
+    if(parent && !tb.contains(parent))
     {
         UndefinedTypeError err(this, this, parent);
         RAISE_FATAL(err);

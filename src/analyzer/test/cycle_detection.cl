@@ -26,7 +26,7 @@ class E inherits D
 
 };
 
-class F inherits E
+class F inherits Object
 {
 
 };
