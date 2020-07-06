@@ -61,7 +61,7 @@ Classes original_classes; \
 void install_basic_classes();	\
 void uninstall_basic_classes(); \
 void redefintions_detection();	\
-void missing_main_detection();	\
+void validate_main_class();	\
 void cycle_detection();	\
 void builtin_duplication_detection(TypeTable& typetable); \
 void validate_all(TypeTable& typetable);
@@ -81,7 +81,8 @@ virtual void clean_local_env(Environment& env) = 0; \
 virtual void sync_global_env(Environment& env) = 0; \
 virtual bool is_main() = 0;				\
 virtual void duplication_detected() = 0; \
-virtual void builtin_duplication_detected() = 0;
+virtual void builtin_duplication_detected() = 0; \
+virtual void validate_main_method() = 0;
 
 #define class__EXTRAS                               \
 Symbol get_filename() { return filename; }           \
@@ -101,7 +102,7 @@ void name_reserved_detection(TypeTable& tb);	\
 void inheritance_reserved_detection(TypeTable& tb);	\
 void basic_class_inheritance_detection(TypeTable& tb);		\
 void feature_redefinition_detection();			\
-void has_main();
+void validate_main_method();
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 				\
@@ -110,6 +111,7 @@ virtual void remove_from_env(Environment& env) = 0;						\
 virtual Symbol get_name() = 0; \
 virtual Symbol get_type() = 0; \
 virtual bool is_main() = 0; \
+virtual void validate_main_signature() = 0;\
 void duplication_detected();
 
 #define Feature_SHARED_EXTRAS                                       \
@@ -120,7 +122,8 @@ Symbol get_name() { return name; };					\
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
 void formal_redefinition_detection(TypeTable& typetable); \
-bool is_main();
+bool is_main();				\
+void validate_main_signature();
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;		\
@@ -143,7 +146,8 @@ void duplication_detected();
 
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \
-
+virtual Symbol get_type_decl() = 0; \
+virtual void duplication_detected() = 0;
 
 #define typcase_EXTRAS \
 private: \
@@ -153,8 +157,9 @@ void redefinition_detection(TypeTable& typetable); \
 #define branch_EXTRAS                                   \
 void dump_with_types(ostream& ,int); \
 void reserved_symbols_misuse_detection(TypeTable& typetable);\
-void undefined_types_detection(TypeTable& typetable);
-
+void undefined_types_detection(TypeTable& typetable);\
+Symbol get_type_decl() { return type_decl; }\
+void duplication_detected();
 
 #define Expression_EXTRAS                    \
 Symbol type;                                 \

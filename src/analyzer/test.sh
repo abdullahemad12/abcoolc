@@ -15,17 +15,17 @@ out1=$(./mysemant "$file") >test/out
 err1=$?
 if [ err1 != 0 ]; then
 rm test/out
-echo semerror >> test/out
+echo 1 >> test/out
 fi
 
-
-if [ -f ""$file".out" ]; then
-echo "Out file for "$file" not found"
+name=$(echo "$file" | cut -f 1 -d '.')
+if ! [ -f ""$name".out" ]; then
+echo "Out file for "$name" not found"
 exit
 fi
-diff test/out ""$file".out"
+diff test/out ""$name".out"
 if [ $? != 0 ] && [ err1 == 0 ]; then
-res[i]=""$file" failed"
+res[i]=""$name" failed"
 i=$i+1
 fi
 done

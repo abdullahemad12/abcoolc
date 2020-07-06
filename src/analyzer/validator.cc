@@ -22,7 +22,6 @@ using namespace std;
 
 // prototypes
 Class_ classes_find_duplicates(Classes classes);
-bool has_main(Classes classes);
 void handle_duplicate_feature(Feature feature);
 void handle_duplicate_formal(Formal formal);
 
@@ -47,12 +46,11 @@ void program_class::validate(TypeTable& type_table)
 {
     builtin_duplication_detection(type_table);
     redefintions_detection();
-    missing_main_detection();
+    validate_main_class();
     cycle_detection();
 }
 void class__class::validate(TypeTable& type_table)
 {
-    has_main();
     undefined_type_detection(type_table);
     name_reserved_detection(type_table);
     inheritance_reserved_detection(type_table);
@@ -83,7 +81,11 @@ void Expression_class::validate(TypeTable& type_table)
     undefined_types_detection(type_table);
 }
 
-
+void typcase_class::validate(TypeTable& type_table)
+{
+    Expression_class::validate(type_table);
+    redefinition_detection(type_table);
+}
 void branch_class::validate(TypeTable& type_table)
 {
     reserved_symbols_misuse_detection(type_table);
@@ -121,13 +123,21 @@ void program_class::redefintions_detection()
         defined.insert(class_->get_name());
     }
 }
-void program_class::missing_main_detection()
+void program_class::validate_main_class()
 {
-    if(!has_main(classes))
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
     {
-        UndefinedMainError err;
-        RAISE_FATAL(err);
+        Class_ cur = classes->nth(i);
+        if(cur->is_main())
+        {
+            cur->validate_main_method();
+            return;
+        }   
     }
+
+    UndefinedMainError err;
+    RAISE_FATAL(err);
 }
 void program_class::cycle_detection()
 {
@@ -157,18 +167,24 @@ bool class__class::is_main()
     return idtable.add_string("Main") == name;
 }
 
-void class__class::has_main()
+void class__class::validate_main_method()
 {
-    if(!is_main())
-        return;
-    
+    assert(is_main());
     int n = features->len();
     for(int i = 0; i < n; i++)
-        if(features->nth(i)->is_main())
+    {
+        Feature feature = features->nth(i);
+        if(feature->is_main())
+        {
+            feature->validate_main_signature();
             return;
+        }
+    }
+
     UndefinedMainMethodError err(this, this);
     RAISE(err);
 }
+
 void class__class::undefined_type_detection(TypeTable& tb)
 {
     if(parent && !tb.contains(parent))
@@ -240,6 +256,17 @@ bool method_class::is_main()
 {
     return name == idtable.add_string("main");
 }
+
+void method_class::validate_main_signature()
+{
+    assert(is_main());
+    if(formals->len() != 0)
+    {
+        InvalidMainMethodSignatureError err(containing_class, this);
+        RAISE(err);
+    }
+}
+
 void method_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
     // Methods are allowed to have SELF_TYPE as return or any other Type
@@ -271,6 +298,10 @@ void method_class::formal_redefinition_detection(TypeTable& typetable)
 bool attr_class::is_main()
 {
     return false;
+}
+void attr_class::validate_main_signature()
+{
+
 }
 void attr_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
@@ -343,7 +374,8 @@ void static_dispatch_class::undefined_types_detection(TypeTable& typetable)
 /*************Dynamic Dispatch************************/
 void dispatch_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
-    bool err = resreved_type_misuse_check(this, typetable, type_name,containing_class);
+    cout << name;
+    faulty = resreved_id_misuse_check(this, typetable, name,containing_class);
 }
 
 void dispatch_class::undefined_types_detection(TypeTable& typetable)
@@ -394,7 +426,7 @@ void let_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 
 void let_class::undefined_types_detection(TypeTable& typetable)
 {
-    bool err = undefined_types_check(this, typetable, type, containing_class);
+    bool err = undefined_types_check(this, typetable, type_decl, containing_class);
     if(err)
         type = OBJECT;
 }
@@ -408,7 +440,22 @@ void typcase_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 
 void typcase_class::undefined_types_detection(TypeTable& typetable)
 {
+    cout << "helloh\n";
+}
 
+void typcase_class::redefinition_detection(TypeTable& typetable)
+{
+    unordered_set<Symbol> encountered_types;
+    int n = cases->len();
+    for(int i = 0; i < n; i++)
+    {
+        Case case_ = cases->nth(i);
+        Symbol type = case_->get_type_decl();
+        if(SET_CONTAINS(encountered_types, type))
+            case_->duplication_detected();
+        
+        encountered_types.insert(type);
+    }
 }
 
 
@@ -425,6 +472,13 @@ void branch_class::undefined_types_detection(TypeTable& typetable)
         type_decl = OBJECT;
 }
 
+void branch_class::duplication_detected()
+{
+    faulty = true;
+    DuplicateCaseBranchError err(containing_class, this, type_decl);
+    RAISE(err);
+}
+
 /**********new*************************************/
 void new__class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
@@ -433,7 +487,7 @@ void new__class::reserved_symbols_misuse_detection(TypeTable& typetable)
 
 void new__class::undefined_types_detection(TypeTable& typetable)
 {
-    bool err = undefined_types_check(this, typetable, type, containing_class);
+    bool err = undefined_types_check(this, typetable, type_name, containing_class);
     if(err)
         type = OBJECT;
 }
@@ -613,14 +667,6 @@ void no_expr_class::undefined_types_detection(TypeTable& typetable)
 //////////////////////////////////
 
 
-bool has_main(Classes classes)
-{
-    bool ans = false;
-    int n = classes->len();
-    for(int i = 0; i < n; i++)
-        ans = ans || classes->nth(i)->is_main();
-    return ans;
-}
 
 vector<Symbol> unroll_class_names(Classes classes)
 {

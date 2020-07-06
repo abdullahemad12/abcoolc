@@ -336,7 +336,7 @@ class Main inherits IO {
      )
    };
 
-   main() : Object {
+   main(x : Int) : Object {
       {
          avar <- (new A);
          while flag loop

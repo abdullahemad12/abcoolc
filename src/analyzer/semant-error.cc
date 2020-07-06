@@ -101,13 +101,13 @@ BasicClassInheritanceError::BasicClassInheritanceError(Class_ class_, tree_node*
                                                     : SemantError(class_, faulty_node)
 {
     msg << "Class " << class_->get_name() 
-        << "cannot inherit from built-in class " << basic_class->get_string();
+        << " cannot inherit from built-in class " << basic_class->get_string();
 }
 
 ReservedInheritanceError::ReservedInheritanceError(Class_ class_, tree_node* faulty_node, Symbol reserved)
                                      : SemantError(class_, faulty_node)
 {
-    msg << "Class " << class_
+    msg << "Class " << class_->get_name()
             << " is trying to inherit from reserved type " << reserved;
 }
 
@@ -196,5 +196,17 @@ FormalRedefinitionError::FormalRedefinitionError(Class_ class_, tree_node* fault
 UndefinedMainMethodError::UndefinedMainMethodError(Class_ class_, tree_node* faulty_node) 
                         : SemantError(class_, faulty_node)
 {
-    msg << "Missing the main Method in class Main";
+    msg << "Missing the main method in class Main";
+}
+
+InvalidMainMethodSignatureError::InvalidMainMethodSignatureError(Class_ class_, tree_node* faulty_node)
+                        : SemantError(class_, faulty_node)
+{
+    msg << "main method should have no arguments";
+}
+
+DuplicateCaseBranchError::DuplicateCaseBranchError(Class_ class_, tree_node* faulty_node, Symbol type)
+                        : SemantError(class_, faulty_node)
+{
+    msg << "Type " <<  type << " cannot be defined multiple times within a case expression";
 }

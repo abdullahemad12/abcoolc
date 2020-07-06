@@ -175,7 +175,18 @@ class FormalRedefinitionError : public SemantError
         FormalRedefinitionError(Class_ class_, tree_node* faulty_node, Symbol faulty_formal);
 };
 
+class InvalidMainMethodSignatureError : public SemantError
+{
+    public:
+        InvalidMainMethodSignatureError(Class_ class_, tree_node* faulty_node);
+};
 
+
+class DuplicateCaseBranchError : public SemantError 
+{
+    public:
+        DuplicateCaseBranchError(Class_ class_, tree_node* faulty_node, Symbol type);
+};
 /*********************************************************************************************
  * SemantErrorHandler                                                                *
  * This singleton class serves as a container for the Errors thrown. Any analysis        *

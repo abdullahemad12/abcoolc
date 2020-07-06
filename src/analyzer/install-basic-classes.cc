@@ -110,11 +110,11 @@ void program_class::install_basic_classes()
 	       filename);
 
         // append everything to the classes
-        classes = append_Classes(classes, single_Classes(Object_class));
-        classes = append_Classes(classes, single_Classes(IO_class));
-        classes = append_Classes(classes, single_Classes(Int_class));
-        classes = append_Classes(classes, single_Classes(Bool_class));
-        classes = append_Classes(classes, single_Classes(Str_class));
+        classes = append_Classes(single_Classes(Object_class), classes);
+        classes = append_Classes(single_Classes(IO_class), classes);
+        classes = append_Classes(single_Classes(Int_class), classes);
+        classes = append_Classes(single_Classes(Bool_class), classes);
+        classes = append_Classes(single_Classes(Str_class), classes);
 }
 
 

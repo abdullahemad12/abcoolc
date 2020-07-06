@@ -78,7 +78,7 @@ class Expression_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Expression(); }
    virtual Expression copy_Expression() = 0;
-   void validate(TypeTable& type_table);
+   virtual void validate(TypeTable& type_table);
 #ifdef Expression_EXTRAS
    Expression_EXTRAS
 #endif
@@ -469,7 +469,7 @@ public:
    void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
-
+   void validate(TypeTable& typetable);
    std::vector<tree_node*> get_children();
 
 #ifdef Expression_SHARED_EXTRAS

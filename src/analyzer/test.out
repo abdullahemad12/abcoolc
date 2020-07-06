@@ -4,56 +4,30 @@ _program
   _class
     Main
     Object
-    "test/cycle_detection.cl"
+    "test/undefined_meth1.cl"
     (
     #2
     _method
       main
       Int
-      #4
+      #2
       _int
-        0
+        1
       : _no_type
-    )
-  #8
-  _class
-    A
-    F
-    "test/cycle_detection.cl"
-    (
-    )
-  #12
-  _class
-    B
-    A
-    "test/cycle_detection.cl"
-    (
-    )
-  #17
-  _class
-    C
-    B
-    "test/cycle_detection.cl"
-    (
-    )
-  #22
-  _class
-    D
-    B
-    "test/cycle_detection.cl"
-    (
-    )
-  #27
-  _class
-    E
-    D
-    "test/cycle_detection.cl"
-    (
-    )
-  #32
-  _class
-    F
-    Object
-    "test/cycle_detection.cl"
-    (
+    #3
+    _method
+      hello
+      #3
+      _formal
+        x
+        Int
+      #3
+      _formal
+        y
+        Str
+      Int
+      #3
+      _int
+        1
+      : _no_type
     )
