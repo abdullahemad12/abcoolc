@@ -374,8 +374,7 @@ void static_dispatch_class::undefined_types_detection(TypeTable& typetable)
 /*************Dynamic Dispatch************************/
 void dispatch_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 {
-    cout << name;
-    faulty = resreved_id_misuse_check(this, typetable, name,containing_class);
+    faulty = resreved_id_misuse_check(this, typetable, name, containing_class);
 }
 
 void dispatch_class::undefined_types_detection(TypeTable& typetable)
@@ -440,7 +439,7 @@ void typcase_class::reserved_symbols_misuse_detection(TypeTable& typetable)
 
 void typcase_class::undefined_types_detection(TypeTable& typetable)
 {
-    cout << "helloh\n";
+
 }
 
 void typcase_class::redefinition_detection(TypeTable& typetable)
