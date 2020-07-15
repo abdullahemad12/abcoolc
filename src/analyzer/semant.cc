@@ -10,13 +10,16 @@
 #include <cassert>
 #include <environment.h>
 #include <queue>
+#include <class-visitor.h>
+#include <cassert>
+
+#define SET_CONTAINS(set, element) (set.find((element)) != set.end())
 
 extern int semant_debug;
 extern char *curr_filename;
 
 // prototypes for helpers 
-void semant_check_classes();
-void terminate_on_errors(void);
+void classes_to_map(Classes classes, unordered_map<Symbol, Class_>& classes_map);
 
 
 /*   This is the entry point to the semantic checker.
@@ -34,6 +37,7 @@ void terminate_on_errors(void);
  */
 void program_class::semant()
 {
+    // preprocessing validations
     TypeTable typetable(classes);
     Environment env;
     install_basic_classes();
@@ -41,6 +45,8 @@ void program_class::semant()
     validate_all(typetable);
     initialize_constants();
 
+    // scope and type checking
+    sync_global_env(env);
     ClassTree class_tree(classes, Object);
     scope_check(class_tree, typetable, env);
     type_check(class_tree, typetable, env);
@@ -89,10 +95,57 @@ void program_class::validate_all(TypeTable& typetable)
 
 //////////////////////////////////////////////////////////////
 //
-// Helpers for the semant methods
+// Euler Walk on classes Implementation
 //
 //////////////////////////////////////////////////////////////
 
+void program_class::euler_walk(ClassVisitor& visitor, ClassTree& class_tree, 
+                                TypeTable& type_table, Environment& env)
+{
+    // for fast access 
+    unordered_map<Symbol, Class_> classes_map;
+    classes_to_map(classes, classes_map);
 
+     // must traverse children in euler walk order
+     Symbol prev = NULL;
+     unordered_set<Symbol> visited;
+     for(Symbol cur_class : class_tree) 
+     {
+        assert(SET_CONTAINS(classes_map, cur_class));
+        if(!SET_CONTAINS(visited, cur_class))
+        {
+            visited.insert(cur_class);
+            Class_ class_ = classes_map[cur_class];
+            class_->sync_local_env(env);
+            visitor.visit(class_, class_tree, type_table, env);
+        }
+        else 
+        {
+            // we went up a level (clean_up)
+            Class_ prev_class = classes_map[prev];
+            prev_class->clean_local_env(env);
+        }
+        
+         prev = cur_class;
+     }
+
+     // for consistency remove the root class 
+     assert(prev != NULL);
+     classes_map[prev]->clean_local_env(env);
+}
+
+
+////////////////////////////
+// helpers
+///////////////////////////
+void classes_to_map(Classes classes, unordered_map<Symbol, Class_>& classes_map)
+{
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+    {
+        Class_ class_ = classes->nth(i);
+        classes_map[class_->get_name()] = class_;
+    }
+}
 
 

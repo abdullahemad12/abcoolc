@@ -11,7 +11,9 @@ SRC= semant.cc cool-tree.h cool-tree.handcode.h good.cl bad.cl README
 CSRC= semant-phase.cc symtab_example.cc  handle_flags.cc  ast-lex.cc ast-parse.cc utilities.cc \
 stringtab.cc dumptype.cc tree.cc cool-tree.cc class-tree.cc union-find.cc segment-tree.cc \
 object-environment.cc method-environment.cc semant-error.cc type-table.cc synch-environment.cc \
-environment.cc semant-checks.cc validator.cc install-basic-classes.cc node-children.cc propagate-class.cc
+environment.cc scope-check.cc validator.cc install-basic-classes.cc node-children.cc propagate-class.cc \
+type-check.cc class-visitor.cc
+
 TSRC= mycoolc mysemant cool-tree.aps
 CGEN=
 HGEN=

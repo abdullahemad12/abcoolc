@@ -41,7 +41,8 @@ void method_class::add_to_env(Symbol class_name, Environment& env)
 void attr_class::add_to_env(Symbol class_name, Environment& env)
 {
     if(!faulty)
-        env.add_object(name, type_decl);
+        if(class_name == idtable.add_string("SELF_TYPE"))
+            env.add_object(name, type_decl);
 }
 
 void formal_class::add_to_env(Environment& env)
@@ -99,17 +100,23 @@ void method_class::clean_environment(Environment& env)
 //
 /////////////////////////////////////////
 
-
 /* 
  * this is preprocessing pass that adds features to the global environment
  * no need for error checking
  */ 
+// this function in particular must be called once during the whole program 
+// execution
+void program_class::sync_global_env(Environment& env)
+{
+    int n = classes->len();
+    for(int i = 0; i < n; i++)
+        classes->nth(i)->sync_global_env(env);
+}
 void class__class::sync_global_env(Environment& env)
 {
     int n = features->len();
     for(int i = 0; i < n; i++)
         features->nth(i)->add_to_env(name, env);
-    clean_local_env(env); /*clean features that might have been added by mistake*/
 }
 
 /*

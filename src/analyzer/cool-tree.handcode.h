@@ -16,6 +16,7 @@ extern int yylineno;
 class UnionFind;
 class Environment;
 class TypeTable;
+class ClassVisitor;
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
 inline void dump_Boolean(ostream& stream, int padding, Boolean b)
@@ -64,7 +65,9 @@ void redefintions_detection();	\
 void validate_main_class();	\
 void cycle_detection();	\
 void builtin_duplication_detection(TypeTable& typetable); \
-void validate_all(TypeTable& typetable);
+void validate_all(TypeTable& typetable); \
+void sync_global_env(Environment& env); \
+void euler_walk(ClassVisitor& visitor, ClassTree& class_tree, TypeTable& type_table, Environment& env);
 
 ////////////////////////
 // Synch and clean adds and removes all the features 
