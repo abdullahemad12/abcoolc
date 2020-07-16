@@ -28,7 +28,7 @@ class Environment
         MethodEnvironment method_env;
 
     public:
-        Environment() { }
+        Environment();
         ~Environment() { }
         Symbol current_class;
         void add_object(Symbol name, Symbol type);

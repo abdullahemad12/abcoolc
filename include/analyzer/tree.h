@@ -66,7 +66,6 @@ public:
     virtual ~tree_node() { }
     virtual void dump(ostream& stream, int n) = 0;
     virtual void validate(TypeTable& type_table) = 0;
-    virtual void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env) = 0;
     virtual void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env) = 0;
     virtual void propagate_containing_class(Class_ class_) = 0;
     /**
@@ -135,7 +134,6 @@ public:
 template <class Elem> class list_node : public tree_node {
 public:
     void validate(TypeTable& type_table) { assert(false); };
-    void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env) { assert(false); };
     void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env) { assert(false); };
     void propagate_containing_class(Class_ class_) { }
     std::vector<tree_node*> get_children() 

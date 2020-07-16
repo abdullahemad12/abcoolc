@@ -137,7 +137,6 @@ public:
    Program copy_Program();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
@@ -167,7 +166,6 @@ public:
    Class_ copy_Class_();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -200,7 +198,6 @@ public:
    Feature copy_Feature();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -231,7 +228,6 @@ public:
    Feature copy_Feature();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
@@ -259,7 +255,6 @@ public:
    Formal copy_Formal();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -290,7 +285,6 @@ public:
    Case copy_Case();
    void dump(ostream& stream, int n);
    void validate(TypeTable& type_table);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -308,6 +302,8 @@ public:
 
 // define constructor - assign
 class assign_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Symbol name;
    Expression expr;
@@ -318,7 +314,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -336,6 +331,8 @@ public:
 
 // define constructor - static_dispatch
 class static_dispatch_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Expression expr;
    Symbol type_name;
@@ -350,7 +347,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -368,6 +364,8 @@ public:
 
 // define constructor - dispatch
 class dispatch_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Expression expr;
    Symbol name;
@@ -380,7 +378,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -410,7 +407,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -438,7 +434,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -466,7 +461,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
    void validate(TypeTable& typetable);
@@ -491,7 +485,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -523,7 +516,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -551,7 +543,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -579,7 +570,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -607,7 +597,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -635,7 +624,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -661,7 +649,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -689,7 +676,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -717,7 +703,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -745,7 +730,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -771,7 +755,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -797,7 +780,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -823,7 +805,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -849,7 +830,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -875,7 +855,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -901,7 +880,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -925,7 +903,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 
@@ -943,6 +920,8 @@ public:
 
 // define constructor - object
 class object_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Symbol name;
 public:
@@ -951,7 +930,6 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   void scope_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
 

@@ -26,7 +26,7 @@
 void program_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
     TypeClassVisitor visitor;
-    euler_walk(visitor, class_tree, type_table, env); 
+    euler_walk(visitor, class_tree, type_table, env);
 }
 
 void class__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)

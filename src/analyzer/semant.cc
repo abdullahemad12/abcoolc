@@ -48,7 +48,6 @@ void program_class::semant()
     // scope and type checking
     sync_global_env(env);
     ClassTree class_tree(classes, Object);
-    scope_check(class_tree, typetable, env);
     type_check(class_tree, typetable, env);
 
     uninstall_basic_classes();

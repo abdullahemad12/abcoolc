@@ -7,13 +7,6 @@
 #include <union-find.h>
 
 #define SET_CONTAINS(set, elem) (set.find((elem)) != set.end())
-#define RAISE_FATAL(err) \
-SemantErrorHandler& sem_err = SemantErrorHandler::instance();\
-sem_err.report_fatal((err));
-
-#define RAISE(err) \
-SemantErrorHandler& sem_err = SemantErrorHandler::instance();\
-sem_err.report((err));
 
 #define OBJECT idtable.add_string("Object")
 

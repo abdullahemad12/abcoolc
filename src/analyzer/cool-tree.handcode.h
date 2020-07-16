@@ -197,5 +197,4 @@ Symbol get_type() { return type_decl; };
 
 
 
-
 #endif

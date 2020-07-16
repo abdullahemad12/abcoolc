@@ -15,6 +15,9 @@
 #include <vector>
 #include <ostream>
 
+
+
+
 using namespace std;
 
 class SemantError
@@ -137,10 +140,10 @@ class UnexpectedNumberOfArgsError : public SemantError
         UnexpectedNumberOfArgsError(Class_ class_, tree_node* faulty_node, int n_expected, int n_given);
 };
 
-class UndefinedAttributeError : public SemantError
+class UndefinedIdentifierError : public SemantError
 {
     public:
-        UndefinedAttributeError(Class_ class_, tree_node* faulty_node, Symbol identifier);
+        UndefinedIdentifierError(Class_ class_, tree_node* faulty_node, Symbol identifier);
 };
 
 
@@ -245,4 +248,13 @@ class SemantErrorHandler
         void terminate_on_errors();
         
 };
+
+#define RAISE_FATAL(err) \
+SemantErrorHandler& sem_err = SemantErrorHandler::instance();\
+sem_err.report_fatal((err));
+
+#define RAISE(err) \
+SemantErrorHandler& sem_err = SemantErrorHandler::instance();\
+sem_err.report((err));
+
 #endif /*_SEMANT_ERRORS_H_*/

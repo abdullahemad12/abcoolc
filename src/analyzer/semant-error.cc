@@ -149,10 +149,10 @@ UnexpectedNumberOfArgsError::UnexpectedNumberOfArgsError(Class_ class_, tree_nod
     msg << "Expects " << n_expected << " arguments but was given " << n_given; 
 }
 
-UndefinedAttributeError::UndefinedAttributeError(Class_ class_, tree_node* faulty_node, Symbol identifier) :    
+UndefinedIdentifierError::UndefinedIdentifierError(Class_ class_, tree_node* faulty_node, Symbol identifier) :    
                                         SemantError(class_, faulty_node)
 {
-    msg << "attribute " << identifier << " is not defined in this context";
+    msg << "identifier " << identifier << " is not defined in this context";
 }
 
 UndefinedMethodError::UndefinedMethodError(Class_ class_, tree_node* faulty_node, Symbol method) :

@@ -20,11 +20,6 @@ class ClassVisitor
         virtual void visit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env) = 0;
 };
 
-class ScopeClassVisitor : public ClassVisitor
-{
-    public:
-        void visit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
-};
 
 class TypeClassVisitor : public ClassVisitor 
 {

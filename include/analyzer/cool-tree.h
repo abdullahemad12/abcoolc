@@ -11,6 +11,7 @@
 
 #include "tree.h"
 #include "cool-tree.handcode.h"
+#include <vector>
 
 
 // define the class for phylum
@@ -35,6 +36,7 @@ class Class__class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Class_(); }
    virtual Class_ copy_Class_() = 0;
+   
 
 #ifdef Class__EXTRAS
    Class__EXTRAS
@@ -46,7 +48,7 @@ public:
 typedef class Feature_class *Feature;
 
 class Feature_class : public tree_node {
-public:
+  public:
    tree_node *copy()		 { return copy_Feature(); }
    virtual Feature copy_Feature() = 0;
 
@@ -58,7 +60,6 @@ public:
 
 // define simple phylum - Formal
 typedef class Formal_class *Formal;
-
 class Formal_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Formal(); }
@@ -77,7 +78,7 @@ class Expression_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Expression(); }
    virtual Expression copy_Expression() = 0;
-
+   virtual void validate(TypeTable& type_table);
 #ifdef Expression_EXTRAS
    Expression_EXTRAS
 #endif
@@ -135,6 +136,10 @@ public:
    }
    Program copy_Program();
    void dump(ostream& stream, int n);
+   void validate(TypeTable& type_table);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
 
 #ifdef Program_SHARED_EXTRAS
    Program_SHARED_EXTRAS
@@ -143,7 +148,6 @@ public:
    program_EXTRAS
 #endif
 };
-
 
 // define constructor - class_
 class class__class : public Class__class {
@@ -161,6 +165,12 @@ public:
    }
    Class_ copy_Class_();
    void dump(ostream& stream, int n);
+   void validate(TypeTable& type_table);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Class__SHARED_EXTRAS
    Class__SHARED_EXTRAS
@@ -187,6 +197,12 @@ public:
    }
    Feature copy_Feature();
    void dump(ostream& stream, int n);
+   void validate(TypeTable& type_table);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
@@ -211,6 +227,11 @@ public:
    }
    Feature copy_Feature();
    void dump(ostream& stream, int n);
+   void validate(TypeTable& type_table);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
@@ -233,6 +254,12 @@ public:
    }
    Formal copy_Formal();
    void dump(ostream& stream, int n);
+   void validate(TypeTable& type_table);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Formal_SHARED_EXTRAS
    Formal_SHARED_EXTRAS
@@ -257,6 +284,12 @@ public:
    }
    Case copy_Case();
    void dump(ostream& stream, int n);
+   void validate(TypeTable& type_table);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Case_SHARED_EXTRAS
    Case_SHARED_EXTRAS
@@ -269,6 +302,8 @@ public:
 
 // define constructor - assign
 class assign_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Symbol name;
    Expression expr;
@@ -279,6 +314,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -291,6 +331,8 @@ public:
 
 // define constructor - static_dispatch
 class static_dispatch_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Expression expr;
    Symbol type_name;
@@ -305,6 +347,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -317,6 +364,8 @@ public:
 
 // define constructor - dispatch
 class dispatch_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Expression expr;
    Symbol name;
@@ -329,6 +378,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -353,6 +407,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -375,6 +434,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -397,6 +461,10 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+   void validate(TypeTable& typetable);
+   std::vector<tree_node*> get_children();
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -417,6 +485,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -443,6 +516,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -465,6 +543,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -487,6 +570,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -509,6 +597,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -531,6 +624,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -551,6 +649,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -573,6 +676,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -595,6 +703,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -617,6 +730,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -637,6 +755,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -657,6 +780,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -677,6 +805,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -697,6 +830,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -717,6 +855,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -737,6 +880,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -755,6 +903,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -767,6 +920,8 @@ public:
 
 // define constructor - object
 class object_class : public Expression_class {
+private:
+   bool scope_check(Environment& env);
 protected:
    Symbol name;
 public:
@@ -775,6 +930,11 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
+   void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
+   void propagate_containing_class(Class_ class_);
+
+   std::vector<tree_node*> get_children();
+
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
