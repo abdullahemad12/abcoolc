@@ -8,8 +8,7 @@
 
 Environment::Environment()
 {  
-    // initialize object env with "self" of type "SELF_TYPE"
-    object_env.add(idtable.add_string("self"), idtable.add_string("SELF_TYPE"));
+
 }
 void Environment::add_object(Symbol name, Symbol type)
 { 

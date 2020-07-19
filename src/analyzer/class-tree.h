@@ -92,13 +92,14 @@ class ClassTree
 
         /**
          * @brief checks if the given base class is a parent of the given derived
-         *        class. That is derived <= base
+         *        class. That is derived <= base. This is the extended "<=" implementation
          * @requires: the given two class to the defined in the ClassTree
-         * @param Symbol the class that is thought to be derived 
-         * @param Symbol the base class 
+         * @param symbol the current class C being type checked in the environment
+         * @param Symbol the type that is thought to be derived 
+         * @param Symbol the base type 
          * @returns true if the derived <= base 
          */ 
-        bool is_derived(Symbol derived, Symbol base);
+        bool is_derived(Symbol cur_class, Symbol derived, Symbol base);
 
   
         /**

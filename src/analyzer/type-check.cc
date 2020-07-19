@@ -7,6 +7,8 @@
 #include <environment.h>
 #include <class-tree.h>
 #include <class-visitor.h>
+#include <type-table.h>
+#include <semant-errors.h>
 
 /////////////////////////////////////////////////////////////
 // Type and Scope Checks
@@ -25,28 +27,45 @@
 
 void program_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    initialize_constants();
     TypeClassVisitor visitor;
     euler_walk(visitor, class_tree, type_table, env);
 }
 
 void class__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    // if all the features type check than this type check
+    int n = features->len();
+    for(int i = 0; i < n; i++)
+        features->nth(i);
 }
 
 void method_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    sync_environment(env);
+    expr->type_check(class_tree, type_table, env);
+    if(!class_tree.is_derived(env.current_class, expr->type, return_type))
+    {
+        TypeMismathcError err(containing_class, this, expr->type, return_type);
+        RAISE(err);
+    }
 }
 
 void attr_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    env.add_object(self, env.current_class);
+    init->type_check(class_tree, type_table, env);
+    if(init->type != No_type && !class_tree.is_derived(env.current_class, init->type, type_decl))
+    {
+        TypeMismathcError err(containing_class, this, init->type, type_decl);
+        RAISE(err);
+    }
+    env.remove_object(self);
 }
 
 void formal_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    
 }
 
 void assign_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)

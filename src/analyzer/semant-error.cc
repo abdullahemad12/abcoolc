@@ -127,7 +127,8 @@ string UndefinedMainError::what(void)
 TypeMismathcError::TypeMismathcError(Class_ class_, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
                    SemantError(class_, faulty_node) 
 {
-    msg <<  "expected type " << expected_symbol->get_string() << " but got " << faulty_symbol->get_string();
+    msg <<  "The inferred type: " << faulty_symbol->get_string()
+               << "does not conform with the expected type: " << expected_symbol->get_string();
 }
 
 

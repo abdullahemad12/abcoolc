@@ -83,6 +83,7 @@ void formal_class::remove_from_env(Environment& env)
 ////////////////////////////////////////
 void method_class::sync_environment(Environment& env)
 {
+    env.add_object(idtable.add_string("self"), containing_class->get_name());
     int n = formals->len();
     for(int i = 0; i  < n; i++)
         formals->nth(i)->add_to_env(env);
@@ -90,6 +91,7 @@ void method_class::sync_environment(Environment& env)
 
 void method_class::clean_environment(Environment& env)
 {
+    env.remove_object(idtable.add_string("self"));
     int n = formals->len();
     for(int i = 0; i < n; i++)
         formals->nth(i)->remove_from_env(env);
@@ -114,6 +116,7 @@ void program_class::sync_global_env(Environment& env)
 }
 void class__class::sync_global_env(Environment& env)
 {
+    env.current_class = name;
     int n = features->len();
     for(int i = 0; i < n; i++)
         features->nth(i)->add_to_env(name, env);
@@ -140,4 +143,5 @@ void class__class::clean_local_env(Environment& env)
     int n = features->len();
     for(int i = 0; i < n; i++)
         features->nth(i)->remove_from_env(env);
+    env.current_class = NULL;
 }

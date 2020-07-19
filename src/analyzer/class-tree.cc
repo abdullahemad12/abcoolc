@@ -81,11 +81,19 @@ Symbol ClassTree::lub(Symbol type1, Symbol type2)
   return node->class_symbol;
 }
 
-bool ClassTree::is_derived(Symbol derived, Symbol base)
+bool ClassTree::is_derived(Symbol cur_class, Symbol derived, Symbol base)
 {
   Symbol self_type = idtable.add_string("SELF_TYPE");
+  assert(cur_class != self_type);
+
+  if(derived == base)
+    return true;
+    
+  if(derived == self_type)
+    derived = cur_class;
+  
   // self type as base is always false
-  return ((base != self_type) || (base == derived)) && (lub(base, derived)) == base;
+  return (base != self_type) && (lub(base, derived) == base);
 }
 
 ClassTree::~ClassTree(void)
