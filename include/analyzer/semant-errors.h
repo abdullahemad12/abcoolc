@@ -172,6 +172,12 @@ class InvalidDispatchError : public SemantError
         InvalidDispatchError(Class_ class_, tree_node* faulty_node, Symbol undefined_class);
 };
 
+class InheritanceMismatchError : public SemantError
+{
+    public:
+       InheritanceMismatchError(Class_ class_, tree_node* faulty_node, Symbol base, Symbol derived);
+};
+
 class FormalRedefinitionError : public SemantError
 {
     public: 

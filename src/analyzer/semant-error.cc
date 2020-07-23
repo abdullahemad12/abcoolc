@@ -211,3 +211,9 @@ DuplicateCaseBranchError::DuplicateCaseBranchError(Class_ class_, tree_node* fau
 {
     msg << "Type " <<  type << " cannot be defined multiple times within a case expression";
 }
+
+InheritanceMismatchError::InheritanceMismatchError(Class_ class_, tree_node* faulty_node, Symbol base, Symbol derived)
+                        : SemantError(class_, faulty_node)
+{
+    msg << "Class " << derived << "does not inherit from class " << base;
+}

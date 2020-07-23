@@ -59,7 +59,8 @@ class tree_node {
 protected:
     int line_number;            // stash the line number when node is made
     Class_ containing_class; // the class that contains this tree
-    bool faulty; // if this is set at any stage, this node is ignored at all the later stages 
+    bool faulty; // if this is set at any stage, this node is ignored at all the later stages
+    void type_check_children(ClassTree& class_tree, TypeTable& type_table, Environment& env);
 public:
     tree_node();
     virtual tree_node *copy() = 0;

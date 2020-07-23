@@ -15,16 +15,23 @@
 // Semant functions for the program children
 // General Algorithm 
 // 1) Add state as needed to the environment
-// 2) call semant on all the children 
+// 2) call type_check on all the children 
 // 3) scope check
 // 4) type check if scope checks sucessfully
-// 5) if any fails set the type to Object
+// 5) if any fails set the type to No_type
 // 6) Remove the state from the environment
 // 
 // steps (1) and (6) are omitted at the class node and done 
 // at the program node instead
+// Refer to the manual for type checking rules
 //////////////////////////////////////////////////////////////
 
+void tree_node::type_check_children(ClassTree& class_tree, TypeTable& type_table, Environment& env)
+{
+    auto children = get_children();
+    for(auto child : children)
+        child->type_check(class_tree, type_table, env);
+}
 void program_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
     initialize_constants();
@@ -35,15 +42,15 @@ void program_class::type_check(ClassTree& class_tree, TypeTable& type_table, Env
 void class__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
     // if all the features type check than this type check
-    int n = features->len();
-    for(int i = 0; i < n; i++)
-        features->nth(i);
+    type_check_children(class_tree, type_table, env);
 }
 
 void method_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
     sync_environment(env);
-    expr->type_check(class_tree, type_table, env);
+    type_check_children(class_tree, type_table, env);
+    clean_environment(env);
+
     if(!class_tree.is_derived(env.current_class, expr->type, return_type))
     {
         TypeMismathcError err(containing_class, this, expr->type, return_type);
@@ -54,13 +61,14 @@ void method_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 void attr_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
     env.add_object(self, env.current_class);
-    init->type_check(class_tree, type_table, env);
-    if(init->type != No_type && !class_tree.is_derived(env.current_class, init->type, type_decl))
+    type_check_children(class_tree, type_table, env);
+    env.remove_object(self);
+
+    if(!class_tree.is_derived(env.current_class, init->type, type_decl))
     {
         TypeMismathcError err(containing_class, this, init->type, type_decl);
         RAISE(err);
     }
-    env.remove_object(self);
 }
 
 void formal_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
@@ -70,17 +78,67 @@ void formal_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 
 void assign_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check_children(class_tree, type_table, env);
 
+    type = No_type;
+    if(!scope_check(env))
+        return;
+
+    Symbol T0 = env.lookup_object(name);
+    if(class_tree.is_derived(env.current_class, expr->type, T0))
+    {
+        type = T0;
+    }
+    else 
+    {
+        TypeMismathcError err(containing_class, this, expr->type, T0);
+        RAISE(err);
+    }
 }
 
 void static_dispatch_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check_children(class_tree, type_table, env);
+    
+    type = No_type;
+    if(!scope_check(env))
+        return;
+    
+    if(!class_tree.is_derived(env.current_class, expr->type, type_name))
+    {
+        InheritanceMismatchError err(containing_class, this, type_name, expr->type);
+        RAISE(err);
+        return;
+    }
+
+    MethodSignature sign = env.lookup_method(type_name, name);
+    if(!type_check_arguments(sign.get_param_types(), class_tree))
+        return;
+    
+    if(sign.get_return_type() == SELF_TYPE)
+        type = expr->type;
+    else
+        type = sign.get_return_type();
 
 }
 
 void dispatch_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check_children(class_tree, type_table, env);
+    
+    type = No_type;
+    if(!scope_check(env))
+        return;
+    
+    MethodSignature sign = env.lookup_method(expr->type, name);
+    if(!type_check_arguments(sign.get_param_types(), class_tree))
+        return;
 
+    if(sign.get_return_type() == SELF_TYPE)
+        type = expr->type;
+    else
+        type =  sign.get_return_type();
+    
 }
 
 void cond_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
@@ -191,4 +249,66 @@ void no_expr_class::type_check(ClassTree& class_tree, TypeTable& type_table, Env
 void object_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
 
+}
+
+
+
+
+
+
+////////////////////////////////////////////
+//
+// Helper functions
+//
+////////////////////////////////////////////
+bool static_dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree& class_tree)
+{
+    unsigned int n = actual->len();
+    if(param_types.size() != n)
+    {
+        UnexpectedNumberOfArgsError err(containing_class, this, param_types.size(), n);
+        RAISE(err);
+        return false;
+    }
+
+    bool type_checks = true;
+
+    for(unsigned int i = 0; i < n; i++)
+    {
+        Symbol Ti = actual->nth(i)->type;
+        if(!class_tree.is_derived(containing_class->get_name(), Ti, param_types[i]))
+        {
+            type_checks = false;
+            TypeMismathcError err(containing_class, this, Ti, param_types[i]);
+            RAISE(err);
+        }
+    }
+
+    return type_checks;
+}
+
+bool dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree& class_tree)
+{
+    unsigned int n = actual->len();
+    if(param_types.size() != n)
+    {
+        UnexpectedNumberOfArgsError err(containing_class, this, param_types.size(), n);
+        RAISE(err);
+        return false;
+    }
+
+    bool type_checks = true;
+
+    for(unsigned int i = 0; i < n; i++)
+    {
+        Symbol Ti = actual->nth(i)->type;
+        if(!class_tree.is_derived(containing_class->get_name(), Ti, param_types[i]))
+        {
+            type_checks = false;
+            TypeMismathcError err(containing_class, this, Ti, param_types[i]);
+            RAISE(err);
+        }
+    }
+
+    return type_checks;
 }

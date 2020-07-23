@@ -7,6 +7,7 @@
 #include <iostream>
 #include "tree.h"
 #include "cool.h"
+#include <vector>
 #include "stringtab.h"
 
 #define LOCAL_TYPE "local_type"
@@ -17,6 +18,7 @@ class UnionFind;
 class Environment;
 class TypeTable;
 class ClassVisitor;
+
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
 inline void dump_Boolean(ostream& stream, int padding, Boolean b)
@@ -194,7 +196,10 @@ void formals_redefinition_detection();
 Symbol get_type() { return type_decl; };
 
 
+#define static_dispatch_EXTRAS		\
+bool type_check_arguments(std::vector<Symbol> param_types, ClassTree& class_tree);
 
-
+#define dispatch_EXTRAS			\
+bool type_check_arguments(std::vector<Symbol> param_types, ClassTree& class_tree);
 
 #endif
