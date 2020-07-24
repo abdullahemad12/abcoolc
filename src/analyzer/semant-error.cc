@@ -223,3 +223,15 @@ ConditionTypeError::ConditionTypeError(Class_ class_, tree_node* faulty_node, Sy
 {
     msg << "Conditional statement expects a Boolean expression as its condition but got " << type;
 }
+
+NonBasicTypeError::NonBasicTypeError(Class_ class_, tree_node* faulty_node, Symbol type)
+                    : SemantError(class_, faulty_node)
+{
+    msg << "Expects the type of the expression to be on of COOL's basic types but got " << type;
+}
+
+EqualityTypeMismatchError::EqualityTypeMismatchError(Class_ class_, tree_node* faulty_node, Symbol type1, Symbol type2)
+                    : SemantError(class_, faulty_node)
+{
+    msg << "cannot check equality between types: " << type1 << " and " << type2;
+}

@@ -202,6 +202,20 @@ class ConditionTypeError : public SemantError
     public:
         ConditionTypeError(Class_ class_, tree_node* faulty_node, Symbol type);
 };
+
+class NonBasicTypeError : public SemantError
+{
+    public:
+        NonBasicTypeError(Class_ class_, tree_node* faulty_node, Symbol type);
+};
+
+class EqualityTypeMismatchError : public SemantError
+{
+    public:
+        EqualityTypeMismatchError(Class_ class_, tree_node* faulty_node, Symbol type1, Symbol type2);
+};
+
+
 /*********************************************************************************************
  * SemantErrorHandler                                                                *
  * This singleton class serves as a container for the Errors thrown. Any analysis        *

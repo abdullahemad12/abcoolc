@@ -10,6 +10,12 @@
 #include <type-table.h>
 #include <semant-errors.h>
 
+
+// prototypes
+Symbol arithmetic_type_check(tree_node* node, Class_ containing_class, Expression_class* e1, Expression_class* e2);
+Symbol compare_type_check(tree_node* node, Class_ containing_class, Expression_class* e1, Expression_class* e2);
+
+
 /////////////////////////////////////////////////////////////
 // Type and Scope Checks
 // Semant functions for the program children
@@ -173,7 +179,7 @@ void loop_class::type_check(ClassTree& class_tree, TypeTable& type_table, Enviro
 
 void typcase_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-    type_check(class_tree, type_table, env);
+    type_check_children(class_tree, type_table, env);
     type = No_type;
 
     int n = cases->len();
@@ -183,97 +189,163 @@ void typcase_class::type_check(ClassTree& class_tree, TypeTable& type_table, Env
 
 void branch_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    env.add_object(name, type_decl);
+    type_check_children(class_tree, type_table, env);
+    env.remove_object(name);
+    type = expr->type;
 }
 
 void block_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = body->nth(body->len() - 1)->type;
 }
 
 void let_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    
+    init->type_check(class_tree, type_table, env);
+    
+    type = No_type;
 
+    // type check body
+    env.add_object(identifier, type_decl);
+    body->type_check(class_tree, type_table, env);
+    env.remove_object(identifier);
+
+    if(!class_tree.is_derived(env.current_class, init->type, type_decl))
+    {
+        TypeMismathcError err(containing_class, this, init->type, type_decl);
+        RAISE(err);
+        return;
+    }
+    type = body->type;
 }
 
 void plus_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = arithmetic_type_check(this, containing_class, e1, e2);
 }
 
 void sub_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = arithmetic_type_check(this, containing_class, e1, e2);
 }
 
 void mul_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = arithmetic_type_check(this, containing_class, e1, e2);
 }
 
 void divide_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = arithmetic_type_check(this, containing_class, e1, e2);
 }
 
 void neg_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    if(e1->type != Int)
+    {
+        TypeMismathcError err(containing_class, this, e1->type, Int);
+        RAISE(err);
+        return;
+    }
+    type = Bool;
 }
 
 void lt_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = compare_type_check(this, containing_class, e1, e2); 
 }
 
 void eq_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check_children(class_tree, type_table, env);
+    type = No_type;
+    if(!type_table.is_basic_type(e1->type))
+    {
+        NonBasicTypeError err(containing_class, this, e1->type);
+        RAISE(err);
+        return;
+    }
+    if(!type_table.is_basic_type(e2->type))
+    {
+        NonBasicTypeError err(containing_class, this, e2->type);
+        RAISE(err);
+        return;
+    }
 
+    if(e1->type != e2->type)
+    {
+        EqualityTypeMismatchError err(containing_class, this, e1->type, e2->type);
+        RAISE(err)
+        return;
+    }
+    type = Bool;
 }
 
 void leq_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = compare_type_check(this, containing_class, e1, e2);
 }
 
 void comp_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    if(e1->type != Bool)
+    {
+        TypeMismathcError err(containing_class, this, e1->type, Bool);
+        RAISE(err);
+        return;
+    }
+    type = Bool;
 }
 
 void int_const_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type = Int;
 }
 
 void bool_const_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type = Bool;
 }
 
 void string_const_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type = Str;
 }
 
 void new__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type = type_name;
 }
 
 void isvoid_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type_check_children(class_tree, type_table, env);
+    type = Bool;
 }
 
 void no_expr_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-
+    type = No_type;
 }
 
 void object_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type = No_type;
+    if(!scope_check(env))
+        return;
 
+    type = env.lookup_object(name);
 }
 
 
@@ -336,4 +408,39 @@ bool dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree&
     }
 
     return type_checks;
+}
+
+
+Symbol arithmetic_type_check(tree_node* node, Class_ containing_class, Expression_class* e1, Expression_class* e2)
+{
+    if(e1->type != Int)
+    {
+        TypeMismathcError err(containing_class, node, e1->type, Int);
+        RAISE(err);
+        return No_type;
+    }
+    if(e2->type != Int)
+    {
+        TypeMismathcError err(containing_class, node, e2->type, Int);
+        RAISE(err);
+        return No_type; 
+    }
+    return Int;
+}
+
+Symbol compare_type_check(tree_node* node, Class_ containing_class, Expression_class* e1, Expression_class* e2)
+{
+    if(e1->type != Int)
+    {
+        TypeMismathcError err(containing_class, node, e1->type, Int);
+        RAISE(err);
+        return No_type;
+    }
+    if(e2->type != Int)
+    {
+        TypeMismathcError err(containing_class, node, e2->type, Int);
+        RAISE(err);
+        return No_type; 
+    }
+    return Bool;
 }
