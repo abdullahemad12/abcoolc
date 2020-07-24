@@ -72,8 +72,23 @@ void ClassTree::compute_first_occurance(void)
     euler_first[euler_trip[i]] = i;
 }
 
-Symbol ClassTree::lub(Symbol type1, Symbol type2)
+Symbol ClassTree::lub(Symbol cur_class, Symbol type1, Symbol type2)
 {
+  assert(cur_class != SELF_TYPE);
+
+  // handle no_type
+  if(type1 == No_type)
+    return type2;
+  else if (type2 == No_type)
+    return type1;
+
+  // handle self_type cases
+  if(type1 == SELF_TYPE)
+    type1 = cur_class;
+    
+  if(type2 == SELF_TYPE)
+    type2 = cur_class;
+
   int min = MIN(euler_first[type1], euler_first[type2]);
   int max = MAX(euler_first[type1], euler_first[type2]);
 
@@ -83,21 +98,9 @@ Symbol ClassTree::lub(Symbol type1, Symbol type2)
 
 bool ClassTree::is_derived(Symbol cur_class, Symbol derived, Symbol base)
 {
-  Symbol self_type = idtable.add_string("SELF_TYPE");
-  Symbol no_type = idtable.add_string("_no_type");
-  assert(cur_class != self_type);
-
-  if(base == no_type)
-    return true;
-  
-  if(derived == base)
-    return true;
-    
-  if(derived == self_type)
-    derived = cur_class;
-  
+  assert(cur_class != SELF_TYPE);
   // self type as base is always false
-  return (base != self_type) && (lub(base, derived) == base);
+  return (base != SELF_TYPE) && (lub(cur_class, base, derived) == base);
 }
 
 ClassTree::~ClassTree(void)

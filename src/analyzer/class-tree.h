@@ -81,18 +81,20 @@ class ClassTree
         /**
           * @brief least upper bound (lub) operation as defined in the manual
           *          basically, it calculates the Least common ancestor of the 
-          *          given two classes
+          *          given two classes. This is the extended LUB
           * @requires: the given two classes to be defined in the ClassTree
+          * @param Symbol the name of the containing class
           * @param Symbol the first class symbol from idtable
           * @param Symbol the second class symbol from idtable
           * @returns: the least upper bound of these two classes
           */
-        Symbol lub(Symbol type1, Symbol type2);
+        Symbol lub(Symbol cur_class, Symbol type1, Symbol type2);
 
 
         /**
          * @brief checks if the given base class is a parent of the given derived
          *        class. That is derived <= base. This is the extended "<=" implementation
+         *        this is the extended <= operation
          * @requires: the given two class to the defined in the ClassTree
          * @param symbol the current class C being type checked in the environment
          * @param Symbol the type that is thought to be derived 

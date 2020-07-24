@@ -152,7 +152,8 @@ void duplication_detected();
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \
 virtual Symbol get_type_decl() = 0; \
-virtual void duplication_detected() = 0;
+virtual void duplication_detected() = 0; \
+Symbol type;
 
 #define typcase_EXTRAS \
 private: \

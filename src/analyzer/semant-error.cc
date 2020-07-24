@@ -217,3 +217,9 @@ InheritanceMismatchError::InheritanceMismatchError(Class_ class_, tree_node* fau
 {
     msg << "Class " << derived << "does not inherit from class " << base;
 }
+
+ConditionTypeError::ConditionTypeError(Class_ class_, tree_node* faulty_node, Symbol type)
+                    : SemantError(class_, faulty_node)
+{
+    msg << "Conditional statement expects a Boolean expression as its condition but got " << type;
+}

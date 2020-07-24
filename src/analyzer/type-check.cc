@@ -143,17 +143,42 @@ void dispatch_class::type_check(ClassTree& class_tree, TypeTable& type_table, En
 
 void cond_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check_children(class_tree, type_table, env);
+    
+    type = No_type;
+    if(pred->type != Bool)
+    {
+       ConditionTypeError err(containing_class, this, pred->type);
+       RAISE(err);
+       return;
+    }
 
+    type = class_tree.lub(env.current_class, then_exp->type, else_exp->type);
 }
 
 void loop_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check_children(class_tree, type_table, env);
 
+    type = No_type;
+
+    if(pred->type != Bool)
+    {
+       ConditionTypeError err(containing_class, this, pred->type);
+       RAISE(err);
+       return;        
+    }
+    type = Object;
 }
 
 void typcase_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type_check(class_tree, type_table, env);
+    type = No_type;
 
+    int n = cases->len();
+    for(int i = 0; i < n; i++)
+        type = class_tree.lub(env.current_class, type, cases->nth(i)->type);
 }
 
 void branch_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)

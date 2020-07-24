@@ -196,6 +196,12 @@ class DuplicateCaseBranchError : public SemantError
     public:
         DuplicateCaseBranchError(Class_ class_, tree_node* faulty_node, Symbol type);
 };
+
+class ConditionTypeError : public SemantError
+{
+    public:
+        ConditionTypeError(Class_ class_, tree_node* faulty_node, Symbol type);
+};
 /*********************************************************************************************
  * SemantErrorHandler                                                                *
  * This singleton class serves as a container for the Errors thrown. Any analysis        *
