@@ -17,7 +17,21 @@
 class ClassVisitor
 {
     public:
+        /**
+          * @brief executes before any child is visited
+          */ 
         virtual void visit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env) = 0;
+        /**
+          * @brief The first thing to be executed
+          */ 
+        virtual void on_enter(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env) = 0;
+        
+        /**
+          * @brief before returning from the visit on the given node
+          */ 
+        virtual void on_exit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env) = 0;
+
+
 };
 
 
@@ -25,6 +39,16 @@ class TypeClassVisitor : public ClassVisitor
 {
     public:
         void visit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
+        void on_enter(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
+        void on_exit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
+};
+
+class SyncMethodEnvironmentVisitor : public ClassVisitor
+{
+    public:
+        void visit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
+        void on_enter(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
+        void on_exit(Class_ class_, ClassTree& class_tree, TypeTable& type_table, Environment& env);
 };
 
 

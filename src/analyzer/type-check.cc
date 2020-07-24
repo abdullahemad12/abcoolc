@@ -42,7 +42,7 @@ void program_class::type_check(ClassTree& class_tree, TypeTable& type_table, Env
 {
     initialize_constants();
     TypeClassVisitor visitor;
-    euler_walk(visitor, class_tree, type_table, env);
+    class_tree.visit_all(visitor, type_table, env);
 }
 
 void class__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
@@ -325,7 +325,9 @@ void string_const_class::type_check(ClassTree& class_tree, TypeTable& type_table
 
 void new__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-    type = type_name;
+    type = No_type;
+    if(!faulty)
+        type = type_name;
 }
 
 void isvoid_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)

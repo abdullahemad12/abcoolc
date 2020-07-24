@@ -128,7 +128,7 @@ TypeMismathcError::TypeMismathcError(Class_ class_, tree_node* faulty_node, Symb
                    SemantError(class_, faulty_node) 
 {
     msg <<  "The inferred type: " << faulty_symbol->get_string()
-               << "does not conform with the expected type: " << expected_symbol->get_string();
+               << " does not conform with the expected type: " << expected_symbol->get_string();
 }
 
 

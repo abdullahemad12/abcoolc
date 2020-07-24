@@ -39,5 +39,12 @@ class Environment
         bool contains_method(Symbol class_name, Symbol name);
         Symbol lookup_object(Symbol name);
         MethodSignature lookup_method(Symbol class_name, Symbol name);
+        /** 
+          * @brief adds all the methods from the base to the derived class
+          * MODIFIES: this 
+          * @param Symbol the derived class
+          * @param Symbol the base class
+          */ 
+        void sync_inherited_methods(Symbol derived, Symbol base);
 };
 #endif /*_ENVIRONMENT_H*/

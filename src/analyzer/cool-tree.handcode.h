@@ -68,8 +68,7 @@ void validate_main_class();	\
 void cycle_detection();	\
 void builtin_duplication_detection(TypeTable& typetable); \
 void validate_all(TypeTable& typetable); \
-void sync_global_env(Environment& env); \
-void euler_walk(ClassVisitor& visitor, ClassTree& class_tree, TypeTable& type_table, Environment& env);
+void sync_global_env(ClassTree& class_tree, TypeTable& type_table, Environment& env); \
 
 ////////////////////////
 // Synch and clean adds and removes all the features 

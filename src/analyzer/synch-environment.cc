@@ -14,6 +14,8 @@
 #include <environment.h>
 #include <symtab.h>
 #include <unordered_set>
+#include <class-visitor.h>
+#include <class-tree.h>
 
 #define CONTAINS(set, elem) ((set.find(elem)) != (set.end()))
 
@@ -108,14 +110,14 @@ void method_class::clean_environment(Environment& env)
  */ 
 // this function in particular must be called once during the whole program 
 // execution
-void program_class::sync_global_env(Environment& env)
+void program_class::sync_global_env(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-    int n = classes->len();
-    for(int i = 0; i < n; i++)
-        classes->nth(i)->sync_global_env(env);
+    SyncMethodEnvironmentVisitor visitor;
+    class_tree.visit_all(visitor, type_table, env);
 }
 void class__class::sync_global_env(Environment& env)
 {
+    env.sync_inherited_methods(name, parent);
     env.current_class = name;
     int n = features->len();
     for(int i = 0; i < n; i++)

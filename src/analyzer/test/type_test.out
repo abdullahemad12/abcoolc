@@ -1,0 +1,54 @@
+#1
+_program
+  #1
+  _class
+    Main
+    A
+    "test/type_test.cl"
+    (
+    #3
+    _attr
+      x
+      Int
+      #3
+      _int
+        0
+      : _no_type
+    #4
+    _method
+      main
+      Int
+      #4
+      _dispatch
+        #4
+        _object
+          self
+        : _no_type
+        hello
+        (
+        )
+      : _no_type
+    )
+  #6
+  _class
+    A
+    IO
+    "test/type_test.cl"
+    (
+    #8
+    _attr
+      y
+      Int
+      #8
+      _int
+        0
+      : _no_type
+    #9
+    _method
+      hello
+      Int
+      #9
+      _object
+        y
+      : _no_type
+    )

@@ -95,7 +95,16 @@ class MethodEnvironment
           * @return the method signature, or NULL if no matching method
           * @note   DO NOT delete the method returned signature
           */   
-        Signature lookup(Symbol class_name, Symbol fun_name); 
+        Signature lookup(Symbol class_name, Symbol fun_name);
+
+        /**
+          * @brief copies all the methods in the given source class to the given destination
+          * @param Symbol the source class from which methods are copied 
+          * @param Symbol the destination class to where the methods are copied
+          * @requires: class 'class_name' to be defined, fun_name to be defined (bug otherwise)  
+          * @modifies: this
+          */
+        void copy_methods(Symbol source_class, Symbol destination_class);
 
         /**
           * @brief checks if the environment contains a given method in a given class
@@ -105,6 +114,10 @@ class MethodEnvironment
           * @returns true if the method was found, false otherwise
           */
         bool contains(Symbol class_name, Symbol fun_name);
+
+
+
+
 
 
 };

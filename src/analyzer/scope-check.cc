@@ -64,7 +64,7 @@ bool dispatch_class::scope_check(Environment& env)
 
 bool object_class::scope_check(Environment& env)
 {
-    if(env.contains_object(name))
+    if(!env.contains_object(name))
     {
         UndefinedIdentifierError err(containing_class, this, name);
         RAISE(err);

@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <vector>
 #include <utility>
-
+#include <class-visitor.h>
 
 
 using namespace std;
@@ -37,12 +37,20 @@ class ClassTree
             friend ClassTree;
             friend SegmentTree;
             private:
+                Class_ class_;
                 Symbol class_symbol;
                 unsigned int depth;
                 vector<Node*> children;
-                Node(Symbol class_symbol) : class_symbol(class_symbol) { }
+                Node(Class_ class_) : class_(class_), class_symbol(class_->get_name()) { }
                 ~Node(void);
                 void euler_walk(unsigned int depth, vector<Symbol>& trip, vector<Node*>& nodes_trip);
+                /**
+                  * @brief visited all the classes in the class tree in DFS order
+                  * @param ClassVisitor visits this class before anything else gets to execute
+                  * @param main_visitor visits this class before visiting any of the children classes
+                  * @param on_exit visits this class before returning 
+                  */
+                void visit_all(ClassTree& ct, ClassVisitor& visitor, TypeTable& type_table, Environment& env);
         };
       private:
         Node* root; 
@@ -103,7 +111,13 @@ class ClassTree
          */ 
         bool is_derived(Symbol cur_class, Symbol derived, Symbol base);
 
-  
+        /**
+          * @brief visited all the classes in the class tree in DFS order
+          * @param visitor the visitor that will visit each class
+          * @param TypeTable typetable initialized with all the classes
+          * @param Environment the environment
+          */
+        void visit_all(ClassVisitor& visitor, TypeTable& type_table, Environment& env);
         /**
           * Iterator functions 
           * iterates over the the nodes in the tree in an euler walk order

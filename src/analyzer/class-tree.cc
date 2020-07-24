@@ -103,6 +103,11 @@ bool ClassTree::is_derived(Symbol cur_class, Symbol derived, Symbol base)
   return (base != SELF_TYPE) && (lub(cur_class, base, derived) == base);
 }
 
+void ClassTree::visit_all(ClassVisitor& visitor, TypeTable& type_table, Environment& env)
+{
+  root->visit_all(*this, visitor, type_table, env);
+}
+
 ClassTree::~ClassTree(void)
 {
   delete root;
@@ -120,6 +125,20 @@ void ClassTree::Node::euler_walk(unsigned int depth, vector<Symbol>& trip, vecto
     trip.push_back(this->class_symbol);
     nodes_trip.push_back(this);
   }
+}
+
+
+
+void ClassTree::Node::visit_all(ClassTree& ct, ClassVisitor& visitor, TypeTable& type_table, Environment& env)
+{
+    visitor.on_enter(class_, ct, type_table, env);
+
+    visitor.visit(class_, ct, type_table, env);
+
+    for(auto child : children)
+      child->visit_all(ct, visitor, type_table, env);
+
+    visitor.on_exit(class_, ct, type_table, env);
 }
 
 ClassTree::Node::~Node(void)
@@ -141,8 +160,6 @@ void ClassTree::create_nodes(Classes& classes, unordered_map<Symbol, ClassTree::
   for(int i = 0; i < n; i++)
   {
     Class_ cur_class = classes->nth(i);
-    Symbol name = cur_class->get_name();
-    assert(!MAP_CONTAINS(nodes, name));
-    nodes[name] = new Node(name);
+    nodes[cur_class->get_name()] = new Node(cur_class);
   }
 }

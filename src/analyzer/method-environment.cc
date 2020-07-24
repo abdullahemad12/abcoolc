@@ -37,6 +37,16 @@ MethodEnvironment::Signature MethodEnvironment::lookup(Symbol class_name, Symbol
     return *map[method_name];
 }
 
+void MethodEnvironment::copy_methods(Symbol source_class, Symbol destination_class)
+{
+    assert(env.find(source_class) != env.end());
+    std::unordered_map<Symbol, Signature*> map = env[source_class];
+    if(env.find(destination_class) == env.end())
+        env[destination_class] = map;
+    else
+        env[destination_class].insert(map.begin(), map.end());   
+}
+
 bool MethodEnvironment::contains(Symbol class_name, Symbol method_name)
 {
     return (env.find(class_name) != env.end()) && (env[class_name].find(method_name) != env[class_name].end());

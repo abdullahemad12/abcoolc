@@ -58,3 +58,10 @@ Symbol Environment::lookup_object(Symbol name)
 {
     return object_env.lookup(name);
 }
+
+
+void Environment::sync_inherited_methods(Symbol derived, Symbol base)
+{
+    method_env.copy_methods(base, derived);
+}
+
