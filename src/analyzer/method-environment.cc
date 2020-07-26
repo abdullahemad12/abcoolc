@@ -1,4 +1,5 @@
 #include <method-environment.h>
+#include <unordered_set>
 #include <cassert>
 
 
@@ -54,13 +55,14 @@ bool MethodEnvironment::contains(Symbol class_name, Symbol method_name)
 
 MethodEnvironment::~MethodEnvironment()
 {
+    unordered_set<MethodSignature*> signatures;
     for(auto& class_map : env)
-    {
         for(auto& entry : class_map.second)
-        {
-            delete entry.second;
-        }
-    }
+            signatures.insert(entry.second);
+    
+    for(auto& signature : signatures)
+        delete signature;
+
 }
 
 

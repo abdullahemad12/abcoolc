@@ -127,8 +127,8 @@ string UndefinedMainError::what(void)
 TypeMismathcError::TypeMismathcError(Class_ class_, tree_node* faulty_node, Symbol faulty_symbol, Symbol expected_symbol) :
                    SemantError(class_, faulty_node) 
 {
-    msg <<  "The inferred type: " << faulty_symbol->get_string()
-               << " does not conform with the expected type: " << expected_symbol->get_string();
+    msg <<  "The inferred type " << faulty_symbol->get_string()
+               << " does not conform with the expected type " << expected_symbol->get_string();
 }
 
 
@@ -233,5 +233,5 @@ NonBasicTypeError::NonBasicTypeError(Class_ class_, tree_node* faulty_node, Symb
 EqualityTypeMismatchError::EqualityTypeMismatchError(Class_ class_, tree_node* faulty_node, Symbol type1, Symbol type2)
                     : SemantError(class_, faulty_node)
 {
-    msg << "cannot check equality between types: " << type1 << " and " << type2;
+    msg << "cannot check equality between types " << type1 << " and " << type2;
 }

@@ -47,7 +47,8 @@ void program_class::type_check(ClassTree& class_tree, TypeTable& type_table, Env
 
 void class__class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-    // if all the features type check than this type check
+    // Due to the nature of the algorithm,
+    // the environment is updated and cleaned in the program node
     type_check_children(class_tree, type_table, env);
 }
 
@@ -66,9 +67,7 @@ void method_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 
 void attr_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-    env.add_object(self, env.current_class);
     type_check_children(class_tree, type_table, env);
-    env.remove_object(self);
 
     if(!class_tree.is_derived(env.current_class, init->type, type_decl))
     {

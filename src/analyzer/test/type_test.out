@@ -8,47 +8,188 @@ _program
     (
     #3
     _attr
+      s
+      Main
+      #3
+      _new
+        SELF_TYPE
+      : _no_type
+    #4
+    _attr
+      a
+      A
+      #4
+      _new
+        A
+      : _no_type
+    #5
+    _attr
+      m
+      A
+      #5
+      _new
+        B
+      : _no_type
+    #6
+    _attr
+      b
+      B
+      #6
+      _new
+        A
+      : _no_type
+    #7
+    _attr
       x
       Int
-      #3
+      #7
       _int
         0
       : _no_type
-    #4
+    #8
     _method
       main
       Int
-      #4
+      #8
       _dispatch
-        #4
+        #8
         _object
           self
         : _no_type
-        hello
+        hello1
         (
         )
       : _no_type
+    #9
+    _method
+      fun1
+      Int
+      #9
+      _object
+        z
+      : _no_type
+    #10
+    _method
+      fun2
+      String
+      #10
+      _object
+        x
+      : _no_type
+    #11
+    _method
+      fun3
+      A
+      #11
+      _object
+        a
+      : _no_type
+    #12
+    _method
+      setB
+      Main
+      #13
+      _block
+        #14
+        _assign
+          b
+          #14
+          _new
+            Bin
+          : _no_type
+        : _no_type
+        #15
+        _assign
+          b
+          #15
+          _new
+            A
+          : _no_type
+        : _no_type
+        #16
+        _assign
+          b
+          #16
+          _new
+            Bin
+          : _no_type
+        : _no_type
+        #17
+        _object
+          self
+        : _no_type
+      : _no_type
     )
-  #6
+  #21
   _class
     A
     IO
     "test/type_test.cl"
     (
-    #8
+    #23
     _attr
       y
       Int
-      #8
+      #23
       _int
         0
       : _no_type
-    #9
+    #24
     _method
       hello
       Int
-      #9
+      #24
       _object
         y
+      : _no_type
+    )
+  #27
+  _class
+    Bin
+    B
+    "test/type_test.cl"
+    (
+    )
+  #31
+  _class
+    C
+    Main
+    "test/type_test.cl"
+    (
+    )
+  #35
+  _class
+    D
+    C
+    "test/type_test.cl"
+    (
+    )
+  #40
+  _class
+    E
+    C
+    "test/type_test.cl"
+    (
+    )
+  #45
+  _class
+    F
+    E
+    "test/type_test.cl"
+    (
+    )
+  #49
+  _class
+    B
+    A
+    "test/type_test.cl"
+    (
+    #50
+    _attr
+      m
+      B
+      #50
+      _new
+        Main
       : _no_type
     )
