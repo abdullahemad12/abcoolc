@@ -9,6 +9,7 @@
 #include <vector>
 #include <class-visitor.h>
 #include <semant-errors.h>
+#include <method-environment.h>
 using namespace std;
 
 

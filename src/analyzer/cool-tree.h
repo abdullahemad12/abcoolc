@@ -51,7 +51,6 @@ class Feature_class : public tree_node {
   public:
    tree_node *copy()		 { return copy_Feature(); }
    virtual Feature copy_Feature() = 0;
-
 #ifdef Feature_EXTRAS
    Feature_EXTRAS
 #endif
@@ -200,7 +199,6 @@ public:
    void validate(TypeTable& type_table);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
-
    std::vector<tree_node*> get_children();
 
 

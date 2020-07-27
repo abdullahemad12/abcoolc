@@ -200,7 +200,6 @@ public:
    void validate(TypeTable& type_table);
    void type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env);
    void propagate_containing_class(Class_ class_);
-
    std::vector<tree_node*> get_children();
 
 

@@ -126,8 +126,8 @@ typedef MethodEnvironment::Signature MethodSignature;
 
 
 // overload method signature equality 
-bool operator==(MethodSignature& sign, method_class& meth);
-bool operator!=(MethodSignature& sign, method_class& meth);
+bool operator==(MethodSignature& sign, method_class* meth);
+bool operator!=(MethodSignature& sign, method_class* meth);
 
 
 #endif /*METHOD_ENVIRONMENT_H*/

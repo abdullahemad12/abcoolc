@@ -17,6 +17,7 @@
 #include <class-visitor.h>
 #include <class-tree.h>
 #include <type-table.h>
+#include <semant-errors.h>
 
 #define CONTAINS(set, elem) ((set.find(elem)) != (set.end()))
 
@@ -37,15 +38,22 @@ vector<Symbol> extract_formals_type(Formals formals);
 
 void method_class::add_to_env(Symbol class_name, Environment& env)
 {
-    if(!faulty)
+    if(faulty)
+        return;
+    if(!signature_check(class_name, env))
+        return;
+    else 
         env.add_method(class_name, this);
 }
 
 void attr_class::add_to_env(Symbol class_name, Environment& env)
 {
-    if(!faulty)
-        if(class_name == idtable.add_string("SELF_TYPE"))
-            env.add_object(name, type_decl);
+    if(faulty)
+        return;
+    else if(env.contains_object(name))
+        duplication_detected();
+    else if(class_name == idtable.add_string("SELF_TYPE"))
+        env.add_object(name, type_decl);
 }
 
 void formal_class::add_to_env(Environment& env)
@@ -96,6 +104,24 @@ void method_class::clean_environment(Environment& env)
     int n = formals->len();
     for(int i = 0; i < n; i++)
         formals->nth(i)->remove_from_env(env);
+}
+
+bool method_class::signature_check(Symbol class_name, Environment& env)
+{
+    if(faulty) 
+        return false;
+    if(env.contains_method(class_name, name))
+    {
+        MethodSignature sign = env.lookup_method(class_name, name);
+        if(sign != this)
+        {
+            InconsistentSignatureError err(containing_class, this, name);
+            RAISE(err);
+            faulty = true;
+            return false;
+        } 
+    }
+    return true;
 }
 /////////////////////////////////////////
 //
@@ -152,3 +178,4 @@ void class__class::clean_local_env(Environment& env)
     env.current_class = NULL;
     env.remove_object(self);
 }
+

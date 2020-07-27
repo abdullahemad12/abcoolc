@@ -116,7 +116,8 @@ virtual Symbol get_name() = 0; \
 virtual Symbol get_type() = 0; \
 virtual bool is_main() = 0; \
 virtual void validate_main_signature() = 0;\
-void duplication_detected();
+void duplication_detected();		\
+ 
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    \
@@ -127,7 +128,7 @@ void reserved_symbols_misuse_detection(TypeTable& typetable);\
 void undefined_types_detection(TypeTable& typetable); \
 void formal_redefinition_detection(TypeTable& typetable); \
 bool is_main();				\
-void validate_main_signature();
+void validate_main_signature(); \
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;		\
@@ -190,7 +191,8 @@ Symbol get_type() { return return_type; } \
 Expression& get_expression() { return expr; } \
 void sync_environment(Environment& env);				\
 void clean_environment(Environment& env); \
-void formals_redefinition_detection();
+void formals_redefinition_detection(); \
+bool signature_check(Symbol class_name, Environment& env);
 
 #define attr_EXTRAS				\
 Symbol get_type() { return type_decl; };
