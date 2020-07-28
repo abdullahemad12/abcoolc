@@ -152,7 +152,7 @@ ReservedClassDeclarationError::ReservedClassDeclarationError(Class_ class_, tree
 
 string UndefinedMainError::what(void) 
 { 
-    return "Main Class is not defined."; 
+    return "Class Main is not defined."; 
 }
 
 

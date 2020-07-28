@@ -75,6 +75,9 @@ void ClassTree::compute_first_occurance(void)
 Symbol ClassTree::lub(Symbol cur_class, Symbol type1, Symbol type2)
 {
   assert(cur_class != SELF_TYPE);
+  
+  if(type1 == type2)
+      return type1;
 
   // handle no_type
   if(type1 == No_type)
@@ -98,9 +101,10 @@ Symbol ClassTree::lub(Symbol cur_class, Symbol type1, Symbol type2)
 
 bool ClassTree::is_derived(Symbol cur_class, Symbol derived, Symbol base)
 {
+  // note no_type is treated as if it inherits from all the classes
   assert(cur_class != SELF_TYPE);
   return (base == derived) || 
-         ((base != SELF_TYPE) && (lub(cur_class, base, derived) == base));
+         ((base != SELF_TYPE || derived == No_type) && (lub(cur_class, base, derived) == base));
 }
 
 void ClassTree::visit_all(ClassVisitor& visitor, TypeTable& type_table, Environment& env)

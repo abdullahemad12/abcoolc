@@ -225,6 +225,7 @@ void let_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environ
 
     if(!class_tree.is_derived(env.current_class, init->type, type_decl))
     {
+        cout << "here";
         err = new TypeMismathcError(containing_class, this, init->type, type_decl);
         RAISE(err);
         return;
@@ -282,24 +283,14 @@ void eq_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environm
 
     type_check_children(class_tree, type_table, env);
     type = No_type;
-    if(!type_table.is_basic_type(e1->type))
+    if(type_table.is_basic_type(e1->type) || type_table.is_basic_type(e2->type))
     {
-        err = new NonBasicTypeError(containing_class, this, e1->type);
-        RAISE(err);
-        return;
-    }
-    if(!type_table.is_basic_type(e2->type))
-    {
-        err = new NonBasicTypeError(containing_class, this, e2->type);
-        RAISE(err);
-        return;
-    }
-
-    if(e1->type != e2->type)
-    {
-        err = new EqualityTypeMismatchError(containing_class, this, e1->type, e2->type);
-        RAISE(err)
-        return;
+        if(e1->type != e2->type)
+        {
+            err = new NonBasicTypeError(containing_class, this, e1->type);
+            RAISE(err);
+            return;
+        }
     }
     type = Bool;
 }

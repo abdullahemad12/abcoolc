@@ -5,7 +5,7 @@
  *)
 
 class A {
-   num : Int <- 0;
+
    var : Int <- 0;
 
    value() : Int { var };
@@ -336,7 +336,7 @@ class Main inherits IO {
      )
    };
 
-   main(x : Int) : Object {
+   main() : Object {
       {
          avar <- (new A);
          while flag loop
