@@ -54,24 +54,29 @@ void class__class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 
 void method_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    TypeMismathcError* err;
+
     sync_environment(env);
     type_check_children(class_tree, type_table, env);
     clean_environment(env);
 
     if(!class_tree.is_derived(env.current_class, expr->type, return_type))
     {
-        TypeMismathcError err(containing_class, this, expr->type, return_type);
+        err = new TypeMismathcError(containing_class, this, expr->type, return_type);
         RAISE(err);
     }
 }
 
 void attr_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    TypeMismathcError* err;
+    env.remove_object(name);
     type_check_children(class_tree, type_table, env);
-
+    env.add_object(name, type_decl);
+    
     if(!class_tree.is_derived(env.current_class, init->type, type_decl))
     {
-        TypeMismathcError err(containing_class, this, init->type, type_decl);
+        err = new TypeMismathcError(containing_class, this, init->type, type_decl);
         RAISE(err);
     }
 }
@@ -83,6 +88,8 @@ void formal_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 
 void assign_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    TypeMismathcError* err;
+    
     type_check_children(class_tree, type_table, env);
 
     type = No_type;
@@ -96,13 +103,15 @@ void assign_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
     }
     else 
     {
-        TypeMismathcError err(containing_class, this, expr->type, T0);
+        err = new TypeMismathcError(containing_class, this, expr->type, T0);
         RAISE(err);
     }
 }
 
 void static_dispatch_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+
+    InheritanceMismatchError* err;
     type_check_children(class_tree, type_table, env);
     
     type = No_type;
@@ -111,7 +120,7 @@ void static_dispatch_class::type_check(ClassTree& class_tree, TypeTable& type_ta
     
     if(!class_tree.is_derived(env.current_class, expr->type, type_name))
     {
-        InheritanceMismatchError err(containing_class, this, type_name, expr->type);
+        err = new InheritanceMismatchError(containing_class, this, type_name, expr->type);
         RAISE(err);
         return;
     }
@@ -148,14 +157,15 @@ void dispatch_class::type_check(ClassTree& class_tree, TypeTable& type_table, En
 
 void cond_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    ConditionTypeError* err;
     type_check_children(class_tree, type_table, env);
     
     type = No_type;
     if(pred->type != Bool)
     {
-       ConditionTypeError err(containing_class, this, pred->type);
-       RAISE(err);
-       return;
+        err = new ConditionTypeError(containing_class, this, pred->type);
+        RAISE(err);
+        return;
     }
 
     type = class_tree.lub(env.current_class, then_exp->type, else_exp->type);
@@ -163,15 +173,16 @@ void cond_class::type_check(ClassTree& class_tree, TypeTable& type_table, Enviro
 
 void loop_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    ConditionTypeError* err;
     type_check_children(class_tree, type_table, env);
 
     type = No_type;
 
     if(pred->type != Bool)
     {
-       ConditionTypeError err(containing_class, this, pred->type);
-       RAISE(err);
-       return;        
+        err = new ConditionTypeError(containing_class, this, pred->type);
+        RAISE(err);
+        return;        
     }
     type = Object;
 }
@@ -202,7 +213,7 @@ void block_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envir
 
 void let_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
-    
+    TypeMismathcError* err;
     init->type_check(class_tree, type_table, env);
     
     type = No_type;
@@ -214,7 +225,7 @@ void let_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environ
 
     if(!class_tree.is_derived(env.current_class, init->type, type_decl))
     {
-        TypeMismathcError err(containing_class, this, init->type, type_decl);
+        err = new TypeMismathcError(containing_class, this, init->type, type_decl);
         RAISE(err);
         return;
     }
@@ -247,14 +258,16 @@ void divide_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 
 void neg_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type = No_type;
+    TypeMismathcError* err;
     type_check_children(class_tree, type_table, env);
     if(e1->type != Int)
     {
-        TypeMismathcError err(containing_class, this, e1->type, Int);
+        err = new TypeMismathcError(containing_class, this, e1->type, Int);
         RAISE(err);
         return;
     }
-    type = Bool;
+    type = Int;
 }
 
 void lt_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
@@ -265,24 +278,26 @@ void lt_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environm
 
 void eq_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    SemantError* err;
+
     type_check_children(class_tree, type_table, env);
     type = No_type;
     if(!type_table.is_basic_type(e1->type))
     {
-        NonBasicTypeError err(containing_class, this, e1->type);
+        err = new NonBasicTypeError(containing_class, this, e1->type);
         RAISE(err);
         return;
     }
     if(!type_table.is_basic_type(e2->type))
     {
-        NonBasicTypeError err(containing_class, this, e2->type);
+        err = new NonBasicTypeError(containing_class, this, e2->type);
         RAISE(err);
         return;
     }
 
     if(e1->type != e2->type)
     {
-        EqualityTypeMismatchError err(containing_class, this, e1->type, e2->type);
+        err = new EqualityTypeMismatchError(containing_class, this, e1->type, e2->type);
         RAISE(err)
         return;
     }
@@ -297,10 +312,12 @@ void leq_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environ
 
 void comp_class::type_check(ClassTree& class_tree, TypeTable& type_table, Environment& env)
 {
+    type = No_type;
+    TypeMismathcError* err;
     type_check_children(class_tree, type_table, env);
     if(e1->type != Bool)
     {
-        TypeMismathcError err(containing_class, this, e1->type, Bool);
+        err = new TypeMismathcError(containing_class, this, e1->type, Bool);
         RAISE(err);
         return;
     }
@@ -361,10 +378,11 @@ void object_class::type_check(ClassTree& class_tree, TypeTable& type_table, Envi
 ////////////////////////////////////////////
 bool static_dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree& class_tree)
 {
+    SemantError* err;
     unsigned int n = actual->len();
     if(param_types.size() != n)
     {
-        UnexpectedNumberOfArgsError err(containing_class, this, param_types.size(), n);
+        err = new UnexpectedNumberOfArgsError(containing_class, this, param_types.size(), n);
         RAISE(err);
         return false;
     }
@@ -377,7 +395,7 @@ bool static_dispatch_class::type_check_arguments(vector<Symbol> param_types, Cla
         if(!class_tree.is_derived(containing_class->get_name(), Ti, param_types[i]))
         {
             type_checks = false;
-            TypeMismathcError err(containing_class, this, Ti, param_types[i]);
+            err = new TypeMismathcError(containing_class, this, Ti, param_types[i]);
             RAISE(err);
         }
     }
@@ -387,10 +405,11 @@ bool static_dispatch_class::type_check_arguments(vector<Symbol> param_types, Cla
 
 bool dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree& class_tree)
 {
+    SemantError* err;
     unsigned int n = actual->len();
     if(param_types.size() != n)
     {
-        UnexpectedNumberOfArgsError err(containing_class, this, param_types.size(), n);
+        err = new UnexpectedNumberOfArgsError(containing_class, this, param_types.size(), n);
         RAISE(err);
         return false;
     }
@@ -403,7 +422,7 @@ bool dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree&
         if(!class_tree.is_derived(containing_class->get_name(), Ti, param_types[i]))
         {
             type_checks = false;
-            TypeMismathcError err(containing_class, this, Ti, param_types[i]);
+            err = new TypeMismathcError(containing_class, this, Ti, param_types[i]);
             RAISE(err);
         }
     }
@@ -414,15 +433,16 @@ bool dispatch_class::type_check_arguments(vector<Symbol> param_types, ClassTree&
 
 Symbol arithmetic_type_check(tree_node* node, Class_ containing_class, Expression_class* e1, Expression_class* e2)
 {
+    SemantError* err;
     if(e1->type != Int)
     {
-        TypeMismathcError err(containing_class, node, e1->type, Int);
+        err = new TypeMismathcError(containing_class, node, e1->type, Int);
         RAISE(err);
         return No_type;
     }
     if(e2->type != Int)
     {
-        TypeMismathcError err(containing_class, node, e2->type, Int);
+        err = new TypeMismathcError(containing_class, node, e2->type, Int);
         RAISE(err);
         return No_type; 
     }
@@ -431,15 +451,16 @@ Symbol arithmetic_type_check(tree_node* node, Class_ containing_class, Expressio
 
 Symbol compare_type_check(tree_node* node, Class_ containing_class, Expression_class* e1, Expression_class* e2)
 {
+    SemantError* err;
     if(e1->type != Int)
     {
-        TypeMismathcError err(containing_class, node, e1->type, Int);
+        err = new TypeMismathcError(containing_class, node, e1->type, Int);
         RAISE(err);
         return No_type;
     }
     if(e2->type != Int)
     {
-        TypeMismathcError err(containing_class, node, e2->type, Int);
+        err = new TypeMismathcError(containing_class, node, e2->type, Int);
         RAISE(err);
         return No_type; 
     }

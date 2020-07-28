@@ -33,13 +33,9 @@ ostream& SemantErrorHandler::semant_error()
     return error_stream;
 } 
 
-void SemantErrorHandler::report(SemantError& err)
+void SemantErrorHandler::report(SemantError* err)
 {
-    Class_ class_ = err.get_class();
-    Symbol filename = class_->get_filename();
-    tree_node* node = err.get_faulty_node();
-    auto& stream = semant_error(filename, node);
-    stream << err.what() << endl;
+    errors.push_back(err);
 }
 
 void SemantErrorHandler::report_fatal(SemantError& err)
@@ -60,6 +56,7 @@ void SemantErrorHandler::report_fatal(UndefinedMainError& err)
 
 void SemantErrorHandler::terminate_on_errors(void)
 {
+    report_all();
     if(semant_errors)
     {
         cerr << "Compilation halted due to static semantic errors." << endl;
@@ -67,6 +64,41 @@ void SemantErrorHandler::terminate_on_errors(void)
     }
 }
 
+void SemantErrorHandler::report_all()
+{
+    sort();
+    for(auto err : errors)
+    {
+        Class_ class_ = err->get_class();
+        Symbol filename = class_->get_filename();
+        tree_node* node = err->get_faulty_node();
+        auto& stream = semant_error(filename, node);
+        stream << err->what() << endl;
+    }
+}
+
+void SemantErrorHandler::sort()
+{
+    for(unsigned int i = 0; i < errors.size(); i++)
+    {
+        for(unsigned int j = 0; j < errors.size() - 1; j++)
+        {
+            int cur_line_no = errors[j]->get_faulty_node()->get_line_number();
+            int next_line_no = errors[j+1]->get_faulty_node()->get_line_number();
+            if( cur_line_no > next_line_no)
+            {
+                swap(errors[j], errors[j+1]);
+            }
+        }
+    }
+}
+
+
+SemantErrorHandler::~SemantErrorHandler()
+{
+    for(SemantError* err : errors)
+        delete err;
+}
 
 /************************************
  * 
@@ -215,7 +247,7 @@ DuplicateCaseBranchError::DuplicateCaseBranchError(Class_ class_, tree_node* fau
 InheritanceMismatchError::InheritanceMismatchError(Class_ class_, tree_node* faulty_node, Symbol base, Symbol derived)
                         : SemantError(class_, faulty_node)
 {
-    msg << "Class " << derived << "does not inherit from class " << base;
+    msg << "Class " << derived << " does not inherit from class " << base;
 }
 
 ConditionTypeError::ConditionTypeError(Class_ class_, tree_node* faulty_node, Symbol type)

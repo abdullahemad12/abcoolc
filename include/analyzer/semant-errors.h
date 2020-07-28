@@ -229,6 +229,7 @@ class EqualityTypeMismatchError : public SemantError
 class SemantErrorHandler
 {
     private:
+        vector<SemantError*> errors;
         int semant_errors;
         ostream& error_stream;
         
@@ -238,12 +239,19 @@ class SemantErrorHandler
         std::ostream& semant_error(Symbol filename, tree_node *t);
         
         SemantErrorHandler(void) : semant_errors(0), error_stream(cerr) { }
-        ~SemantErrorHandler(void) { }
+        ~SemantErrorHandler(void);
         /*delete those methods to avoid unwanted errors */
         SemantErrorHandler(SemantErrorHandler const&) = delete;
         void operator=(SemantErrorHandler const&) = delete;
         
-        
+        void report_all();
+        /**
+          * @brief sorts the errors according to their line number 
+          * @effects: reorders the errors in the container
+          * @modifies: this 
+          */ 
+        void sort();
+
     public:
         static SemantErrorHandler& instance()
         {
@@ -256,7 +264,7 @@ class SemantErrorHandler
           * @param SemantError the error to be reported
           * @modifies: this 
           */
-        void report(SemantError& err);
+        void report(SemantError* err);
         /**
           * @brief reports a single Error and then terminates the program with
           *        an error code

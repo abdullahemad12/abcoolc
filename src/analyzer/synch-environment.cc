@@ -52,7 +52,7 @@ void attr_class::add_to_env(Symbol class_name, Environment& env)
         return;
     else if(env.contains_object(name))
         duplication_detected();
-    else if(class_name == idtable.add_string("SELF_TYPE"))
+    else if(class_name == SELF_TYPE)
         env.add_object(name, type_decl);
 }
 
@@ -70,7 +70,7 @@ void formal_class::add_to_env(Environment& env)
 void method_class::remove_from_env(Environment& env)
 {
     if(!faulty)
-        env.remove_method(idtable.add_string("SELF_TYPE"), name);
+        env.remove_method(SELF_TYPE, name);
 }
 
 void attr_class::remove_from_env(Environment& env)
@@ -108,6 +108,7 @@ void method_class::clean_environment(Environment& env)
 
 bool method_class::signature_check(Symbol class_name, Environment& env)
 {
+    InconsistentSignatureError* err;
     if(faulty) 
         return false;
     if(env.contains_method(class_name, name))
@@ -115,7 +116,7 @@ bool method_class::signature_check(Symbol class_name, Environment& env)
         MethodSignature sign = env.lookup_method(class_name, name);
         if(sign != this)
         {
-            InconsistentSignatureError err(containing_class, this, name);
+            err =  new InconsistentSignatureError(containing_class, this, name);
             RAISE(err);
             faulty = true;
             return false;
@@ -159,10 +160,10 @@ void class__class::sync_local_env(Environment& env)
 {
     initialize_constants();
     env.current_class = name;
-    env.add_object(self, name);
+    env.add_object(self, SELF_TYPE);
     int n = features->len();
     for(int i = 0; i < n; i++)
-        features->nth(i)->add_to_env(idtable.add_string("SELF_TYPE"), env); 
+        features->nth(i)->add_to_env(SELF_TYPE, env); 
 }
 
 /*

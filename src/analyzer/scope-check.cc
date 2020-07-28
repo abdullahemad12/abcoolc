@@ -32,9 +32,10 @@ using namespace std;
 
 bool assign_class::scope_check(Environment& env)
 {
+    SemantError* err;
     if(!env.contains_object(name)) 
     {
-        UndefinedIdentifierError err(containing_class, this, name);
+        err = new UndefinedIdentifierError(containing_class, this, name);
         RAISE(err);
         return false;
     }
@@ -43,31 +44,34 @@ bool assign_class::scope_check(Environment& env)
 
 bool static_dispatch_class::scope_check(Environment& env)
 {
-   if(!env.contains_method(expr->type, name))
-   {
-       UndefinedMethodError err(containing_class, this, name);
-       RAISE(err);
-       return false;
-   }
-   return true; 
+    SemantError* err;
+    if(!env.contains_method(type_name, name))
+    {
+        err = new UndefinedMethodError(containing_class, this, name);
+        RAISE(err);
+        return false;
+    }
+    return true; 
 }
 
 bool dispatch_class::scope_check(Environment& env)
 {
-   if(!env.contains_method(expr->type, name))
-   {
-       UndefinedMethodError err(containing_class, this, name);
-       RAISE(err);
-       return false;
-   }
-   return true; 
+    SemantError* err;
+    if(!env.contains_method(expr->type, name))
+    {
+        err = new UndefinedMethodError(containing_class, this, name);
+        RAISE(err);
+        return false;
+    }
+    return true; 
 }
 
 bool object_class::scope_check(Environment& env)
 {
+    SemantError* err;
     if(!env.contains_object(name))
     {
-        UndefinedIdentifierError err(containing_class, this, name);
+        err = new UndefinedIdentifierError(containing_class, this, name);
         RAISE(err);
         return false;
     }

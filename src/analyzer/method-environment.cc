@@ -94,10 +94,15 @@ bool operator==(MethodSignature& sign, method_class* meth)
     for(unsigned int i = 0; i < params.size(); i++)
         if(params[i] != formals->nth(i)->get_type_decl())
             return false;
+    if(sign.get_return_type() != meth->get_type())
+        return false;
+
     return true;
 }
 bool operator!=(MethodSignature& sign, method_class* meth)
 {
+    if(sign.get_return_type() != meth->get_type())
+        return true;
     vector<Symbol> params = sign.get_param_types();
     Formals formals = meth->get_formals();
     if((int)params.size() != formals->len())

@@ -16,7 +16,7 @@ _program
       : _no_type
     #4
     _method
-      meth
+      meth2
       SELF_TYPE
       #5
       _new
@@ -143,141 +143,436 @@ _program
           self
         : _no_type
       : _no_type
+    #26
+    _method
+      dispatch
+      Int
+      #27
+      _dispatch
+        #27
+        _new
+          E
+        : _no_type
+        get_int
+        (
+        )
+      : _no_type
+    #30
+    _method
+      dispatch2
+      String
+      #31
+      _dispatch
+        #31
+        _new
+          E
+        : _no_type
+        get_int
+        (
+        )
+      : _no_type
     )
-  #27
+  #35
   _class
     A
     IO
     "test/type_test.cl"
     (
-    #29
+    #37
+    _method
+      static_dispatch3
+      Int
+      #38
+      _static_dispatch
+        #38
+        _new
+          B
+        : _no_type
+        E
+        parent_method
+        (
+        #38
+        _int
+          10
+        : _no_type
+        #38
+        _new
+          Main
+        : _no_type
+        #38
+        _new
+          Bin
+        : _no_type
+        )
+      : _no_type
+    #40
     _method
       meth
       Main
-      #29
+      #40
       _new
         SELF_TYPE
       : _no_type
-    #30
+    #41
     _attr
       y
       Int
-      #30
+      #41
       _int
         0
       : _no_type
-    #31
+    #42
     _method
       hello
       Int
-      #31
+      #42
       _object
         y
       : _no_type
-    #32
+    #43
     _method
       bin_meth
-      #32
+      #43
       _formal
         x
         Int
-      #32
+      #43
       _formal
         y
         String
-      #32
+      #43
       _formal
         n
         Main
-      #32
+      #43
       _formal
         i
         IO
-      #32
+      #43
       _formal
         bin
         Bin
       SELF_TYPE
-      #33
+      #44
       _object
         self
       : _no_type
+    #46
+    _method
+      bin_self_dispatch
+      B
+      #47
+      _dispatch
+        #47
+        _new
+          E
+        : _no_type
+        parent_method_self
+        (
+        #47
+        _int
+          10
+        : _no_type
+        )
+      : _no_type
+    #49
+    _method
+      bin_self_dispatch1
+      E
+      #50
+      _dispatch
+        #50
+        _new
+          F
+        : _no_type
+        parent_method_self
+        (
+        #50
+        _int
+          10
+        : _no_type
+        )
+      : _no_type
+    #53
+    _method
+      static_dispatch
+      Int
+      #54
+      _static_dispatch
+        #54
+        _new
+          B
+        : _no_type
+        E
+        get_int
+        (
+        )
+      : _no_type
+    #57
+    _method
+      static_dispatch1
+      Int
+      #58
+      _static_dispatch
+        #58
+        _new
+          B
+        : _no_type
+        F
+        get_int
+        (
+        )
+      : _no_type
+    #61
+    _method
+      static_dispatch2
+      Int
+      #62
+      _static_dispatch
+        #62
+        _new
+          A
+        : _no_type
+        F
+        get_int
+        (
+        )
+      : _no_type
     )
-  #37
+  #68
   _class
     Bin
     B
     "test/type_test.cl"
     (
     )
-  #41
+  #72
   _class
     C
     Main
     "test/type_test.cl"
     (
     )
-  #45
+  #76
   _class
     D
     C
     "test/type_test.cl"
     (
     )
-  #50
+  #81
   _class
     E
     C
     "test/type_test.cl"
     (
+    #83
+    _method
+      get_int
+      Int
+      #83
+      _int
+        1
+      : _no_type
+    #84
+    _method
+      get_self
+      SELF_TYPE
+      #84
+      _object
+        self
+      : _no_type
+    #85
+    _method
+      my_method
+      #85
+      _formal
+        x
+        Int
+      SELF_TYPE
+      #85
+      _object
+        self
+      : _no_type
+    #86
+    _method
+      parent_method
+      #86
+      _formal
+        x
+        Int
+      #86
+      _formal
+        a
+        A
+      #86
+      _formal
+        b
+        B
+      Int
+      #88
+      _object
+        x
+      : _no_type
+    #90
+    _method
+      parent_method_self_err
+      #90
+      _formal
+        x
+        Int
+      #90
+      _formal
+        a
+        A
+      SELF_TYPE
+      #92
+      _new
+        F
+      : _no_type
+    #95
+    _method
+      parent_method_self
+      #95
+      _formal
+        x
+        Int
+      SELF_TYPE
+      #97
+      _object
+        self
+      : _no_type
+    #100
+    _method
+      parent_method_self1
+      #100
+      _formal
+        x
+        Int
+      SELF_TYPE
+      #102
+      _new
+        SELF_TYPE
+      : _no_type
+    #105
+    _method
+      self_self_dispatch
+      SELF_TYPE
+      #107
+      _dispatch
+        #107
+        _static_dispatch
+          #107
+          _new
+            E
+          : _no_type
+          SELF_TYPE
+          parent_method_self1
+          (
+          #107
+          _int
+            1
+          : _no_type
+          )
+        : _no_type
+        parent_method_self1
+        (
+        #107
+        _int
+          1
+        : _no_type
+        )
+      : _no_type
     )
-  #55
+  #112
   _class
     F
     E
     "test/type_test.cl"
     (
-    #57
+    #113
     _method
       my_method
-      #57
+      #113
       _formal
         x
         Int
       SELF_TYPE
-      #57
+      #113
       _object
         self
       : _no_type
     )
-  #59
+  #115
   _class
     B
     E
     "test/type_test.cl"
     (
-    #60
+    #116
     _attr
       m
       B
-      #60
+      #116
       _new
         Main
       : _no_type
-    #61
+    #117
     _method
       my_method
-      #61
+      #117
       _formal
         x
         Int
-      #61
+      #117
       _formal
         s
         String
       SELF_TYPE
-      #63
+      #119
       _object
         self
+      : _no_type
+    #121
+    _method
+      my_method1
+      #121
+      _formal
+        m
+        String
+      String
+      #123
+      _dispatch
+        #123
+        _object
+          self
+        : _no_type
+        parent_method
+        (
+        #123
+        _int
+          1
+        : _no_type
+        #123
+        _new
+          A
+        : _no_type
+        #123
+        _new
+          Bin
+        : _no_type
+        )
+      : _no_type
+    #125
+    _method
+      parent_method_self
+      #125
+      _formal
+        x
+        Int
+      Int
+      #126
+      _int
+        1
       : _no_type
     )

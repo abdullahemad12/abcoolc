@@ -162,6 +162,7 @@ bool class__class::is_main()
 
 void class__class::validate_main_method()
 {
+    SemantError* err;
     assert(is_main());
     int n = features->len();
     for(int i = 0; i < n; i++)
@@ -174,7 +175,7 @@ void class__class::validate_main_method()
         }
     }
 
-    UndefinedMainMethodError err(this, this);
+    err = new UndefinedMainMethodError(this, this);
     RAISE(err);
 }
 
@@ -238,8 +239,9 @@ void class__class::duplication_detected()
 /********Feature Node*******/
 void Feature_class::duplication_detected()
 {
+    SemantError* err;
     faulty = true;
-    FeatureRedefinitionError err(containing_class, this, get_name());
+    err = new FeatureRedefinitionError(containing_class, this, get_name());
     RAISE(err);
 }
 
@@ -252,10 +254,11 @@ bool method_class::is_main()
 
 void method_class::validate_main_signature()
 {
+    SemantError* err;
     assert(is_main());
     if(formals->len() != 0)
     {
-        InvalidMainMethodSignatureError err(containing_class, this);
+        err = new InvalidMainMethodSignatureError(containing_class, this);
         RAISE(err);
     }
 }
@@ -333,8 +336,9 @@ void formal_class::reserved_type_misuse_detection(TypeTable& typetable)
 
 void formal_class::duplication_detected()
 {
+    SemantError* err;
     faulty = true;
-    FormalRedefinitionError err(containing_class, this, name);
+    err = new FormalRedefinitionError(containing_class, this, name);
     RAISE(err);
 }
 /********************Assign Node**********************/
@@ -466,8 +470,9 @@ void branch_class::undefined_types_detection(TypeTable& typetable)
 
 void branch_class::duplication_detected()
 {
+    SemantError* err;
     faulty = true;
-    DuplicateCaseBranchError err(containing_class, this, type_decl);
+    err = new DuplicateCaseBranchError(containing_class, this, type_decl);
     RAISE(err);
 }
 
@@ -672,9 +677,10 @@ vector<Symbol> unroll_class_names(Classes classes)
 
 bool undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
+    SemantError* err;
     if(!typetable.contains(name))
     {
-        UndefinedTypeError err(containing_class, node, name);
+        err = new UndefinedTypeError(containing_class, node, name);
         RAISE(err);
         return true;
     }
@@ -683,9 +689,10 @@ bool undefined_types_check(tree_node* node, TypeTable& typetable, Symbol name, C
 
 bool resreved_id_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
+    SemantError* err;
     if(typetable.is_reserved_identifier(name))
     {
-        ReservedIdentifierMisuseError err(containing_class, node, name);
+        err = new ReservedIdentifierMisuseError(containing_class, node, name);
         RAISE(err);
         return true;
     }
@@ -694,9 +701,10 @@ bool resreved_id_misuse_check(tree_node* node, TypeTable& typetable, Symbol name
 
 bool resreved_type_misuse_check(tree_node* node, TypeTable& typetable, Symbol name, Class_ containing_class)
 {
+    SemantError* err;
     if(typetable.is_reserved_type(name))
     {
-        ReservedIdentifierMisuseError err(containing_class, node, name);
+        err = new ReservedIdentifierMisuseError(containing_class, node, name);
         RAISE(err);
         return true;
     }
