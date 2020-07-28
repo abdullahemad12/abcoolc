@@ -7,7 +7,8 @@ using namespace std;
 
 void MethodEnvironment::add(Symbol class_name, Symbol name, vector<Symbol> params, Symbol return_type)
 {
-    if(env.find(class_name) == env.end()){
+    if(env.find(class_name) == env.end())
+    {
         std::unordered_map<Symbol, MethodSignature*> meths; 
         env[class_name] = meths;
     }

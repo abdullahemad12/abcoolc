@@ -18,8 +18,6 @@
 extern int semant_debug;
 extern char *curr_filename;
 
-// prototypes for helpers 
-void classes_to_map(Classes classes, unordered_map<Symbol, Class_>& classes_map);
 
 
 /*   This is the entry point to the semantic checker.
@@ -93,17 +91,5 @@ void program_class::validate_all(TypeTable& typetable)
 }
 
 
-////////////////////////////
-// helpers
-///////////////////////////
-void classes_to_map(Classes classes, unordered_map<Symbol, Class_>& classes_map)
-{
-    int n = classes->len();
-    for(int i = 0; i < n; i++)
-    {
-        Class_ class_ = classes->nth(i);
-        classes_map[class_->get_name()] = class_;
-    }
-}
 
 

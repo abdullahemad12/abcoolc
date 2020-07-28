@@ -1,7 +1,7 @@
 README file for Semantic Analyzer (C++ edition)
 ======================================================
 
-Your directory should now contain the following files:
+The directory should now contain the following files:
 
  Makefile
  README
@@ -24,9 +24,23 @@ Your directory should now contain the following files:
  symtab_example.cc	-> [cool root]/src/analyzer/symtab_example.cc
  tree.cc		-> [cool root]/src/analyzer/tree.cc
  utilities.cc		-> [cool root]/src/analyzer/utilities.cc
- *.d			  dependency files
+ class-tree.cc		-> [cool root]/src/analyzer/class-tree.cc
+ class-visitor.cc	-> [cool root]/src/analyzer/class-visitor.cc
+ environment.cc		-> [cool root]/src/analyzer/environment.cc
+ method-environment.cc  -> [cool root]/src/analyzer/method-environment.cc
+ node-children.cc 	-> [cool root]/src/analyzer/node-children.cc
+ object-environment.cc  -> [cool root]/src/analyzer/object-environment.cc
+ propagate-class.cc 	-> [cool root]/src/analyzer/object-environment.cc
+ scope-check.cc 	-> [cool root]/src/analyzer/scope-check.cc
+ segment-tree.cc	-> [cool root]/src/analyzer/segment-tree.cc
+ semant-error.cc	-> [cool root]/src/analyzer/semant-error.cc
+ type-check.cc		-> [cool root]/src/analyzer/type-check.cc
+ type-table.cc		-> [cool root]/src/analyzer/type-table.cc
+ union-find.cc		-> [cool root]/src/analyzer/union-find.cc
+ validator.cc		-> [cool root]/src/analyzer/validator.cc
+ install-basic-classes.cc -> [cool root]/src/analyzer/install-basic-classes.cc 
 
-The include (.h) files for this assignment can be found in 
+The include (.h) files can be found in 
 [cool root]/include/analyzer
 
 	The Makefile contains targets for compiling and running your
@@ -158,9 +172,274 @@ Instructions
 	If at some point you get weird errors from the linker,	
 	you probably forgot this step.
 
-	GOOD LUCK!
 
 ---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
 
-Write-up for analyzer
-----------------
+Semantic Analysis Phases
+--------------------------
+
+	The implementation of this semantic analyzer consists of 3 main stages that must succeed 
+	before the program is declared to be error free. Each of these phases may require at least 
+	one whole or a partail pass through the abstract syntax tree (AST). The 3 stages are: 
+		
+		1. Preprocessing and Validation
+		3. Environment population 
+		4. Type and Scope checking 
+
+	The first phase starts by adding all the basic classes (Object, IO, Int, Bool, Str) to the
+	list of classes in the AST so that later on they can be referenced without raising an 
+	undefined class error. The next phase of the preprocessing stage propagates each class to all
+	its AST node children. In other word, this preprocessing step makes sure that each and every
+	node in the AST knows which class it belongs to. This is useful for error reporting and other
+	steps that does not include an environment.
+	
+	The validation in the first stage makes sure that classes and their inheritance relation are 
+	well formed, all the types are declared and used correctly and does a preliminary check for 
+	redefinitions and duplicates. "Preliminary" because this redefinition check is not sufficient
+	for all cases but rather necessary to be done before the main check is done. On error detection
+	in the validation stage, one of three actions is to be taken, after reporting the error of course.
+	The analyzer might chose to terminate a program after detecting a fatal error; this is typically 
+	the action taken if any problem with the classes is detected. The second action is a corrective one;
+	if a type is used incorrectly, the analyzer will replace this type with the type "Object", so that 
+	this does not cause a problem or unnecessary error messages in a later stage. The third action is 
+	marking the node that has the problem as a faulty node. Later on, faulty nodes may be ignored by 
+	analyzer.
+	
+	The validation on the classes tries to detect several problems in the definitions of the class. 
+	First, it makes sure that the Main class and the main method are defined accordingly and with 
+	the correct signature. Moreover, the analyzer will check for duplicate class and features 
+	definitions. While this is necessary at this stage, it does not detect all kinds of redefinitions. 
+	It only detects redefinitions that occurs within the class only but not invalid redefinitions of
+	inherited features, which is detected at a later stage. Next, misuse of reserved identifiers and 
+	redefinition of basic classes are detected as well as invalid inheritance such as inheriting from 
+	Int, Bool or String. Finally, cycles in the inheritance graph are detected and reported accordingly
+	to the user.
+	
+	The validations on other nodes are mainly done to detect invalid type declarations and correcting
+	them for later stages in the semantic analysis. This includes invalid usage of SELF_TYPE.
+	
+	The second stage in the analysis is populating the environment. The purpose of this stage
+	is to insert all the methods in the environment and detect invalid redefinitions of methods.
+	For each class, all the methods defined in this class or any of its ancestors are recorded 
+	in the environment under this node. Later on, when a look up of a certain method is needed, 
+	the environment can be searched using class name and method name.
+	
+	The third and main stage of the analysis is type and scope checking. Scope checking is done as 
+	part of type checking since type checking at some nodes cannot proceed if the node does not 
+	scope check. Scope checking is only necessary at 4 tree nodes: Object node, dispatch node, 
+	static dispatch node, and assignment node. Before type checking these 4 nodes, scope checking 
+	is performed on them. If the node does not scope check, the type checking will not proceed. 
+	
+
+Classes and Datastructures 
+---------------------------
+	
+	It was necessary to modify the tree nodes in order to perform new actions and keep 
+	some relevant state. Moreover, some classes and datastructures were implemented for 
+	the algorithms used in semantic analysis. Those include:
+		1. SemantErrorHandler
+		2. Environment
+		3. ObjectEnvironment 
+		4. MethodEnvironment 
+		5. ClassTree
+		6. SegmentTree
+		7. TypeTable
+		8. UnionFind
+		9. ClassVisitor
+	
+	The SemantErrorHandler is a global singleton class for error handling. It is used to 
+	store and report semantic errors in the program. Whenever an error is detected, the 
+	appropriate error object is created and passed to the "report" function. Fatal errors 
+	are reported through "report_fatal," which will terminate after reporting the 
+	error. After all the semantic stages are done executing, the "terminate_on_error"
+	function must be called. This function will print the errors detected on the screen, 
+	sorted by the line number at which they occur, and then will terminate with an error
+	code. If no errors were reported the handler, "terminate_on_errors" will do nothing
+	and will just return.
+	
+	The Environment serves as an interface and a container for the object and method 
+	environments. Interactions with the object and method environments must be done 
+	through this class.
+	
+	The ObjectEnvironment serves as a storage for all the objects and identifiers
+	defined in the current context. The ObjectEnvironment itself, does not handle 
+	redefined or undefined idenitifers errors. Instead, it should be used externally
+	to detect such errors. When a new identifier is added to the ObjectEnvironment, 
+	it will shadow any other identifier with the same name. Thus, when looking up 
+	a specific identifier, the most recently added identifier that has the same 
+	name will be returned. Conversly, when removing an identifier, the most recently 
+	added identifier will be removed. All the operations in this datastructures 
+	has a time complexity of O(1), while the space complexity of this datastructure
+	is O(n).
+	
+	The MethodEnvironment stores all the methods defined under a specific class in the 
+	program. Like the ObjectEnvironment, this class does not detect duplication on its 
+	own and assumes that if given a duplicate method, it is a child redefinition of a
+	method in the parent. Moreover, it does not detect undefined methods. The 
+	MethodEnvironment stores the method along with its signature under a specific
+	class. The signature can be later on looked up and the existance of a given 
+	method under a given class can be checked. 
+	
+	ClassTree is the core of this semantic analyzer and the most important part of it. 
+	The ClassTree is used mainly to store and represent the inheritance relations between 
+	classes in the program, including the basic classes. The ClassTree assumes that the 
+	inheritance graph is acyclic and all the class definitions are valid; Thus its
+	initialization must occur after the validation, which will terminate the program if
+	errors on the class are detected. The ClassTree is used for three main purposes. First,
+	it is used to traverse the tree in depth first search fashion through the visit_all 
+	function that follows the visitor design pattern. Second, it is used to perform the
+	least upper bound (LUB) operation on two classes. This is the extended LUB operation
+	that handles SELF_TYPE. Moreover, it treats a special "No_type" type as a child of 
+	all the other types. Finally, it supports the extended A <= B operation, which returns 
+	true if A is a child of B. The space complexity of the ClassTree is O(n). The time 
+	complexity of visit_all is O(n), while the time complexities of the LUB and <= 
+	operations are both O(log(n))
+	
+	SegmentTree is a segment tree that returns the minimum item within a range of an array. 
+	It stores the classes in the ClassTree with their depth in the inheritance graph and 
+	is used to query the the Class with the minimum depth within a given range. Mainly used
+	for the LUB operation
+	
+	TypeTable is a very simple datastructure. It stores all the types defined in the program, 
+	including the basic types and SELF_TYPES, and is used to query whether a given type is 
+	predefined, reserved, etc. This is used to detect undefined types and misuse of basic and
+	reserved types.
+	
+	UnionFind is a union find datastructre (disjoint sets). It is used to quickly detect cycles
+	in the inheritance graph.
+	
+	VisitorClass is an abstract class that is used for the visit_all operation. It is basically a
+	visitor on a class that performs a certain operation. A class that implements a ClassVisitor
+	must implement 3 functions: on_enter, visit, on_exit. on_enter is the first thing that gets
+	executed as you enter the recursive function. visit is executed right before the children 
+	are recursivly visited. on_exit is executed right before the function returns.
+	
+	Refer to the UML diagram in the docs folder for an overview of the classes 
+	and their relationships 
+	
+Algorithms and Design Choices
+------------------------------
+
+	Traversing the abstract syntax tree is a simple DFS traversal on a tree that is done using 
+	OOP abstraction. It is necessary to traverse the tree several times according to the design
+	choices made and each traversal is very similar to the others (with the exception of the 
+	validation traversal) in terms of the order of doing things. The first traversal happens 
+	during the first stage. A tree node "n" is passed a Class pointer, which is said to be the
+	ancestor class of "n". "n" will set its contianing class as the given class and will recursivly 
+	pass the given class to all its children.
+	
+	The second traversal that occurs is the validation traversal. The validation traversal, as an 
+	exception, happens in a breadth first search (BFS) order. This is mainly because, we need to 
+	validate all the classes before doing any validations on the other nodes (since errors on 
+	classes are fatal). Hence, a BFS traversal will garuantee that classes are visited before 
+	their children. 
+	
+	The third and forth traversal occurs when populating the Environment and type/scope checking 
+	respectively. Environment population is a top-down DFS traversal. The environment is populated than 
+	children are visited. The type/scope checking, on the otherhand, is a bottom up DFS traversal. 
+	Children are type/scope checked first, then the parent is type checked. In both cases, 
+	classes are visited in a special order rather then sequentially. Visiting the classes happens
+	through the ClassTree visit_all visitor pattern. 
+	
+	ClassTree visit_all
+	--------------------
+	1. Enter
+	2. visit current class 
+	3. recursively visit all the children
+	4. Exit
+	
+	Environment Population 
+	----------------------
+	1. Add all the methods to the environment 
+	2. visit all the children 
+	
+ 	the classes are traversed this way, rather than simply sequentially traversing them, because
+ 	it is important to add all its methods to the method environment along with all the methods 
+ 	defined in any of its ancestors. The first step will add all methods in the environment 
+ 	defined under its direct parent along with all the methods defined under the given class. 
+ 	It is arguable using a proof by induction that only adding methods defined under the 
+ 	parent class is enough to add all and only the methods defined in any of its ancestors.
+ 	The sketch of the proof would be as follows: 
+	 	Claim: The algorithm given above will result in an environment where every class 
+	 	       in the environment has a reference to its methods and all the methods defined
+	 	       in any of its ancestors
+	 	First let us define the following predicate and function:
+	 		has_all_methods(env, class): true if all necessary methods are in the envirnoment 
+	 		apply_algo(env, class, parent): returns a environment with all the methods from 
+	 						the class and all the methods placed under parent
+	 						added under class.
+	 	
+	 	1. Base Case: Object class. The object class does not have any parent and thus this
+	 		      trivially holds.
+	 	2. Inductive hypothesis: 
+			has_all_methods(env, parent) -> has_all_methods(apply_algo(env, class, parent), class)
+		3. Inductive Step 
+			If we are at class Ci and it happens that has_all_methods(env, Ci) holds. In otherwords, 
+			the environment is populated with correct values for class Ci (i.e methods of Ci and 
+			all its ancestors). Then for a child class Cj apply_algo will add all the methods 
+			in the environment + the methods in Cj, and because the environment is populated
+			with the necessary functions, then it must be the case that after visiting Cj 
+			the environment will be populated with the correct methods under Cj
+			
+	Type/Scope Checking
+	-------------------
+	1. Add the attributes to the environment
+	2. type check this class
+	3. visit all the children classes
+	4. remove the attributes from the environment
+	
+	
+	Using a similar reasoning, it is necessary for classes to be traversed in this order
+	for the sake of  populating the environment with the attributes of the inherited classes
+	as well. The proof sketched  above would also work in this case. However, due to the
+	additional step 4, it will need to be extended. Basically, we need to remove the attributes
+	from the environment because they are not bounded to a certain class and as we go up the tree
+	one level, two things are known for a fact due to the nature of the DFS algorithm. First,
+	all the children of the current node has been visited already. Consequently, it is safe to 
+	remove the attributes that belongs to this class only. Second, because no other class that 
+	has not been visited yet inherits from the current class, it is important to remove these 
+	attributes since they are no longer relevant. 
+	
+	
+	Inheritance Graph Cycle Check
+	-----------------------------
+	this is done using a unionfind datastructure. The algorithm is as follows:
+		1. for each parent-child edge
+		2.	if parent and child are in the same component
+		3.		report fatal error and terminate
+		4.	union the parent the child components
+	
+	
+	LUB and <= operations
+	-----------------------
+	These operations are done by the ClassTree. 
+	
+	LUB(C1, C2): 
+		1. if type1 == type2
+			return type1
+		2. if type1 == no_type
+			return type2
+		3. if type2 == no_type
+			return type1
+		4. if type1 == SELF_TYPE
+			type1 == current_class
+		5. if type2 == SELF_TYPE
+			type2 == current_class
+		6. return Least Common ancestor of type1 and type2
+		
+	step 1 is necessary because if type1 and type2 are both SELF_TYPE, 
+	then their LCA is SELF_TYPE according to the rules of the extended LUB.
+	However, if only one is SELF_TYPE, then we just replace it by the current class
+	and take their least common ancestor. By design, no_type is <= any other type
+	For step 6, the RMQ algorithm for finding LCA using segment trees is used to 
+	quickly calculate the LCA. 
+	
+	
+	C1 <= C2:
+		1. true if C1 == C2
+		2. true if C2 != SELF_TYPE and lub(C1, C2) == C2
+		3. false otherwise 
+		
+	Remember, for C1 != SELF_TYPE, C1 <= SELF_TYPE is always false. 
+	Having C1 inherit from C2 means that C2 is the least common ancestor 
+	for C1.
