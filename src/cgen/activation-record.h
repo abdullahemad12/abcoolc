@@ -10,16 +10,18 @@
 
 #include <stringtab.h>
 #include <vector>
+#include <cool-tree.h>
 
 using namespace std;
 
 class ActivationRecord 
 {
     private:
-        vector<Symbol> args;
+        vector<Symbol> argv;
         unsigned int tmps;
     
     public:
+        ActivationRecord(Formals formals, int tmps);
         /**
           * @returns the number of temporaries required by this method
           */ 
@@ -28,7 +30,7 @@ class ActivationRecord
         /**
           * @returns the number of arguments passed to this method
           */
-        unsigned int nargs();
+        unsigned int argc();
 
         /**
           * @returns the arguments of this method
