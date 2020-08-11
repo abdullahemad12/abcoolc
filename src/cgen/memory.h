@@ -18,7 +18,14 @@ class RamMemLoc;
 
 class MemSlot 
 {
+    private:
+        /*used to catch errors*/
+        bool valid = true; 
+
+
     public:
+    
+    void set_valid(bool val);
     /**
       * @brief generates the code that loads this memory location into a register
       * @modifies: CodeContainer

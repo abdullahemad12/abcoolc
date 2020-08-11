@@ -6,7 +6,7 @@
     <id>UMLClass</id>
     <coordinates>
       <x>756</x>
-      <y>133</y>
+      <y>56</y>
       <w>294</w>
       <h>196</h>
     </coordinates>
@@ -16,16 +16,15 @@ Scope
 --
 # ar : ActivationRecord
 # cur_offset : int
-# free_registers : vector&lt;Register&gt;
+# free_mem : queue&lt;MemLoc&gt;
 innerclass}
 
 --
 -identifiers : unordered_map&lt;Symbol, stack&lt;MemLoc&gt;&gt;
--scope : stack&lt;Scope&gt;
 --
 + enter_scope(ar : ActivationRecord) : void
-+ ralloc() : MemLoc*
-+ free() : void
++ memalloc() : MemLoc*
++ memfree(MemLoc*) : void
 + exit_scope() : void
 + add_identifier(id : Symbol) 
 + look_up_identifier(id : Symbol) : MemSlot*
@@ -36,7 +35,7 @@ innerclass}
     <id>UMLClass</id>
     <coordinates>
       <x>546</x>
-      <y>343</y>
+      <y>266</y>
       <w>175</w>
       <h>84</h>
     </coordinates>
@@ -55,7 +54,7 @@ innerclass}
     <id>UMLClass</id>
     <coordinates>
       <x>399</x>
-      <y>133</y>
+      <y>56</y>
       <w>308</w>
       <h>91</h>
     </coordinates>
@@ -73,7 +72,7 @@ emit_addi(MemSlot dst, MemSlot src, int constant) : void </panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>805</x>
-      <y>357</y>
+      <y>280</y>
       <w>119</w>
       <h>63</h>
     </coordinates>
@@ -89,7 +88,7 @@ emit_addi(MemSlot dst, MemSlot src, int constant) : void </panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>707</x>
-      <y>476</y>
+      <y>399</y>
       <w>119</w>
       <h>49</h>
     </coordinates>
@@ -104,7 +103,7 @@ get_name() : string</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>910</x>
-      <y>476</y>
+      <y>399</y>
       <w>119</w>
       <h>49</h>
     </coordinates>
@@ -117,7 +116,7 @@ get_name() : string</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>763</x>
-      <y>413</y>
+      <y>336</y>
       <w>77</w>
       <h>77</h>
     </coordinates>
@@ -128,7 +127,7 @@ get_name() : string</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>875</x>
-      <y>413</y>
+      <y>336</y>
       <w>105</w>
       <h>77</h>
     </coordinates>
@@ -139,7 +138,7 @@ get_name() : string</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>819</x>
-      <y>483</y>
+      <y>406</y>
       <w>105</w>
       <h>35</h>
     </coordinates>
@@ -153,7 +152,7 @@ m1=2
     <id>UMLClass</id>
     <coordinates>
       <x>567</x>
-      <y>525</y>
+      <y>448</y>
       <w>70</w>
       <h>28</h>
     </coordinates>
@@ -166,7 +165,7 @@ m1=2
     <id>UMLClass</id>
     <coordinates>
       <x>322</x>
-      <y>630</y>
+      <y>553</y>
       <w>98</w>
       <h>49</h>
     </coordinates>
@@ -179,7 +178,7 @@ tag : unsigned int</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>413</x>
-      <y>532</y>
+      <y>455</y>
       <w>168</w>
       <h>126</h>
     </coordinates>
@@ -191,7 +190,7 @@ m1=0..n</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>574</x>
-      <y>420</y>
+      <y>343</y>
       <w>42</w>
       <h>119</h>
     </coordinates>
@@ -204,7 +203,7 @@ m2=1</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>315</x>
-      <y>511</y>
+      <y>434</y>
       <w>112</w>
       <h>28</h>
     </coordinates>
@@ -218,7 +217,7 @@ m2=1</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>343</x>
-      <y>532</y>
+      <y>455</y>
       <w>56</w>
       <h>112</h>
     </coordinates>
@@ -230,7 +229,7 @@ m1=0..n</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>490</x>
-      <y>98</y>
+      <y>21</y>
       <w>77</w>
       <h>49</h>
     </coordinates>
@@ -241,21 +240,20 @@ m1=0..n</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>0</x>
-      <y>546</y>
+      <y>469</y>
       <w>252</w>
       <h>49</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;Singleton&gt;&gt;
-Environment
+    <panel_attributes>Environment
 --
-+ add_class(name : Symbol, class : Class_) : void</panel_attributes>
++ add_class(class : Class_) : void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLInterface</id>
     <coordinates>
       <x>441</x>
-      <y>378</y>
+      <y>301</y>
       <w>84</w>
       <h>63</h>
     </coordinates>
@@ -267,19 +265,8 @@ init_structures</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>119</x>
-      <y>0</y>
-      <w>133</w>
-      <h>21</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;170.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
       <x>371</x>
-      <y>385</y>
+      <y>308</y>
       <w>119</w>
       <h>140</h>
     </coordinates>
@@ -290,7 +277,7 @@ init_structures</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>483</x>
-      <y>385</y>
+      <y>308</y>
       <w>126</w>
       <h>154</h>
     </coordinates>
@@ -300,19 +287,8 @@ init_structures</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>84</x>
-      <y>28</y>
-      <w>133</w>
-      <h>21</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;170.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
       <x>245</x>
-      <y>560</y>
+      <y>483</y>
       <w>91</w>
       <h>84</h>
     </coordinates>
@@ -325,7 +301,7 @@ m1=1</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>210</x>
-      <y>588</y>
+      <y>511</y>
       <w>126</w>
       <h>91</h>
     </coordinates>
@@ -338,7 +314,7 @@ classes</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>406</x>
-      <y>644</y>
+      <y>567</y>
       <w>98</w>
       <h>84</h>
     </coordinates>
