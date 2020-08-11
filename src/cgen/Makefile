@@ -8,7 +8,8 @@ ARCHIVE_NEW= -cr
 RANLIB= gar -qs
 
 SRC= cgen.cc cgen.h cgen_supp.cc cool-tree.h cool-tree.handcode.h emit.h example.cl README
-CSRC= cgen-phase.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc ast-lex.cc ast-parse.cc handle_flags.cc 
+CSRC= cgen-phase.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc ast-lex.cc ast-parse.cc handle_flags.cc \
+		code-container.cc
 TSRC= mycoolc
 CGEN=
 HGEN= 
@@ -19,7 +20,7 @@ OBJS= ${CFIL:.cc=.o}
 OUTPUT= good.output bad.output
 
 
-CPPINCLUDE= -I. -I${CLASSDIR}/include/PA${ASSN} -I${CLASSDIR}/src/PA${ASSN}
+CPPINCLUDE= -I. -I${CLASSDIR}/include/cgen -I${CLASSDIR}/src/cgen
 
 
 FFLAGS = -d8 -ocool-lex.cc
@@ -58,10 +59,10 @@ ${LIBS}:
 	${CLASSDIR}/etc/link-object ${ASSN} $@
 
 ${TSRC} ${CSRC}:
-	-ln -s ${CLASSDIR}/src/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/src/cgen/$@ $@
 
 ${HSRC}:
-	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
+	-ln -s ${CLASSDIR}/include/cgen/$@ $@
 
 clean :
 	-rm -f ${OUTPUT} *.s core ${OBJS} cgen parser semant lexer *~ *.a *.o
