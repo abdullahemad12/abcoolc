@@ -23,9 +23,9 @@ innerclass}
 -identifiers : unordered_map&lt;Symbol, stack&lt;MemLoc&gt;&gt;
 --
 + enter_scope(ar : ActivationRecord) : void
++ exit_scope() : void
 + memalloc() : MemLoc*
 + memfree(MemLoc*) : void
-+ exit_scope() : void
 + add_identifier(id : Symbol) 
 + look_up_identifier(id : Symbol) : MemSlot*
 + remove_identifier(id : Symbol) : void</panel_attributes>
