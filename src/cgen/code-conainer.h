@@ -1,5 +1,0 @@
-#ifndef CODE_CONTAINER_H
-#define CODE_CONTAINER_H
-
-
-#endif /*CODE_CONTAINER_H*/
