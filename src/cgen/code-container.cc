@@ -1,6 +1,19 @@
 #include "code-container.h"
+#include <sstream>
+#include <string>
 
-CodeContainer::CodeContainer(ostream& os) : os(os) { }
+using namespace std;
+
+#define CGEN(stream)        \
+        stringstream line; \
+        line << stream;     \
+        code.push_back(line.str());
+
+
+CodeContainer::CodeContainer(ostream& os) : os(os)
+{ 
+
+}
 
 void CodeContainer::write_out()
 {
@@ -8,4 +21,19 @@ void CodeContainer::write_out()
     for(auto code_line : code)
         os << code_line << endl;
     os << "\n# end of generated code\n";
+}
+
+void CodeContainer::lw(Register* dest, Register* addr_reg, int offset)
+{
+    CGEN("lw " << dest << ", " << offset << "(" << addr_reg << ")");
+}
+
+void CodeContainer::sw(Register* src, Register* addr_reg, int offset)
+{
+    CGEN("sw " << src << ", " << offset << "(" << addr_reg << ")");
+}
+
+void CodeContainer::move(Register* dest, Register* src)
+{
+    CGEN("move " << dest << ", " << src);
 }

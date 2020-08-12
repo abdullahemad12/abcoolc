@@ -14,8 +14,40 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include "memory.h"
 
 using namespace std;
+
+/////////////////
+// Opcodes
+/////////////////
+#define JALR  "\tjalr\t"  
+#define JAL   "\tjal\t"                 
+#define RET   "\tjr\t" RA "\t"
+
+#define SW    "\tsw\t"
+#define LW    "\tlw\t"
+#define LI    "\tli\t"
+#define LA    "\tla\t"
+
+#define MOVE  "\tmove\t"
+#define NEG   "\tneg\t"
+#define ADD   "\tadd\t"
+#define ADDI  "\taddi\t"
+#define ADDU  "\taddu\t"
+#define ADDIU "\taddiu\t"
+#define DIV   "\tdiv\t"
+#define MUL   "\tmul\t"
+#define SUB   "\tsub\t"
+#define SLL   "\tsll\t"
+#define BEQZ  "\tbeqz\t"
+#define BRANCH   "\tb\t"
+#define BEQ      "\tbeq\t"
+#define BNE      "\tbne\t"
+#define BLEQ     "\tble\t"
+#define BLT      "\tblt\t"
+#define BGT      "\tbgt\t"
+
 
 class CodeContainer 
 {
@@ -25,6 +57,9 @@ class CodeContainer
 
     public:
         CodeContainer(ostream& os);
+        void lw(Register* dest, Register* addr_reg, int offset);
+        void sw(Register* src, Register* addr_reg, int offset);
+        void move(Register* dest, Register* src);
         void write_out();
 };
 

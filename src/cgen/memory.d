@@ -1,1 +1,1 @@
-memory.o memory.d : memory.cc memory.h code-container.h
+memory.o memory.d : memory.cc code-container.h memory.h
