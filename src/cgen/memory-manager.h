@@ -38,7 +38,7 @@ class MemoryManager
             stack<Register*> free_regs;
             stack<RamMemLoc*> free_mem_locs;
             unordered_map<Register*, RamMemLoc*> regs_to_mem;
-            unordered_map<Symbol, MemSlot*> identifiers; 
+            unordered_map<Symbol, stack<MemSlot*>> identifiers; 
             unordered_set<RamMemLoc*> all_ram_mem;
             RamMemLoc* ar_ra;
             RamMemLoc* ar_old_fp;
@@ -82,7 +82,7 @@ class MemoryManager
         * @param CodeContainer
         * @returns a newly allocated memory slot
         */ 
-      MemSlot* memalloc(CodeContainer& ccon);
+      MemSlot* memalloc();
 
       /**
         * @brief frees a memory that was allocated by this memory manager
@@ -90,7 +90,7 @@ class MemoryManager
         * @param CodeContainer
         * @param MemSlot*
         */ 
-      void memfree(CodeContainer& ccon, MemSlot* memslot);
+      void memfree(MemSlot* memslot);
 
       /**
         * @brief binds an identifier to a memory location. (Case and let)

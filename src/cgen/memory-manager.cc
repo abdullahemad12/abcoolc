@@ -68,6 +68,8 @@ void MemoryManager::Scope::initialize_ar_mem(Register* t0, Register* ra, Registe
     for(int i = 0; i < nargs; i++)
     {
         RamMemLoc* rml = new RamMemLoc(fp, t0, (4 * ntmps + 4) + (4 * i));
+        //TODO: Fix this, add memory location for object attributes
+        // very important
         identifiers[argv[i]->get_name()] = rml;
         all_ram_mem.insert(rml);
     }

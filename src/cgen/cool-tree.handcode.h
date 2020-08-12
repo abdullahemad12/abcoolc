@@ -11,6 +11,9 @@
 #define yylineno curr_lineno;
 extern int yylineno;
 
+class ObjectPrototype;
+class ActivationRecord;
+
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
 inline void dump_Boolean(ostream& stream, int padding, Boolean b)
@@ -69,11 +72,15 @@ void dump_with_types(ostream&,int);
 
 
 #define Feature_EXTRAS                                        \
-virtual void dump_with_types(ostream&,int) = 0; 
-
+virtual void dump_with_types(ostream&,int) = 0; 	\
+virtual void filter_feature(ObjectPrototype& obj_prot) = 0; \
+virtual void filter_feature(ActivationRecord& ar) = 0;
 
 #define Feature_SHARED_EXTRAS                                       \
-void dump_with_types(ostream&,int);    
+void dump_with_types(ostream&,int);    		\
+void filter_feature(ObjectPrototype& obj_prot);	\
+void filter_feature(ActivationRecord& ar);
+
 
 
 #define Formal_EXTRAS                              \
