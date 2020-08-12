@@ -60,6 +60,8 @@ class CodeContainer
         void lw(Register* dest, Register* addr_reg, int offset);
         void sw(Register* src, Register* addr_reg, int offset);
         void move(Register* dest, Register* src);
+        void addiu(Register* dst, Register* src, int imm);
+        void sub(Register* dest, Register* op1, Register* op2);
         void write_out();
 };
 

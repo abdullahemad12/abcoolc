@@ -25,15 +25,25 @@ void CodeContainer::write_out()
 
 void CodeContainer::lw(Register* dest, Register* addr_reg, int offset)
 {
-    CGEN("lw " << dest << ", " << offset << "(" << addr_reg << ")");
+    CGEN(LW << dest << ", " << offset << "(" << addr_reg << ")");
 }
 
 void CodeContainer::sw(Register* src, Register* addr_reg, int offset)
 {
-    CGEN("sw " << src << ", " << offset << "(" << addr_reg << ")");
+    CGEN(SW << src << ", " << offset << "(" << addr_reg << ")");
 }
 
 void CodeContainer::move(Register* dest, Register* src)
 {
-    CGEN("move " << dest << ", " << src);
+    CGEN(MOVE << dest << ", " << src);
+}
+
+void CodeContainer::sub(Register* dest, Register* op1, Register* op2)
+{
+    CGEN(SUB << dest << ", " << op1 << ", " << op2);
+}
+
+void CodeContainer::addiu(Register* dest, Register* src, int immediate)
+{
+    CGEN(ADDIU << dest << ", " << immediate);
 }

@@ -6,7 +6,7 @@ ActivationRecord::ActivationRecord(Formals formals, int tmps)
     this->tmps = tmps;
     int n = formals->len();
     for(int i = 0; i < n; i++)
-        argv.push_back(formals->nth(i)->get_name());
+        argv.push_back(formals->nth(i));
 }
 
 unsigned int ActivationRecord::ntmps() 
@@ -21,7 +21,7 @@ unsigned int ActivationRecord::argc()
 }
 
 
-vector<Symbol> ActivationRecord::args() 
+vector<Formal> ActivationRecord::args() 
 {
     return argv;
 }

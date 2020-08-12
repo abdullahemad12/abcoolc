@@ -37,71 +37,87 @@ class MemoryManager
             ActivationRecord& ar;
             stack<Register*> free_regs;
             stack<RamMemLoc*> free_mem_locs;
-            unordered_map<Register*, RamMemLoc*> allocated_regs;
-            unordered_set<RamMemLoc*> allocated_mem_locs;
+            unordered_map<Register*, RamMemLoc*> regs_to_mem;
             unordered_map<Symbol, MemSlot*> identifiers; 
-            Scope(ActivationRecord& ar);
+            unordered_set<RamMemLoc*> all_ram_mem;
+            RamMemLoc* ar_ra;
+            RamMemLoc* ar_old_fp;
+
+            Scope(ActivationRecord& ar, Register* t0, Register* ra, Register* fp, vector<Register*> regs);
+            // ar must be set correctly first before calling them
+            void initialize_tmps(Register* t0, Register* fp, vector<Register*> regs);
+            void initialize_ar_mem(Register* t0, Register* ra, Register* fp, vector<Register*> regs);
             ~Scope();
     };
-    Scope* scope = NULL;
+    private: 
+      Scope* scope = NULL;
+      vector<Register*> t_regs;
+      Register* sp;
+      Register* fp;
+      Register* t0;
+      Register* ra;
+    public:
+      MemoryManager();
+      ~MemoryManager();
+      /**
+        * @brief creates a new scope. Call this when entring a new method
+        * @effects: allocates a new scope
+        * @modifies: this
+        * @param CodeContainer used to generate the code on method enter
+        * @param ActivationRecord the activation record of the current method node
+        */
+      void enter_scope(CodeContainer& ccon, ActivationRecord& ar);
 
-    /**
-      * @brief creates a new scope. Call this when entring a new method
-      * @effects: allocates a new scope
-      * @modifies: this
-      * @param ActivationRecord the activation record of the current method node
-      */
-    void enter_scope(ActivationRecord& ar);
+      /**
+        * @brief used when the code for the method was generated
+        * @effects: frees the scope and sets to NULL
+        * @modifies: this
+        * @param CodeContainer used to generate the code on method enter
+        */
+      void exit_scope(CodeContainer& ccon);
 
-    /**
-      * @brief used when the code for the method was generated
-      * @effects: frees the scope and sets to NULL
-      * @modifies: this
-      */
-    void exit_scope();
+      /**
+        * @brief allocates a new memory slot
+        * @modifies: scope
+        * @param CodeContainer
+        * @returns a newly allocated memory slot
+        */ 
+      MemSlot* memalloc(CodeContainer& ccon);
 
-    /**
-      * @brief allocates a new memory slot
-      * @modifies: scope
-      * @param CodeContainer
-      * @returns a newly allocated memory slot
-      */ 
-    MemSlot* memalloc(CodeContainer& ccon);
+      /**
+        * @brief frees a memory that was allocated by this memory manager
+        * @modifies: scope
+        * @param CodeContainer
+        * @param MemSlot*
+        */ 
+      void memfree(CodeContainer& ccon, MemSlot* memslot);
 
-    /**
-      * @brief frees a memory that was allocated by this memory manager
-      * @modifies: scope
-      * @param CodeContainer
-      * @param MemSlot*
-      */ 
-    void memfree(CodeContainer& ccon, MemSlot* memslot);
+      /**
+        * @brief binds an identifier to a memory location. (Case and let)
+        * @modifies: scope
+        * @param CodeContainer
+        * @param Symbol the name of the identifier
+        * @returns a new memory slot
+        */ 
+      MemSlot* add_identifier(CodeContainer& ccon, Symbol name);
 
-    /**
-      * @brief binds an identifier to a memory location. (Case and let)
-      * @modifies: scope
-      * @param CodeContainer
-      * @param Symbol the name of the identifier
-      * @returns a new memory slot
-      */ 
-    MemSlot* add_identifier(CodeContainer& ccon, Symbol name);
+      /**
+        * @brief looks up an identifier
+        * @requires: the identifier to be already added. Hangs
+        *            if the identifier is not found
+        * @param Symbol the name of the identifier
+        * @returns the memory slot associated with the identifier
+        */ 
+      MemSlot* lookup_identifier(Symbol name);
 
-    /**
-      * @brief looks up an identifier
-      * @requires: the identifier to be already added. Hangs
-      *            if the identifier is not found
-      * @param Symbol the name of the identifier
-      * @returns the memory slot associated with the identifier
-      */ 
-    MemSlot* lookup_identifier(Symbol name);
-
-    /**
-      * @brief removes an identifier
-      * @requires: the identifier to be already added. Hangs
-      *            if the identifier is not found
-      * @param CodeContainer 
-      * @param Symbol the name of the identifier
-      */
-    void remove_identifier(CodeContainer& ccon, Symbol name);
+      /**
+        * @brief removes an identifier
+        * @requires: the identifier to be already added. Hangs
+        *            if the identifier is not found
+        * @param CodeContainer 
+        * @param Symbol the name of the identifier
+        */
+      void remove_identifier(CodeContainer& ccon, Symbol name);
 };
 
 #endif /*MEMORY_MANAGER_H*/

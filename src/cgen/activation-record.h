@@ -17,7 +17,7 @@ using namespace std;
 class ActivationRecord 
 {
     private:
-        vector<Symbol> argv;
+        vector<Formal> argv;
         unsigned int tmps;
     
     public:
@@ -35,7 +35,7 @@ class ActivationRecord
         /**
           * @returns the arguments of this method
           */
-         vector<Symbol> args();
+         vector<Formal> args();
 };
 
 #endif /*ACTIVATION_RECORD_H*/

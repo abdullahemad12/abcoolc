@@ -9,7 +9,7 @@ RANLIB= gar -qs
 
 SRC= cgen.cc cgen.h cgen_supp.cc cool-tree.h cool-tree.handcode.h emit.h example.cl README
 CSRC= cgen-phase.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc ast-lex.cc ast-parse.cc handle_flags.cc \
-		code-container.cc memory.cc activation-record.cc
+		code-container.cc memory.cc activation-record.cc memory-manager.cc
 TSRC= mycoolc
 CGEN=
 HGEN= 

@@ -34,7 +34,7 @@ void Register::save(CodeContainer& ccon, Register* src)
 RamMemLoc::RamMemLoc(Register* addr_reg, Register* t0, int offset) : 
                         addr_reg(addr_reg), t0(t0), offset(offset)
 {
-    assert(addr_reg->get_name() != "$sp");
+    assert(addr_reg->get_name() != SP);
 }
 
 Register* RamMemLoc::load(CodeContainer& ccon)
