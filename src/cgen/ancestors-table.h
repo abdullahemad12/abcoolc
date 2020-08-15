@@ -7,15 +7,19 @@
 #define ANCESTORS_TABLE_H
 
 #include <string>
+#include <list>
 #include "cool-tree.h"
 
 using namespace std;
+
+
 class AncestorsTable 
 {
     private: 
+        std::list<Class_> ancestors;
         string label;
     public:
-        AncestorsTable(Class_ parent_table);
+        AncestorsTable(Class_ class_);
         void copy_parent_table(AncestorsTable& meth_table);
 
 };

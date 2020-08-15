@@ -2,6 +2,8 @@
 #include <assert.h>
 #include "memory-manager.h"
 #include "activation-record.h"
+#include "object-prototype.h"
+#include "static-memory.h"
 
 using namespace std;
 
@@ -10,12 +12,13 @@ using namespace std;
 // Code for Scope class
 //
 ///////////////////////////////////
-MemoryManager::Scope::Scope(ActivationRecord& ar, Register* t0, Register* ra, 
-                            Register* fp, vector<Register*> regs) : ar(ar)
+MemoryManager::Scope::Scope(Class_ class_, ActivationRecord& ar, MemoryManager::MipsRegisters& mregs)
+                            : ar(ar)
 {
     
-    initialize_tmps(t0, fp, regs);
-    initialize_ar_mem(t0, ra, fp, regs);
+    initialize_tmps(mregs);
+    initialize_ar_mem(mregs);
+    initialize_self_attr(class_, mregs);
 }
 
 MemoryManager::Scope::~Scope()
@@ -27,14 +30,14 @@ MemoryManager::Scope::~Scope()
     delete ar_old_fp;
 }
 
-void MemoryManager::Scope::initialize_tmps(Register* t0, Register* fp, vector<Register*> regs)
+void MemoryManager::Scope::initialize_tmps(MemoryManager::MipsRegisters& mregs)
 {
     int regs_size;
     int tmps;
     int n;
     int i;
     RamMemLoc* rml;
-
+    vector<Register*> regs = mregs.pregs();
     regs_size = regs.size();
     tmps = ar.ntmps();
     n = min(tmps, regs_size);
@@ -42,41 +45,46 @@ void MemoryManager::Scope::initialize_tmps(Register* t0, Register* fp, vector<Re
     for(i = n - 1; i >= 0; i--)
     {
         free_regs.push(regs[i]);
-        rml = new RamMemLoc(fp, t0, 4 * i);;
+        rml = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * i);;
         regs_to_mem[regs[i]] = rml;
         all_ram_mem.insert(rml);
     }
 
     for(i = tmps - 1; i >= n; i--)
     {
-        rml = new RamMemLoc(fp, t0, 4 * i);
+        rml = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * i);
         free_mem_locs.push(rml);
         all_ram_mem.insert(rml);
     }
 }
 
-void MemoryManager::Scope::initialize_ar_mem(Register* t0, Register* ra, Register* fp, vector<Register*> regs)
+void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs)
 {
-    int nargs;
-    int ntmps;
-    int i;
+    int nargs, ntmps, offset, i;
     auto argv = ar.args();
+    RamMemLoc* rml;
+
+    vector<Register*> regs = mregs.pregs();
 
     nargs = ar.argc();
     ntmps = ar.ntmps();
 
+    offset = (4 * ntmps + 4);
     for(int i = 0; i < nargs; i++)
     {
-        RamMemLoc* rml = new RamMemLoc(fp, t0, (4 * ntmps + 4) + (4 * i));
-        //TODO: Fix this, add memory location for object attributes
-        // very important
-        identifiers[argv[i]->get_name()] = rml;
+        rml = new RamMemLoc(mregs.fp(), mregs.t0(),  offset + (4 * i));
+        bind_mem_slot(argv[i]->get_name(), rml);
         all_ram_mem.insert(rml);
     }
 
-    ar_ra = new RamMemLoc(fp, ra, 4 * ntmps);
-    ar_old_fp = new RamMemLoc(fp, fp, (4 * ntmps) + (4 * nargs) + 4);
+    ar_ra = new RamMemLoc(mregs.fp(), mregs.ra(), 4 * ntmps);
+    ar_old_fp = new RamMemLoc(mregs.fp(), mregs.fp(), (4 * ntmps) + (4 * nargs) + 4);
 
+}
+
+void MemoryManager::Scope::initialize_self_attr(Class_ class_, MemoryManager::MipsRegisters& mregs)
+{
+    
 }
 
 //////////////////////////////////////////////////
@@ -86,36 +94,21 @@ void MemoryManager::Scope::initialize_ar_mem(Register* t0, Register* ra, Registe
 /////////////////////////////////////////////////
 
 
-MemoryManager::MemoryManager() 
+MemoryManager::MemoryManager(StaticMemory& static_memory) : static_memory(static_memory)
 {
-    fp = new Register(FP);
-    sp = new Register(SP);
-    t0 = new Register(T0);
-    ra = new Register(RA);
-    t_regs = {
-        new Register(T5),
-        new Register(T6),
-        new Register(T7),
-        new Register(T8),
-        new Register(T9)
-    };
+
 }
 
-MemoryManager::~MemoryManager()
-{
-    delete fp;
-    delete sp;
-    for(auto reg : t_regs)
-        delete reg;
-}
-
-void MemoryManager::enter_scope(CodeContainer& ccon, ActivationRecord& ar)
+void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRecord& ar)
 {
     assert(scope == NULL);
-
+    Register *sp, *fp, *ra;
     int ntmps;
-    
-    scope = new Scope(ar, t0, ra, fp, t_regs);
+    sp = mregs.sp();
+    fp = mregs.fp();
+    ra = mregs.ra();
+
+    scope = new Scope(class_, ar, mregs);
     ccon.sw(ra, sp, 0);
 
     ntmps = ar.ntmps();
@@ -146,7 +139,7 @@ void MemoryManager::exit_scope(CodeContainer& ccon)
     nargs = scope->ar.argc();
 
     //restore $sp
-    ccon.addiu(sp, fp, (4 * nargs) + (4 * ntmps) + 4);
+    ccon.addiu(mregs.sp(), mregs.fp(), (4 * nargs) + (4 * ntmps) + 4);
 
     // restore $ra
     scope->ar_ra->load(ccon);

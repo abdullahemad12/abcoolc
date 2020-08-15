@@ -8,11 +8,11 @@
 #include "tree.h"
 #include "cool.h"
 #include "stringtab.h"
+
 #define yylineno curr_lineno;
 extern int yylineno;
 
 class ObjectPrototype;
-class ActivationRecord;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
@@ -64,7 +64,7 @@ virtual Symbol get_filename() = 0;      \
 virtual void dump_with_types(ostream&,int) = 0; 
 
 
-#define class__EXTRAS                                  \
+#define class__EXTRAS   				\
 Symbol get_name()   { return name; }		       \
 Symbol get_parent() { return parent; }     	       \
 Symbol get_filename() { return filename; }             \
@@ -74,12 +74,10 @@ void dump_with_types(ostream&,int);
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 	\
 virtual void filter_feature(ObjectPrototype& obj_prot) = 0; \
-virtual void filter_feature(ActivationRecord& ar) = 0;
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    		\
 void filter_feature(ObjectPrototype& obj_prot);	\
-void filter_feature(ActivationRecord& ar);
 
 
 

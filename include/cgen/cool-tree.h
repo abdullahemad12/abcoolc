@@ -179,7 +179,7 @@ protected:
    Symbol return_type;
    Expression expr;
 public:
-   method_class(Symbol a1, Formals a2, Symbol a3, Expression a4) {
+   method_class(Symbol a1, Formals a2, Symbol a3, Expression a4){
       name = a1;
       formals = a2;
       return_type = a3;

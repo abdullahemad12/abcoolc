@@ -10,19 +10,19 @@
 
 
 #include <list>
-#include "cool-tree.h"
 #include "ancestors-table.h"
 #include "methods-table.h"
 
 using namespace std;
+
 
 class ObjectPrototype
 {
     private:
         string label;
         int tag;
-        list<attr_class*> attributes;
-        AnscestorsTable ancestors_table;
+        std::list<attr_class*> attributes;
+        AncestorsTable ancestors_table;
         MethodsTable method_table;
     public:
         /**
@@ -41,7 +41,7 @@ class ObjectPrototype
 
         string get_label();
         int get_tag();
-        list<attr_class> get_attributes();
+        std::list<attr_class> get_attributes();
         
 };
 

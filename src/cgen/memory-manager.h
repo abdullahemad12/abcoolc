@@ -18,18 +18,44 @@
 #ifndef MEMORY_MANAGER_H
 #define MEMORY_MANAGER_H
 
-#include "activation-record.h"
-#include "memory.h"
-#include "stringtab.h"
 #include <unordered_map>
 #include <stack>
 #include <unordered_set>
 #include <code-container.h>
+#include "activation-record.h"
+#include "memory.h"
+#include "stringtab.h"
+#include "static-memory.h"
 
 using namespace std;
 
 class MemoryManager 
 {
+  // use this to store the registers and pass it to the scope
+    class MipsRegisters
+    {
+      friend MemoryManager;
+      private:
+        MipsRegisters();
+        vector<Register*> pregv;
+        Register* sp_reg;
+        Register* fp_reg;
+        Register* t0_reg;
+        Register* ra_reg;
+        Register* a0_reg;
+      public:
+        /**
+          * Gets a list of persistant registers that are not used by 
+          * the MIPS run-time system
+          * i.e: non-scratch registers
+          */  
+        vector<Register*> pregs();
+        Register* sp();
+        Register* fp();
+        Register* t0();
+        Register* ra();
+        Register* a0();
+    };
     class Scope 
     {
         private:
@@ -43,22 +69,22 @@ class MemoryManager
             RamMemLoc* ar_ra;
             RamMemLoc* ar_old_fp;
 
-            Scope(ActivationRecord& ar, Register* t0, Register* ra, Register* fp, vector<Register*> regs);
+            Scope(Class_ class_, ActivationRecord& ar, MipsRegisters& mregs);
             // ar must be set correctly first before calling them
-            void initialize_tmps(Register* t0, Register* fp, vector<Register*> regs);
-            void initialize_ar_mem(Register* t0, Register* ra, Register* fp, vector<Register*> regs);
+            void initialize_tmps(MipsRegisters& mregs);
+            void initialize_ar_mem(MipsRegisters& mregs);
+            void initialize_self_attr(Class_ class_, MipsRegisters& mregs);
+            // binds a memory slot to an identifier
+            void bind_mem_slot(Symbol identifier, MemSlot* slot);
             ~Scope();
     };
+
     private: 
+      StaticMemory& static_memory;
       Scope* scope = NULL;
-      vector<Register*> t_regs;
-      Register* sp;
-      Register* fp;
-      Register* t0;
-      Register* ra;
+      MipsRegisters mregs;
     public:
-      MemoryManager();
-      ~MemoryManager();
+      MemoryManager(StaticMemory& static_memory);
       /**
         * @brief creates a new scope. Call this when entring a new method
         * @effects: allocates a new scope
@@ -66,7 +92,7 @@ class MemoryManager
         * @param CodeContainer used to generate the code on method enter
         * @param ActivationRecord the activation record of the current method node
         */
-      void enter_scope(CodeContainer& ccon, ActivationRecord& ar);
+      void enter_scope(CodeContainer& ccon, Class_ class_, ActivationRecord& ar);
 
       /**
         * @brief used when the code for the method was generated
