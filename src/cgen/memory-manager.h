@@ -69,11 +69,11 @@ class MemoryManager
             RamMemLoc* ar_ra;
             RamMemLoc* ar_old_fp;
 
-            Scope(Class_ class_, ActivationRecord& ar, MipsRegisters& mregs);
+            Scope(ObjectPrototype& obj_prot, ActivationRecord& ar, MipsRegisters& mregs);
             // ar must be set correctly first before calling them
             void initialize_tmps(MipsRegisters& mregs);
             void initialize_ar_mem(MipsRegisters& mregs);
-            void initialize_self_attr(Class_ class_, MipsRegisters& mregs);
+            void initialize_self_attr(ObjectPrototype& obj_prot, MipsRegisters& mregs);
             // binds a memory slot to an identifier
             void bind_mem_slot(Symbol identifier, MemSlot* slot);
             ~Scope();

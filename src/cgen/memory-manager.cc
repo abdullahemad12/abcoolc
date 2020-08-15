@@ -12,13 +12,13 @@ using namespace std;
 // Code for Scope class
 //
 ///////////////////////////////////
-MemoryManager::Scope::Scope(Class_ class_, ActivationRecord& ar, MemoryManager::MipsRegisters& mregs)
+MemoryManager::Scope::Scope(ObjectPrototype& obj_prot, ActivationRecord& ar, MemoryManager::MipsRegisters& mregs)
                             : ar(ar)
 {
     
     initialize_tmps(mregs);
     initialize_ar_mem(mregs);
-    initialize_self_attr(class_, mregs);
+    initialize_self_attr(obj_prot, mregs);
 }
 
 MemoryManager::Scope::~Scope()
@@ -82,7 +82,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
 
 }
 
-void MemoryManager::Scope::initialize_self_attr(Class_ class_, MemoryManager::MipsRegisters& mregs)
+void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, MemoryManager::MipsRegisters& mregs)
 {
     
 }
@@ -104,11 +104,13 @@ void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRe
     assert(scope == NULL);
     Register *sp, *fp, *ra;
     int ntmps;
+    ObjectPrototype& obj_prot = static_memory.lookup_objectprot(class_->get_name());
+
     sp = mregs.sp();
     fp = mregs.fp();
     ra = mregs.ra();
 
-    scope = new Scope(class_, ar, mregs);
+    scope = new Scope(obj_prot, ar, mregs);
     ccon.sw(ra, sp, 0);
 
     ntmps = ar.ntmps();
