@@ -48,3 +48,23 @@ void RamMemLoc::save(CodeContainer& ccon, Register* src)
 {
     ccon.sw(src, addr_reg, offset);
 }
+
+
+
+SelfAttribute::SelfAttribute(RamMemLoc* self, int offset) : self(self), offset(offset)
+{
+
+} 
+
+Register* SelfAttribute::load(CodeContainer& ccon)
+{
+    Register* s = self->load(ccon);
+    ccon.lw(s, s, offset);
+    return s;
+}
+
+void SelfAttribute::save(CodeContainer& ccon, Register* src)
+{
+    Register* s = self->load(ccon);
+    ccon.sw(src, s, offset);
+}

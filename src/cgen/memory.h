@@ -20,6 +20,8 @@ using namespace std;
 #define ZERO "$zero"		// Zero register 
 #define ACC  "$a0"		// Accumulator 
 #define A1   "$a1"		// For arguments to prim funcs 
+#define A2   "$a2"      // $a2 Register
+#define A3   "$a3"      // $a3 Register
 #define SELF "$s0"		// Ptr to self (callee saves) 
 #define T0   "$t0"      // Temporary 0
 #define T1   "$t1"		// Temporary 1 
@@ -31,6 +33,14 @@ using namespace std;
 #define T7   "$t7"      // Temporary 7
 #define T8   "$t8"      // Temporary 8
 #define T9   "$t9"      // Temporary 9
+#define S0   "$s0"      // Saved 0
+#define S1   "$s1"      // Saved 1
+#define S2   "$s2"      // Saved 2
+#define S3   "$s3"      // Saved 3
+#define S4   "$s4"      // Saved 4
+#define S5   "$s5"      // Saved 5
+#define S6   "$s6"      // Saved 6
+#define S7   "$s7"      // Saved 7
 #define SP   "$sp"		// Stack pointer 
 #define FP   "$fp"		// Frame pointer 
 #define RA   "$ra"		// Return address 
@@ -92,6 +102,19 @@ class RamMemLoc final : public MemSlot
         Register* t0;
         int offset;
         RamMemLoc(Register* addr_reg, Register* t0, int offset);
+    public:
+        Register* load(CodeContainer& ccon);
+        void save(CodeContainer& ccon, Register* src);
+};
+
+
+class SelfAttribute final : public MemSlot
+{
+    private:
+        friend MemoryManager;
+        RamMemLoc* self;
+        int offset;
+        SelfAttribute(RamMemLoc* self, int offset);
     public:
         Register* load(CodeContainer& ccon);
         void save(CodeContainer& ccon, Register* src);

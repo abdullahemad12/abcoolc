@@ -74,11 +74,12 @@ void dump_with_types(ostream&,int);
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 	\
 virtual void filter_feature(ObjectPrototype& obj_prot) = 0; \
+virtual Symbol get_name() = 0;
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    		\
 void filter_feature(ObjectPrototype& obj_prot);	\
-
+Symbol get_name() { return name; }
 
 
 #define Formal_EXTRAS                              \

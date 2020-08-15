@@ -21,7 +21,7 @@
 #include <unordered_map>
 #include <stack>
 #include <unordered_set>
-#include <code-container.h>
+#include "code-container.h"
 #include "activation-record.h"
 #include "memory.h"
 #include "stringtab.h"
@@ -37,6 +37,7 @@ class MemoryManager
       friend MemoryManager;
       private:
         MipsRegisters();
+        ~MipsRegisters();
         vector<Register*> pregv;
         Register* sp_reg;
         Register* fp_reg;
@@ -68,6 +69,7 @@ class MemoryManager
             unordered_set<RamMemLoc*> all_ram_mem;
             RamMemLoc* ar_ra;
             RamMemLoc* ar_old_fp;
+            RamMemLoc* ar_self;
 
             Scope(ObjectPrototype& obj_prot, ActivationRecord& ar, MipsRegisters& mregs);
             // ar must be set correctly first before calling them

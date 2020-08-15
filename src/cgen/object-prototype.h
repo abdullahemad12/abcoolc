@@ -19,9 +19,9 @@ using namespace std;
 class ObjectPrototype
 {
     private:
-        string label;
-        int tag;
-        std::list<attr_class*> attributes;
+        string Olabel;
+        int Otag;
+        std::list<attr_class*> attrs;
         AncestorsTable ancestors_table;
         MethodsTable method_table;
     public:
@@ -39,9 +39,9 @@ class ObjectPrototype
           */
         void copy_parent_object(ObjectPrototype& parent_prot);
 
-        string get_label();
-        int get_tag();
-        std::list<attr_class> get_attributes();
+        string label();
+        int tag();
+        std::list<attr_class*> attributes();
         
 };
 
