@@ -123,7 +123,7 @@ void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, Memor
 {
     std::list<attr_class*> attrs = obj_prot.attributes();
     ar_self = new RamMemLoc(mregs.fp(), mregs.a0(), 4 * ar.ntmps());
-
+    
     int i = 0;
     for(auto attr : attrs)
     {
