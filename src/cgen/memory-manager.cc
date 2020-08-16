@@ -1,6 +1,5 @@
 #include <algorithm> 
 #include <assert.h>
-#include <list.h>
 #include "memory-manager.h"
 #include "activation-record.h"
 #include "object-prototype.h"
@@ -44,7 +43,7 @@ Register* MemoryManager::MipsRegisters::sp() { return sp_reg; }
 Register* MemoryManager::MipsRegisters::fp()  { return fp_reg; }
 Register* MemoryManager::MipsRegisters::t0() { return t0_reg; }
 Register* MemoryManager::MipsRegisters::ra() { return ra_reg; }
-Register* MemoryManager::MipsRegisters::a0() { return a0_reg; }
+Register* MemoryManager::MipsRegisters::acc() { return a0_reg; }
 
 ///////////////////////////////////
 //
@@ -80,20 +79,22 @@ void MemoryManager::Scope::initialize_tmps(MemoryManager::MipsRegisters& mregs)
     tmps = ar.ntmps();
     n = min(tmps, regs_size);
 
+    for(i = tmps - 1; i >= n; i--)
+    {
+        rml = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * i);
+        free_mem.push(rml);
+        all_ram_mem.insert(rml);
+    }
+
     for(i = n - 1; i >= 0; i--)
     {
-        free_regs.push(regs[i]);
+        free_mem.push(regs[i]);
         rml = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * i);;
         regs_to_mem[regs[i]] = rml;
         all_ram_mem.insert(rml);
     }
 
-    for(i = tmps - 1; i >= n; i--)
-    {
-        rml = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * i);
-        free_mem_locs.push(rml);
-        all_ram_mem.insert(rml);
-    }
+
 }
 
 void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs)
@@ -114,7 +115,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
         bind_mem_slot(argv[i]->get_name(), rml);
         all_ram_mem.insert(rml);
     }
-    ar_ra = new RamMemLoc(mregs.fp(), mregs.ra(), 4 * ntmps + 4);
+    ar_ra = new RamMemLoc(mregs.fp(), mregs.ra(), 4 * ntmps);
     ar_old_fp = new RamMemLoc(mregs.fp(), mregs.fp(), (4 * ntmps) + (4 * nargs) + 8);
 
 }
@@ -122,8 +123,8 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
 void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, MemoryManager::MipsRegisters& mregs)
 {
     std::list<attr_class*> attrs = obj_prot.attributes();
-    ar_self = new RamMemLoc(mregs.fp(), mregs.a0(), 4 * ar.ntmps());
-    
+    ar_self = new RamMemLoc(mregs.fp(), mregs.acc(), 4 * ar.ntmps() + 4);
+
     int i = 0;
     for(auto attr : attrs)
     {
@@ -133,6 +134,15 @@ void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, Memor
     }
 }
 
+void MemoryManager::Scope::bind_mem_slot(Symbol identifier, MemSlot* slot)
+{
+    if(identifiers.find(identifier) == identifiers.end())
+    {
+        std::stack<MemSlot*> s;
+        identifiers[identifier] = s;
+    }
+    identifiers[identifier].push(slot);
+}
 
 //////////////////////////////////////////////////
 //
@@ -149,16 +159,18 @@ MemoryManager::MemoryManager(StaticMemory& static_memory) : static_memory(static
 void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRecord& ar)
 {
     assert(scope == NULL);
-    Register *sp, *fp, *ra;
+    Register *sp, *fp, *ra, *acc;
     int ntmps;
     ObjectPrototype& obj_prot = static_memory.lookup_objectprot(class_->get_name());
 
     sp = mregs.sp();
     fp = mregs.fp();
     ra = mregs.ra();
-
+    acc = mregs.acc();
     scope = new Scope(obj_prot, ar, mregs);
-    ccon.sw(ra, sp, 0);
+
+    ccon.sw(acc, sp, 0);
+    ccon.sw(ra, sp, -4);
 
     ntmps = ar.ntmps();
     // sp is set to the first free loc after temps
@@ -170,10 +182,12 @@ void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRe
     for(auto entry : scope->regs_to_mem)
         entry.second->save(ccon, entry.first);
     
+
 }
 
 void MemoryManager::exit_scope(CodeContainer& ccon)
 {
+    assert(scope->free_mem.size() == scope->ar.ntmps());
     int ntmps;
     int nargs;
 
@@ -195,4 +209,23 @@ void MemoryManager::exit_scope(CodeContainer& ccon)
 
     // restore $fp
     scope->ar_old_fp->load(ccon);
+}
+
+MemSlot* MemoryManager::memalloc()
+{
+    assert(!scope->free_mem.empty());
+
+    MemSlot* alloc_mem = scope->free_mem.top();
+    assert(!alloc_mem->alloc);
+
+    alloc_mem->alloc = true;
+    scope->free_mem.pop();
+    return alloc_mem;
+}
+
+void MemoryManager::memfree(MemSlot* memslot)
+{
+    assert(memslot->alloc);
+    memslot->alloc = false;
+    scope->free_mem.push(memslot);
 }

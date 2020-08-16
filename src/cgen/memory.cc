@@ -2,10 +2,6 @@
 #include "memory.h"
 #include <assert.h>
 
-void MemSlot::set_valid(bool val) 
-{
-    this->valid = val;
-}
 
 Register::Register(string name) : name(name) { }
 

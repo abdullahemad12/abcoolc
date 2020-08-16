@@ -55,15 +55,14 @@ class MemoryManager
         Register* fp();
         Register* t0();
         Register* ra();
-        Register* a0();
+        Register* acc();
     };
     class Scope 
     {
         private:
             friend MemoryManager;
             ActivationRecord& ar;
-            stack<Register*> free_regs;
-            stack<RamMemLoc*> free_mem_locs;
+            stack<MemSlot*> free_mem;
             unordered_map<Register*, RamMemLoc*> regs_to_mem;
             unordered_map<Symbol, stack<MemSlot*>> identifiers; 
             unordered_set<RamMemLoc*> all_ram_mem;

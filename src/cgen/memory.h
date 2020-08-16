@@ -55,14 +55,12 @@ class MemoryManager;
 
 class MemSlot 
 {
-    private:
+    friend MemoryManager;
+    protected:
         /*used to catch errors*/
-        bool valid = true; 
-
+        bool alloc = false; 
 
     public:
-    
-    void set_valid(bool val);
     /**
       * @brief generates the code that loads this memory slot into a register
       * @modifies: CodeContainer
