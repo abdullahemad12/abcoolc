@@ -89,7 +89,7 @@ void MemoryManager::Scope::initialize_tmps(MemoryManager::MipsRegisters& mregs)
     for(i = n - 1; i >= 0; i--)
     {
         free_mem.push(regs[i]);
-        rml = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * i);;
+        rml = new RamMemLoc(mregs.fp(), regs[i], 4 * i);;
         regs_to_mem[regs[i]] = rml;
         all_ram_mem.insert(rml);
     }
@@ -187,22 +187,21 @@ void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRe
 
 void MemoryManager::exit_scope(CodeContainer& ccon)
 {
+    assert(scope);
     assert(scope->free_mem.size() == scope->ar.ntmps());
     int ntmps;
     int nargs;
 
     // restore all tmps
     for(auto entry : scope->regs_to_mem)
-    {
         Register* old_value = entry.second->load(ccon);
-        entry.first->save(ccon, old_value);
-    }
+
 
     ntmps = scope->ar.ntmps();
     nargs = scope->ar.argc();
 
     //restore $sp
-    ccon.addiu(mregs.sp(), mregs.fp(), (4 * nargs) + (4 * ntmps) + 4);
+    ccon.addiu(mregs.sp(), mregs.fp(), (4 * nargs) + (4 * ntmps) + 8);
 
     // restore $ra
     scope->ar_ra->load(ccon);
@@ -213,6 +212,7 @@ void MemoryManager::exit_scope(CodeContainer& ccon)
 
 MemSlot* MemoryManager::memalloc()
 {
+    assert(scope);
     assert(!scope->free_mem.empty());
 
     MemSlot* alloc_mem = scope->free_mem.top();
@@ -225,6 +225,7 @@ MemSlot* MemoryManager::memalloc()
 
 void MemoryManager::memfree(MemSlot* memslot)
 {
+    assert(scope);
     assert(memslot->alloc);
     memslot->alloc = false;
     scope->free_mem.push(memslot);
@@ -232,6 +233,7 @@ void MemoryManager::memfree(MemSlot* memslot)
 
 MemSlot* MemoryManager::add_identifier(Symbol name)
 {
+    assert(scope);
     MemSlot* slot = memalloc();
     scope->bind_mem_slot(name, slot);
     return slot;
@@ -239,13 +241,16 @@ MemSlot* MemoryManager::add_identifier(Symbol name)
 
 MemSlot* MemoryManager::lookup_identifier(Symbol name)
 {
+    assert(scope);
     assert(scope->identifiers.find(name)
             != scope->identifiers.end());
+    assert(!scope->identifiers[name].empty());
     return scope->identifiers[name].top();
 }
 
 void MemoryManager::remove_identifier(Symbol name)
 {
+    assert(scope);
     memfree(lookup_identifier(name));
     scope->identifiers[name].pop();
 }

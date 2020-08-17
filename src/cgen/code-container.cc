@@ -45,5 +45,5 @@ void CodeContainer::sub(Register* dest, Register* op1, Register* op2)
 
 void CodeContainer::addiu(Register* dest, Register* src, int immediate)
 {
-    CGEN(ADDIU << dest << ", " << immediate);
+    CGEN(ADDIU << dest << ", " << src <<  ", " << immediate);
 }
