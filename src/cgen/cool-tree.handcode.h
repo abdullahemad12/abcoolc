@@ -5,14 +5,18 @@
 #define COOL_TREE_HANDCODE_H
 
 #include <iostream>
+#include <vector>
 #include "tree.h"
 #include "cool.h"
 #include "stringtab.h"
+
 
 #define yylineno curr_lineno;
 extern int yylineno;
 
 class ObjectPrototype;
+class method_class;
+class attr_class;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
@@ -61,8 +65,8 @@ void dump_with_types(ostream&, int);
 virtual Symbol get_name() = 0;  	\
 virtual Symbol get_parent() = 0;    	\
 virtual Symbol get_filename() = 0;      \
-virtual void dump_with_types(ostream&,int) = 0; 
-
+virtual void dump_with_types(ostream&,int) = 0; \
+int tag;
 
 #define class__EXTRAS   				\
 Symbol get_name()   { return name; }		       \
@@ -73,12 +77,14 @@ void dump_with_types(ostream&,int);
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 	\
-virtual void filter_feature(ObjectPrototype& obj_prot) = 0; \
+virtual void filter_feature(std::vector<attr_class*>& attrs) = 0; \
+virtual void filter_feature(std::vector<method_class*>& meths) = 0; \
 virtual Symbol get_name() = 0;
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    		\
-void filter_feature(ObjectPrototype& obj_prot);	\
+void filter_feature(std::vector<attr_class*>& attrs);	\
+void filter_feature(std::vector<method_class*>& meths);\
 Symbol get_name() { return name; }
 
 

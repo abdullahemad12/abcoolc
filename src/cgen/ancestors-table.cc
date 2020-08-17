@@ -1,18 +1,24 @@
-#include "ancestors-table.h"
 #include <string>
+#include "ancestors-table.h"
+#include "labels.h"
 
 using namespace std;
 
-string AncestorsTable::label() { return alabel; }
-auto AncestorsTable::begin() { return ancestors.begin(); } 
-auto AncestorsTable::end() { return ancestors.end(); }
+string AncestorsTable::label() { return label_attr; }
+auto AncestorsTable::begin() { return ancestors_attr.begin(); } 
+auto AncestorsTable::end() { return ancestors_attr.end(); }
 
 AncestorsTable::AncestorsTable(AncestorsTable& parent_table, Class_ myself)
 {
     string class_name(myself->get_name()->get_string());
-    alabel = class_name + "." + "Ancestors";
+    label_attr = ANCESTORS_TABLE_LABEL(class_name);
 
     for(auto ancestor : parent_table)
-        ancestors.push_back(ancestor);
-    ancestors.push_back(myself);
+        ancestors_attr.push_back(ancestor);
+    ancestors_attr.push_back(myself);
+}
+
+AncestorsTable::AncestorsTable()
+{
+    label_attr = "empty_ancestor";
 }

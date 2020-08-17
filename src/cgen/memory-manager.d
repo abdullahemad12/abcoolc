@@ -4,4 +4,4 @@ memory-manager.o memory-manager.d : memory-manager.cc memory-manager.h code-cont
  ../../include/cgen/cool-io.h cool-tree.h ../../include/cgen/tree.h \
  ../../include/cgen/stringtab.h cool-tree.handcode.h \
  ../../include/cgen/cool.h static-memory.h object-prototype.h \
- ancestors-table.h cool-tree.h methods-table.h object-prototype.h
+ ancestors-table.h cool-tree.h methods-table.h

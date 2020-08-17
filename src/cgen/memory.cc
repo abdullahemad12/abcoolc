@@ -1,7 +1,7 @@
 #include "code-container.h"
 #include "memory.h"
 #include <assert.h>
-
+#include <iostream>
 
 Register::Register(string name) : name(name) { }
 
@@ -18,6 +18,13 @@ ostream& Register::operator<<(ostream& os)
 {
     return (os << name);
 }
+
+ostream& operator<<(ostream& os, Register* reg)
+{
+    os << reg->get_name();
+    return os;
+}
+
 
 void Register::save(CodeContainer& ccon, Register* src)
 {

@@ -122,7 +122,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
 
 void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, MemoryManager::MipsRegisters& mregs)
 {
-    std::list<attr_class*> attrs = obj_prot.attributes();
+    vector<attr_class*> attrs = obj_prot.attributes();
     ar_self = new RamMemLoc(mregs.fp(), mregs.acc(), 4 * ar.ntmps() + 4);
 
     int i = 0;
@@ -228,4 +228,24 @@ void MemoryManager::memfree(MemSlot* memslot)
     assert(memslot->alloc);
     memslot->alloc = false;
     scope->free_mem.push(memslot);
+}
+
+MemSlot* MemoryManager::add_identifier(Symbol name)
+{
+    MemSlot* slot = memalloc();
+    scope->bind_mem_slot(name, slot);
+    return slot;
+}
+
+MemSlot* MemoryManager::lookup_identifier(Symbol name)
+{
+    assert(scope->identifiers.find(name)
+            != scope->identifiers.end());
+    return scope->identifiers[name].top();
+}
+
+void MemoryManager::remove_identifier(Symbol name)
+{
+    memfree(lookup_identifier(name));
+    scope->identifiers[name].pop();
 }

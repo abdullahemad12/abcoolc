@@ -120,13 +120,12 @@ class MemoryManager
       void memfree(MemSlot* memslot);
 
       /**
-        * @brief binds an identifier to a memory location. (Case and let)
+        * @brief binds an identifier to a new memory location. (Case and let)
         * @modifies: scope
-        * @param CodeContainer
         * @param Symbol the name of the identifier
         * @returns a new memory slot
         */ 
-      MemSlot* add_identifier(CodeContainer& ccon, Symbol name);
+      MemSlot* add_identifier(Symbol name);
 
       /**
         * @brief looks up an identifier
@@ -138,13 +137,12 @@ class MemoryManager
       MemSlot* lookup_identifier(Symbol name);
 
       /**
-        * @brief removes an identifier
+        * @brief removes an identifier and frees the memory associated with it
         * @requires: the identifier to be already added. Hangs
         *            if the identifier is not found
-        * @param CodeContainer 
         * @param Symbol the name of the identifier
         */
-      void remove_identifier(CodeContainer& ccon, Symbol name);
+      void remove_identifier(Symbol name);
 };
 
 #endif /*MEMORY_MANAGER_H*/

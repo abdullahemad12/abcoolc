@@ -17,9 +17,10 @@ using namespace std;
 class AncestorsTable 
 {
     private:
-        string alabel;
-        vector<Class_> ancestors;
+        string label_attr;
+        vector<Class_> ancestors_attr;
     public:
+        AncestorsTable();
         /**
           * @param AncestorsTable the ancestors table of the parent
           * @param myself the class that this ancestors table belongs to

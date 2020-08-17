@@ -9,7 +9,7 @@
 #define OBJECT_PROTOTYPE_H
 
 
-#include <list>
+#include <vector>
 #include "ancestors-table.h"
 #include "methods-table.h"
 
@@ -19,29 +19,30 @@ using namespace std;
 class ObjectPrototype
 {
     private:
-        string Olabel;
-        int Otag;
-        std::list<attr_class*> attrs;
-        AncestorsTable ancestors_table;
-        MethodsTable method_table;
+        string label_attr;
+        int tag_attr;
+        vector<attr_class*> attrs_attr;
+        AncestorsTable ancestors_table_attr;
+        MethodsTable methods_table_attr;
     public:
+        /**
+          * @brief creates an empty object with tag -1 and label empty
+          */ 
+        ObjectPrototype();
         /**
           * @brief instantiates an object prototype for the given class 
           * @param Class_ the class which this prototype belongs to
+          * @param Features the features of the class
+          * @param parent_obj_prot the object prototype of the parent
           */ 
-        ObjectPrototype(Class_ class_);
-        /**
-          * @brief copies the the object prototype of the parent including the 
-          *        AncestorsTable and the MethodTable
-          * @effects: adds all the attributes, methods and ancestors to this object
-          * @modifies: this, ancestors, methodtable
-          * @param ObjectPrototype the objectprototype of the parent class
-          */
-        void copy_parent_object(ObjectPrototype& parent_prot);
+        ObjectPrototype(Class_ class_, Features features, ObjectPrototype& parent_obj_prot);
 
         string label();
         int tag();
-        std::list<attr_class*> attributes();
+        vector<attr_class*> attributes();
+        
+        MethodsTable& methods_table();
+        AncestorsTable& ancestors_table();
         
 };
 

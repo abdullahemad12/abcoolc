@@ -88,6 +88,7 @@ class Register final : public MemSlot
     public:
         string get_name();
         ostream& operator<<(ostream& os);
+        string operator<<(string& s);
         Register* load(CodeContainer& ccon);
         void save(CodeContainer& ccon, Register* src);
 };
@@ -118,7 +119,7 @@ class SelfAttribute final : public MemSlot
         void save(CodeContainer& ccon, Register* src);
 };
 
-
+ostream& operator<<(ostream& os,  Register* reg);
 
 
 #endif /*MEMORY_H*/
