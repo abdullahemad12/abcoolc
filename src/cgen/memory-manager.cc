@@ -111,7 +111,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
     offset = (4 * ntmps + 8);
     for(int i = 0; i < nargs; i++)
     {
-        rml = new RamMemLoc(mregs.fp(), mregs.t0(),  offset + (4 * i));
+        rml = new RamMemLoc(mregs.fp(), mregs.t0(),  offset + (nargs - 1 ) - (4 * i));
         bind_mem_slot(argv[i]->get_name(), rml);
         all_ram_mem.insert(rml);
     }
@@ -253,4 +253,11 @@ void MemoryManager::remove_identifier(Symbol name)
     assert(scope);
     memfree(lookup_identifier(name));
     scope->identifiers[name].pop();
+}
+
+
+void MemoryManager::push_ac(CodeContainer& ccon)
+{
+    ccon.sw(mregs.acc(), mregs.sp(), 0);
+    ccon.addiu(mregs.sp(), mregs.sp(), -4);
 }

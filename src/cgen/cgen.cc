@@ -67,6 +67,7 @@ void program_class::cgen(ostream &os)
   initialize_constants();
   CodeContainer ccon(os);
   StaticMemory static_memory(ccon);
+  initialize_static_memory(static_memory);
   MemoryManager memory_manager(static_memory);
   install_basic_classes();
   create_inheritance_graph();

@@ -14,6 +14,9 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include "tree.h"
+#include <vector>
+
+using namespace std;
 
 /* line number to assign to the current node being constructed */
 int node_lineno = 1;
@@ -46,4 +49,11 @@ int tree_node::get_line_number()
 tree_node *tree_node::set(tree_node *t) {
    line_number = t->line_number;
    return this;
+}
+
+void tree_node::recurse_init_static_mem(StaticMemory& smem)
+{
+    vector<tree_node*> children = get_children();
+    for(auto child : children)
+        child->initialize_static_memory(smem);
 }

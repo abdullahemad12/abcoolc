@@ -64,7 +64,8 @@ private: \
 Classes original_classes; \
 void install_basic_classes(); \
 void uninstall_basic_classes(); \
-void create_inheritance_graph();  
+void create_inheritance_graph(); \
+void assign_classes_tags();
 
 #define Class__EXTRAS                   \
 virtual Symbol get_name() = 0;  	\
@@ -94,6 +95,8 @@ void filter_feature(std::vector<attr_class*>& attrs);	\
 void filter_feature(std::vector<method_class*>& meths);\
 Symbol get_name() { return name; }
 
+#define method_EXTRAS			\
+int mintmps();
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;	\
@@ -106,11 +109,13 @@ Symbol get_name() { return name; }
 
 
 #define Case_EXTRAS                             \
-virtual void dump_with_types(ostream& ,int) = 0;
-
+virtual void dump_with_types(ostream& ,int) = 0; \
+virtual int mintmps() = 0;
 
 #define branch_EXTRAS                                   \
-void dump_with_types(ostream& ,int);
+void dump_with_types(ostream& ,int);				\
+int mintmps();
+
 
 
 #define Expression_EXTRAS                    \
@@ -120,11 +125,13 @@ Expression set_type(Symbol s) { type = s; return this; } \
 virtual void code(ostream&) = 0; \
 virtual void dump_with_types(ostream&,int) = 0;  \
 void dump_type(ostream&, int);               \
-Expression_class() { type = (Symbol) NULL; }
+Expression_class() { type = (Symbol) NULL; }  \
+virtual int mintmps() = 0;
 
 #define Expression_SHARED_EXTRAS           \
 void code(ostream&); 			   \
-void dump_with_types(ostream&,int); 
+void dump_with_types(ostream&,int);  \
+int mintmps();
 
 
 #endif

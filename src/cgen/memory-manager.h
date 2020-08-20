@@ -144,6 +144,12 @@ class MemoryManager
         * @param Symbol the name of the identifier
         */
       void remove_identifier(Symbol name);
+
+      /**
+        * @brief pushes the AC register onto the stack
+        * @param CodeContainer& ccon
+        */
+       void push_ac(CodeContainer& ccon);
 };
 
 #endif /*MEMORY_MANAGER_H*/

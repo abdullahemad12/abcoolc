@@ -16,7 +16,8 @@ ObjectPrototype::ObjectPrototype()
 
 ObjectPrototype::ObjectPrototype(Class_ class_, Features features, ObjectPrototype& parent_obj_prot)
                         : ancestors_table_attr(parent_obj_prot.ancestors_table(), class_) ,
-                          methods_table_attr(parent_obj_prot.methods_table(), class_, features)
+                          methods_table_attr(parent_obj_prot.methods_table(), class_, features),
+                          tag_attr(class_->tag)
 {
     string class_name(class_->get_name()->get_string());
     label_attr = OBJECT_PROTOTYPE_LABEL(class_name);

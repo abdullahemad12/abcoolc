@@ -58,6 +58,7 @@ class tree_node {
 protected:
     int line_number;            // stash the line number when node is made
     Class_ containing_class;
+    void recurse_init_static_mem(StaticMemory& smem);
 public:
     tree_node();
     virtual tree_node *copy() = 0;
