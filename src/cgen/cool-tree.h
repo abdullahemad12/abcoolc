@@ -8,7 +8,7 @@
 //
 //////////////////////////////////////////////////////////
 
-
+#include <vector>
 #include "tree.h"
 #include "cool-tree.handcode.h"
 
@@ -134,6 +134,9 @@ public:
       classes = a1;
    }
    Program copy_Program();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Program_SHARED_EXTRAS
@@ -148,6 +151,7 @@ public:
 // define constructor - class_
 class class__class : public Class__class {
 public:
+   std::vector<Class_> children_classes;
    Symbol name;
    Symbol parent;
    Features features;
@@ -160,6 +164,9 @@ public:
       filename = a4;
    }
    Class_ copy_Class_();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Class__SHARED_EXTRAS
@@ -186,6 +193,9 @@ public:
       expr = a4;
    }
    Feature copy_Feature();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Feature_SHARED_EXTRAS
@@ -210,6 +220,9 @@ public:
       init = a3;
    }
    Feature copy_Feature();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Feature_SHARED_EXTRAS
@@ -232,6 +245,9 @@ public:
       type_decl = a2;
    }
    Formal copy_Formal();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Formal_SHARED_EXTRAS
@@ -256,6 +272,9 @@ public:
       expr = a3;
    }
    Case copy_Case();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Case_SHARED_EXTRAS
@@ -278,6 +297,9 @@ public:
       expr = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -304,6 +326,9 @@ public:
       actual = a4;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -328,6 +353,9 @@ public:
       actual = a3;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -352,6 +380,9 @@ public:
       else_exp = a3;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -374,6 +405,9 @@ public:
       body = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -396,6 +430,9 @@ public:
       cases = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -416,6 +453,9 @@ public:
       body = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -442,6 +482,9 @@ public:
       body = a4;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -464,6 +507,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -486,6 +532,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -508,6 +557,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -530,6 +582,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -550,6 +605,9 @@ public:
       e1 = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -572,6 +630,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -594,6 +655,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -616,6 +680,9 @@ public:
       e2 = a2;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -636,6 +703,9 @@ public:
       e1 = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -656,6 +726,9 @@ public:
       token = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -676,6 +749,9 @@ public:
       val = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -696,6 +772,9 @@ public:
       token = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -716,6 +795,9 @@ public:
       type_name = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -736,6 +818,9 @@ public:
       e1 = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -754,6 +839,9 @@ public:
    no_expr_class() {
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -774,6 +862,9 @@ public:
       name = a1;
    }
    Expression copy_Expression();
+   void propagate_containing_class(Class_ class_);
+   std::vector<tree_node*> get_children();
+   void initialize_static_memory(StaticMemory& s_mem);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS

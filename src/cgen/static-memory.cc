@@ -1,4 +1,26 @@
 #include "static-memory.h"
+#include "cgen_gc.h"
+
+static char *gc_init_names[] =
+  { "_NoGC_Init", "_GenGC_Init", "_ScnGC_Init" };
+static char *gc_collect_names[] =
+  { "_NoGC_Collect", "_GenGC_Collect", "_ScnGC_Collect" };
+
+void StaticMemory::gc_declaration(CodeContainer& ccon)
+{
+    //
+    // Generate GC choice constants (pointers to GC functions)
+    //
+    ccon.global_string_const("_MemMgr_INITIALIZER", gc_init_names[cgen_Memmgr]);
+    ccon.global_string_const("_MemMgr_COLLECTOR", gc_collect_names[cgen_Memmgr]);
+    ccon.global_int_const("_MemMgr_TEST", (cgen_Memmgr_Test == GC_TEST));
+
+}
+
+StaticMemory::StaticMemory(CodeContainer& ccon)
+{
+    gc_declaration(ccon);
+}
 
 string StaticMemory::const_label(int i)
 {

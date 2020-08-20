@@ -85,6 +85,7 @@ class MemoryManager
       Scope* scope = NULL;
       MipsRegisters mregs;
     public:
+      MemoryManager(const MemoryManager&) = delete;
       MemoryManager(StaticMemory& static_memory);
       /**
         * @brief creates a new scope. Call this when entring a new method

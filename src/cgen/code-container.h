@@ -14,9 +14,18 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <sstream>
 #include "memory.h"
 
+
 using namespace std;
+
+/////////////////
+// Statics
+/////////////////
+#define GLOBAL        "\t.globl\t"
+#define ALIGN         "\t.align\t2\n"
+#define WORD          "\t.word\t"
 
 /////////////////
 // Opcodes
@@ -52,8 +61,10 @@ using namespace std;
 class CodeContainer 
 {
     private:
+        stringstream buffer;
         vector<string> code;
         ostream& os;
+        CodeContainer(const CodeContainer&) = delete;
 
     public:
         CodeContainer(ostream& os);
@@ -62,6 +73,9 @@ class CodeContainer
         void move(Register* dest, Register* src);
         void addiu(Register* dst, Register* src, int imm);
         void sub(Register* dest, Register* op1, Register* op2);
+        void global_string_const(string label, string str);
+        void global_int_const(string label, int i);
+
         void write_out();
 };
 

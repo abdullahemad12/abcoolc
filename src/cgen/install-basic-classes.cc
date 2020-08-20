@@ -1,6 +1,5 @@
-#include <cool-tree.h>
-#include <type-table.h>
-
+#include "cool-tree.h"
+#include "basic-symbols.h"
 //////////////////////////////////////
 // 
 //  Installing and uninstalling basic Classes

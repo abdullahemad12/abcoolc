@@ -5,9 +5,9 @@
 using namespace std;
 
 #define CGEN(stream)        \
-        stringstream line; \
-        line << stream;     \
-        code.push_back(line.str());
+        buffer << stream;     \
+        code.push_back(buffer.str()); \
+        buffer.str("")
 
 
 CodeContainer::CodeContainer(ostream& os) : os(os)
@@ -46,4 +46,18 @@ void CodeContainer::sub(Register* dest, Register* op1, Register* op2)
 void CodeContainer::addiu(Register* dest, Register* src, int immediate)
 {
     CGEN(ADDIU << dest << ", " << src <<  ", " << immediate);
+}
+
+void CodeContainer::global_string_const(string label, string str)
+{
+    CGEN(GLOBAL << label << endl);
+    CGEN(label << ":" << endl);
+    CGEN(WORD << str << endl);
+}
+
+void CodeContainer::global_int_const(string label, int i)
+{
+    CGEN(GLOBAL << label << endl);
+    CGEN(label << ":" << endl);
+    CGEN(WORD << i << endl);
 }

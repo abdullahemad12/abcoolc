@@ -59,20 +59,27 @@ virtual void dump_with_types(ostream&, int) = 0;
 
 #define program_EXTRAS                          \
 void cgen(ostream&);     			\
-void dump_with_types(ostream&, int);            
+void dump_with_types(ostream&, int); \
+private: \
+Classes original_classes; \
+void install_basic_classes(); \
+void uninstall_basic_classes(); \
+void create_inheritance_graph();  
 
 #define Class__EXTRAS                   \
 virtual Symbol get_name() = 0;  	\
 virtual Symbol get_parent() = 0;    	\
 virtual Symbol get_filename() = 0;      \
 virtual void dump_with_types(ostream&,int) = 0; \
+virtual void add_child_class(Class_ class_) = 0; \
 int tag;
 
 #define class__EXTRAS   				\
 Symbol get_name()   { return name; }		       \
 Symbol get_parent() { return parent; }     	       \
 Symbol get_filename() { return filename; }             \
-void dump_with_types(ostream&,int);                    
+void add_child_class(Class_ class_);			\
+void dump_with_types(ostream&,int);    \
 
 
 #define Feature_EXTRAS                                        \

@@ -24,86 +24,19 @@
 
 #include "cgen.h"
 #include "cgen_gc.h"
+#include "basic-symbols.h"
+#include "code-container.h"
+#include "memory-manager.h"
 
 extern void emit_string_constant(ostream& str, char *s);
 extern int cgen_debug;
 
-//
+//////////////////////////////////////////////////////////////////////////
 // Three symbols from the semantic analyzer (semant.cc) are used.
 // If e : No_type, then no code is generated for e.
 // Special code is generated for new SELF_TYPE.
 // The name "self" also generates code different from other references.
-//
-//////////////////////////////////////////////////////////////////////
-//
-// Symbols
-//
-// For convenience, a large number of symbols are predefined here.
-// These symbols include the primitive type and method names, as well
-// as fixed names used by the runtime system.
-//
-//////////////////////////////////////////////////////////////////////
-Symbol 
-       arg,
-       arg2,
-       Bool,
-       concat,
-       cool_abort,
-       copy,
-       Int,
-       in_int,
-       in_string,
-       IO,
-       length,
-       Main,
-       main_meth,
-       No_class,
-       No_type,
-       Object,
-       out_int,
-       out_string,
-       prim_slot,
-       self,
-       SELF_TYPE,
-       Str,
-       str_field,
-       substr,
-       type_name,
-       val;
-//
-// Initializing the predefined symbols.
-//
-static void initialize_constants(void)
-{
-  arg         = idtable.add_string("arg");
-  arg2        = idtable.add_string("arg2");
-  Bool        = idtable.add_string("Bool");
-  concat      = idtable.add_string("concat");
-  cool_abort  = idtable.add_string("abort");
-  copy        = idtable.add_string("copy");
-  Int         = idtable.add_string("Int");
-  in_int      = idtable.add_string("in_int");
-  in_string   = idtable.add_string("in_string");
-  IO          = idtable.add_string("IO");
-  length      = idtable.add_string("length");
-  Main        = idtable.add_string("Main");
-  main_meth   = idtable.add_string("main");
-//   _no_class is a symbol that can't be the name of any 
-//   user-defined class.
-  No_class    = idtable.add_string("_no_class");
-  No_type     = idtable.add_string("_no_type");
-  Object      = idtable.add_string("Object");
-  out_int     = idtable.add_string("out_int");
-  out_string  = idtable.add_string("out_string");
-  prim_slot   = idtable.add_string("_prim_slot");
-  self        = idtable.add_string("self");
-  SELF_TYPE   = idtable.add_string("SELF_TYPE");
-  Str         = idtable.add_string("String");
-  str_field   = idtable.add_string("_str_field");
-  substr      = idtable.add_string("substr");
-  type_name   = idtable.add_string("type_name");
-  val         = idtable.add_string("_val");
-}
+//////////////////////////////////////////////////////////////////////////
 
 static char *gc_init_names[] =
   { "_NoGC_Init", "_GenGC_Init", "_ScnGC_Init" };
@@ -131,13 +64,12 @@ BoolConst truebool(TRUE);
 
 void program_class::cgen(ostream &os) 
 {
-  // spim wants comments to start with '#'
-  os << "# start of generated code\n";
-
   initialize_constants();
-  CgenClassTable *codegen_classtable = new CgenClassTable(classes,os);
-
-  os << "\n# end of generated code\n";
+  CodeContainer ccon(os);
+  StaticMemory static_memory(ccon);
+  MemoryManager memory_manager(static_memory);
+  install_basic_classes();
+  create_inheritance_graph();
 }
 
 
@@ -617,238 +549,12 @@ void CgenClassTable::code_constants()
 }
 
 
-CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
-{
-   stringclasstag = 0 /* Change to your String class tag here */;
-   intclasstag =    0 /* Change to your Int class tag here */;
-   boolclasstag =   0 /* Change to your Bool class tag here */;
-
-   enterscope();
-   if (cgen_debug) cout << "Building CgenClassTable" << endl;
-   install_basic_classes();
-   install_classes(classes);
-   build_inheritance_tree();
-
-   code();
-   exitscope();
-}
-
-void CgenClassTable::install_basic_classes()
-{
-
-// The tree package uses these globals to annotate the classes built below.
-  //curr_lineno  = 0;
-  Symbol filename = stringtable.add_string("<basic class>");
-
-//
-// A few special class names are installed in the lookup table but not
-// the class list.  Thus, these classes exist, but are not part of the
-// inheritance hierarchy.
-// No_class serves as the parent of Object and the other special classes.
-// SELF_TYPE is the self class; it cannot be redefined or inherited.
-// prim_slot is a class known to the code generator.
-//
-  addid(No_class,
-	new CgenNode(class_(No_class,No_class,nil_Features(),filename),
-			    Basic,this));
-  addid(SELF_TYPE,
-	new CgenNode(class_(SELF_TYPE,No_class,nil_Features(),filename),
-			    Basic,this));
-  addid(prim_slot,
-	new CgenNode(class_(prim_slot,No_class,nil_Features(),filename),
-			    Basic,this));
-
-// 
-// The Object class has no parent class. Its methods are
-//        cool_abort() : Object    aborts the program
-//        type_name() : Str        returns a string representation of class name
-//        copy() : SELF_TYPE       returns a copy of the object
-//
-// There is no need for method bodies in the basic classes---these
-// are already built in to the runtime system.
-//
-  install_class(
-   new CgenNode(
-    class_(Object, 
-	   No_class,
-	   append_Features(
-           append_Features(
-           single_Features(method(cool_abort, nil_Formals(), Object, no_expr())),
-           single_Features(method(type_name, nil_Formals(), Str, no_expr()))),
-           single_Features(method(copy, nil_Formals(), SELF_TYPE, no_expr()))),
-	   filename),
-    Basic,this));
-
-// 
-// The IO class inherits from Object. Its methods are
-//        out_string(Str) : SELF_TYPE          writes a string to the output
-//        out_int(Int) : SELF_TYPE               "    an int    "  "     "
-//        in_string() : Str                    reads a string from the input
-//        in_int() : Int                         "   an int     "  "     "
-//
-   install_class(
-    new CgenNode(
-     class_(IO, 
-            Object,
-            append_Features(
-            append_Features(
-            append_Features(
-            single_Features(method(out_string, single_Formals(formal(arg, Str)),
-                        SELF_TYPE, no_expr())),
-            single_Features(method(out_int, single_Formals(formal(arg, Int)),
-                        SELF_TYPE, no_expr()))),
-            single_Features(method(in_string, nil_Formals(), Str, no_expr()))),
-            single_Features(method(in_int, nil_Formals(), Int, no_expr()))),
-	   filename),	    
-    Basic,this));
-
-//
-// The Int class has no methods and only a single attribute, the
-// "val" for the integer. 
-//
-   install_class(
-    new CgenNode(
-     class_(Int, 
-	    Object,
-            single_Features(attr(val, prim_slot, no_expr())),
-	    filename),
-     Basic,this));
-
-//
-// Bool also has only the "val" slot.
-//
-    install_class(
-     new CgenNode(
-      class_(Bool, Object, single_Features(attr(val, prim_slot, no_expr())),filename),
-      Basic,this));
-
-//
-// The class Str has a number of slots and operations:
-//       val                                  ???
-//       str_field                            the string itself
-//       length() : Int                       length of the string
-//       concat(arg: Str) : Str               string concatenation
-//       substr(arg: Int, arg2: Int): Str     substring
-//       
-   install_class(
-    new CgenNode(
-      class_(Str, 
-	     Object,
-             append_Features(
-             append_Features(
-             append_Features(
-             append_Features(
-             single_Features(attr(val, Int, no_expr())),
-            single_Features(attr(str_field, prim_slot, no_expr()))),
-            single_Features(method(length, nil_Formals(), Int, no_expr()))),
-            single_Features(method(concat, 
-				   single_Formals(formal(arg, Str)),
-				   Str, 
-				   no_expr()))),
-	    single_Features(method(substr, 
-				   append_Formals(single_Formals(formal(arg, Int)), 
-						  single_Formals(formal(arg2, Int))),
-				   Str, 
-				   no_expr()))),
-	     filename),
-        Basic,this));
-
-}
-
-// CgenClassTable::install_class
-// CgenClassTable::install_classes
-//
-// install_classes enters a list of classes in the symbol table.
-//
-void CgenClassTable::install_class(CgenNodeP nd)
-{
-  Symbol name = nd->get_name();
-
-  if (probe(name))
-    {
-      return;
-    }
-
-  // The class name is legal, so add it to the list of classes
-  // and the symbol table.
-  nds = new List<CgenNode>(nd,nds);
-  addid(name,nd);
-}
-
-void CgenClassTable::install_classes(Classes cs)
-{
-  for(int i = cs->first(); cs->more(i); i = cs->next(i))
-    install_class(new CgenNode(cs->nth(i),NotBasic,this));
-}
-
-//
-// CgenClassTable::build_inheritance_tree
-//
-void CgenClassTable::build_inheritance_tree()
-{
-  for(List<CgenNode> *l = nds; l; l = l->tl())
-      set_relations(l->hd());
-}
-
-//
-// CgenClassTable::set_relations
-//
-// Takes a CgenNode and locates its, and its parent's, inheritance nodes
-// via the class table.  Parent and child pointers are added as appropriate.
-//
-void CgenClassTable::set_relations(CgenNodeP nd)
-{
-  CgenNode *parent_node = probe(nd->get_parent());
-  nd->set_parentnd(parent_node);
-  parent_node->add_child(nd);
-}
-
-void CgenNode::add_child(CgenNodeP n)
-{
-  children = new List<CgenNode>(n,children);
-}
-
-void CgenNode::set_parentnd(CgenNodeP p)
-{
-  assert(parentnd == NULL);
-  assert(p != NULL);
-  parentnd = p;
-}
 
 
 
-void CgenClassTable::code()
-{
-  if (cgen_debug) cout << "coding global data" << endl;
-  code_global_data();
-
-  if (cgen_debug) cout << "choosing gc" << endl;
-  code_select_gc();
-
-  if (cgen_debug) cout << "coding constants" << endl;
-  code_constants();
-
-//                 Add your code to emit
-//                   - prototype objects
-//                   - class_nameTab
-//                   - dispatch tables
-//
-
-  if (cgen_debug) cout << "coding global text" << endl;
-  code_global_text();
-
-//                 Add your code to emit
-//                   - object initializer
-//                   - the class methods
-//                   - etc...
-
-}
 
 
-CgenNodeP CgenClassTable::root()
-{
-   return probe(Object);
-}
+
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -856,15 +562,6 @@ CgenNodeP CgenClassTable::root()
 // CgenNode methods
 //
 ///////////////////////////////////////////////////////////////////////
-
-CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
-   class__class((const class__class &) *nd),
-   parentnd(NULL),
-   children(NULL),
-   basic_status(bstatus)
-{ 
-   stringtable.add_string(name->get_string());          // Add class name to string table
-}
 
 
 //******************************************************************

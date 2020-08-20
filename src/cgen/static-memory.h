@@ -26,8 +26,11 @@ class StaticMemory
       unordered_map<string, string> string_consts;
       unordered_map<int, string> int_consts;
       unordered_map<Symbol, ObjectPrototype> obj_prototypes;
-
+      void gc_declaration(CodeContainer& ccon);
+      StaticMemory(const StaticMemory&) = delete;
+      
     public:
+        StaticMemory(CodeContainer& ccon);
         string const_label(int i);
         string const_label(string s);
         /**

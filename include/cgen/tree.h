@@ -17,6 +17,11 @@
 
 #include "stringtab.h"
 #include "cool-io.h"
+#include <vector>
+
+class StaticMemory;
+class Class__class;
+typedef Class__class* Class_;
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -52,11 +57,15 @@
 class tree_node {
 protected:
     int line_number;            // stash the line number when node is made
+    Class_ containing_class;
 public:
     tree_node();
     virtual tree_node *copy() = 0;
     virtual ~tree_node() { }
     virtual void dump(ostream& stream, int n) = 0;
+    virtual std::vector<tree_node*> get_children() = 0;
+    virtual void propagate_containing_class(Class_ class_) = 0;
+    virtual void initialize_static_memory(StaticMemory& s_mem) = 0;
     int get_line_number();
     tree_node *set(tree_node *);
 };
@@ -114,6 +123,9 @@ public:
 
 template <class Elem> class list_node : public tree_node {
 public:
+    void initialize_static_memory(StaticMemory& s_mem) {  }
+    void propagate_containing_class(Class_ class_) {  }
+    std::vector<tree_node*> get_children() { std::vector<tree_node*> vec; return vec; }
     tree_node *copy()            { return copy_list(); }
     Elem nth(int n);
     //
