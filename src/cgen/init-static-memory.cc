@@ -18,6 +18,7 @@
 
 void program_class::assign_classes_tags()
 {
+    initialize_constants();
     int n = classes->len();
     for(int i = 0; i < n; i++)
         classes->nth(i)->tag = i;
@@ -29,7 +30,7 @@ void program_class::initialize_static_memory(StaticMemory& s_mem)
     for(int i = 0; i < n; i++)
     {
         Class_ object_class = classes->nth(i);
-        if(object_class->get_name() == idtable.add_string("object"))
+        if(object_class->get_name() == Object)
         {
             ObjectPrototype empty_prot;
             s_mem.add_object_prot(NULL, empty_prot); // because object has no parent
@@ -41,6 +42,8 @@ void program_class::initialize_static_memory(StaticMemory& s_mem)
 
 void class__class::initialize_static_memory(StaticMemory& s_mem)
 {
+    s_mem.add_const(filename->get_string());
+    s_mem.add_const(name->get_string());
     // initialize this class first and its features
     ObjectPrototype& parent_prot = s_mem.lookup_objectprot(parent);
     ObjectPrototype obj_prot(this, features, parent_prot);

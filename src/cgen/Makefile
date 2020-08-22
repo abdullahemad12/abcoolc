@@ -11,11 +11,11 @@ SRC= cgen.cc cgen.h cgen_supp.cc cool-tree.h cool-tree.handcode.h emit.h example
 CSRC= cgen-phase.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc ast-lex.cc ast-parse.cc handle_flags.cc \
 		code-container.cc memory.cc activation-record.cc memory-manager.cc ancestors-table.cc methods-table.cc \
 		static-memory.cc object-prototype.cc filter-features.cc propagate-class.cc node-children.cc install-basic-classes.cc \
-		inheritance-graph.cc init-static-memory.cc
+		inheritance-graph.cc init-static-memory.cc min-tmps.cc
 TST= unit-test.cc utilities.cc stringtab.cc dumptype.cc tree.cc cool-tree.cc ast-lex.cc ast-parse.cc handle_flags.cc \
 		code-container.cc memory.cc activation-record.cc memory-manager.cc ancestors-table.cc methods-table.cc \
 		static-memory.cc object-prototype.cc filter-features.cc propagate-class.cc node-children.cc install-basic-classes.cc \
-		inheritance-graph.cc init-static-memory.cc
+		inheritance-graph.cc init-static-memory.cc min-tmps.cc
 		
 		
 TSRC= mycoolc

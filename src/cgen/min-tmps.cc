@@ -10,7 +10,7 @@ int method_class::mintmps()
 
 int assign_class::mintmps()
 {
-    return expr->mintmps();
+    return expr->mintmps() + 1;
 }
 
 int static_dispatch_class::mintmps()

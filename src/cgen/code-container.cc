@@ -48,16 +48,51 @@ void CodeContainer::addiu(Register* dest, Register* src, int immediate)
     CGEN(ADDIU << dest << ", " << src <<  ", " << immediate);
 }
 
-void CodeContainer::global_string_const(string label, string str)
+void CodeContainer::global_word(string label, string str)
 {
-    CGEN(GLOBAL << label << endl);
-    CGEN(label << ":" << endl);
-    CGEN(WORD << str << endl);
+    CGEN(GLOBAL << label);
+    CGEN(label << ":");
+    CGEN(WORD << str);
 }
 
-void CodeContainer::global_int_const(string label, int i)
+void CodeContainer::global_word(string label, int i)
 {
-    CGEN(GLOBAL << label << endl);
-    CGEN(label << ":" << endl);
-    CGEN(WORD << i << endl);
+    CGEN(GLOBAL << label);
+    CGEN(label << ":");
+    CGEN(WORD << i);
+}
+
+void CodeContainer::label(string lab)
+{
+    CGEN(lab << ":");
+}
+
+void CodeContainer::label(string lab, int index)
+{
+    CGEN(lab << index << ":");
+}
+
+void CodeContainer::word(int i)
+{
+    CGEN(WORD << i);
+}
+
+void CodeContainer::word(string s)
+{
+    CGEN(WORD << s);
+}
+
+void CodeContainer::align(int i)
+{
+    CGEN(ALIGN << i);
+}
+
+void CodeContainer::byte(int i)
+{
+    CGEN(BYTE << i);
+}
+
+void CodeContainer::ascii(string s)
+{
+    CGEN(ASCII << s);
 }

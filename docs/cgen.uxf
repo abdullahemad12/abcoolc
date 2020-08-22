@@ -373,8 +373,8 @@ m1=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>189</x>
-      <y>322</y>
+      <x>224</x>
+      <y>371</y>
       <w>91</w>
       <h>49</h>
     </coordinates>
@@ -401,25 +401,25 @@ label : string
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>273</x>
+      <x>308</x>
       <y>287</y>
-      <w>70</w>
-      <h>63</h>
+      <w>35</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>80.0;10.0;10.0;70.0</additional_attributes>
+    <additional_attributes>30.0;10.0;10.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>189</x>
-      <y>364</y>
-      <w>203</w>
-      <h>182</h>
+      <x>224</x>
+      <y>413</y>
+      <w>168</w>
+      <h>133</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=n</panel_attributes>
-    <additional_attributes>270.0;240.0;220.0;190.0;10.0;10.0</additional_attributes>
+    <additional_attributes>220.0;170.0;170.0;120.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -495,5 +495,115 @@ self</panel_attributes>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;360.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>119</x>
+      <y>231</y>
+      <w>126</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>StringObjectPrototype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>119</x>
+      <y>259</y>
+      <w>126</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>ObjectObjectPrototype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>119</x>
+      <y>287</y>
+      <w>126</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>IntObjectPrototype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>119</x>
+      <y>315</y>
+      <w>126</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>BoolObjectPrototype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>119</x>
+      <y>343</y>
+      <w>126</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>IOObjectPrototype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>238</x>
+      <y>231</y>
+      <w>91</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>238</x>
+      <y>245</y>
+      <w>91</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>238</x>
+      <y>259</y>
+      <w>91</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>238</x>
+      <y>273</y>
+      <w>91</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>238</x>
+      <y>287</y>
+      <w>91</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;90.0</additional_attributes>
   </element>
 </diagram>

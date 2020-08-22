@@ -24,9 +24,10 @@ using namespace std;
 // Statics
 /////////////////
 #define GLOBAL        "\t.globl\t"
-#define ALIGN         "\t.align\t2\n"
+#define ALIGN         "\t.align\t"
 #define WORD          "\t.word\t"
-
+#define ASCII         "\t.ascii\t"
+#define BYTE          "\t.byte\t"
 /////////////////
 // Opcodes
 /////////////////
@@ -73,9 +74,15 @@ class CodeContainer
         void move(Register* dest, Register* src);
         void addiu(Register* dst, Register* src, int imm);
         void sub(Register* dest, Register* op1, Register* op2);
-        void global_string_const(string label, string str);
-        void global_int_const(string label, int i);
-
+        void global_word(string label, string str);
+        void global_word(string label, int i);
+        void label(string lab);
+        void label(string lab, int index);
+        void ascii(string str);
+        void byte(int i);
+        void align(int i);
+        void word(int i);
+        void word(string s);
         void write_out();
 };
 

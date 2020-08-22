@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include "tree.h"
 #include "cool.h"
 #include "stringtab.h"
@@ -61,6 +62,7 @@ virtual void dump_with_types(ostream&, int) = 0;
 void cgen(ostream&);     			\
 void dump_with_types(ostream&, int); \
 private: \
+vector<Class_> roots;\
 Classes original_classes; \
 void install_basic_classes(); \
 void uninstall_basic_classes(); \
@@ -68,6 +70,7 @@ void create_inheritance_graph(); \
 void assign_classes_tags();
 
 #define Class__EXTRAS                   \
+string default_value = "0";				\
 virtual Symbol get_name() = 0;  	\
 virtual Symbol get_parent() = 0;    	\
 virtual Symbol get_filename() = 0;      \

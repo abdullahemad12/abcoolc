@@ -9,7 +9,7 @@
 
 using namespace std;
 
-
+#define DISPATCH_LABEL_SUFFIX "_dispTab"
 class MethodsTable
 {
     private:

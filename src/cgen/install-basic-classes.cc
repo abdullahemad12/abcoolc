@@ -41,7 +41,7 @@ void program_class::install_basic_classes()
 					       single_Features(method(type_name, nil_Formals(), Str, no_expr()))),
 			       single_Features(method(copyy, nil_Formals(), SELF_TYPE, no_expr()))),
 	       filename);
-
+    Object_class->default_value = NULL_VALUE;
     // 
     // The IO class inherits from Object. Its methods are
     //        out_string(Str) : SELF_TYPE       writes a string to the output
@@ -62,7 +62,7 @@ void program_class::install_basic_classes()
 					       single_Features(method(in_string, nil_Formals(), Str, no_expr()))),
 			       single_Features(method(in_int, nil_Formals(), Int, no_expr()))),
 	       filename);  
-
+    IO_class->default_value = NULL_VALUE;
     //
     // The Int class has no methods and only a single attribute, the
     // "val" for the integer. 
@@ -72,7 +72,7 @@ void program_class::install_basic_classes()
 	       Object,
 	       single_Features(attr(val, prim_slot, no_expr())),
 	       filename);
-
+    Int_class->default_value = ZERO;
     //
     // Bool also has only the "val" slot.
     //
@@ -107,7 +107,7 @@ void program_class::install_basic_classes()
 						      Str, 
 						      no_expr()))),
 	       filename);
-
+        Str_class->default_value = EMPTY_STRING;
         // append everything to the classes
         classes = append_Classes(single_Classes(Object_class), classes);
         classes = append_Classes(single_Classes(IO_class), classes);

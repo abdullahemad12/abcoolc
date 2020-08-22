@@ -10,8 +10,16 @@
 #ifndef BASIC_SYMBOLS_H
 #define BASIC_SYMBOLS_H
 
+#include <string>
 #include "cool-tree.h"
 
+using namespace std;
+
+#define EMPTY_STRING        "string_const_"
+#define NULL_VALUE          "0"
+#define FALSE               "bool_const0"
+#define TRUE                "bool_const1"
+#define ZERO                "int_const_0"
 static Symbol 
        arg,
        arg2,

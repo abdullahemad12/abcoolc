@@ -16,6 +16,8 @@ MethodsTable::MethodsTable()
 
 MethodsTable::MethodsTable(MethodsTable& parent_method_table, Class_ class_, Features features)
 {
+    string class_name(class_->get_name()->get_string());
+    label_attr = class_name + DISPATCH_LABEL_SUFFIX;
     int i;
     unordered_map<Symbol, int> map;
     

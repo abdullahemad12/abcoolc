@@ -1,0 +1,27 @@
+#1
+_program
+  #1
+  _class
+    Main
+    IO
+    "hello_world.cl"
+    (
+    #2
+    _method
+      main
+      SELF_TYPE
+      #3
+      _dispatch
+        #3
+        _object
+          self
+        : SELF_TYPE
+        out_string
+        (
+        #3
+        _string
+          "Hello, World.\n"
+        : String
+        )
+      : SELF_TYPE
+    )
