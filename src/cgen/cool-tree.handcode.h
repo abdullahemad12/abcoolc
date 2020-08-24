@@ -18,6 +18,7 @@ extern int yylineno;
 class ObjectPrototype;
 class method_class;
 class attr_class;
+class DefaultValue;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
@@ -62,44 +63,53 @@ virtual void dump_with_types(ostream&, int) = 0;
 void cgen(ostream&);     			\
 void dump_with_types(ostream&, int); \
 private: \
-vector<Class_> roots;\
+void initialize_default_values(); \
 Classes original_classes; \
 void install_basic_classes(); \
 void uninstall_basic_classes(); \
 void create_inheritance_graph(); \
-void assign_classes_tags();
+void create_init_methods(CodeContainer& ccon, MemoryManager& mem_man); \
 
 #define Class__EXTRAS                   \
-string default_value = "0";				\
+DefaultValue* default_value; 		\
 virtual Symbol get_name() = 0;  	\
 virtual Symbol get_parent() = 0;    	\
 virtual Symbol get_filename() = 0;      \
 virtual void dump_with_types(ostream&,int) = 0; \
 virtual void add_child_class(Class_ class_) = 0; \
-int tag;
+virtual Features get_features() = 0; \
+virtual void create_init_method(CodeContainer& ccon, MemoryManager& mem_man) = 0; \
 
 #define class__EXTRAS   				\
 Symbol get_name()   { return name; }		       \
 Symbol get_parent() { return parent; }     	       \
 Symbol get_filename() { return filename; }             \
 void add_child_class(Class_ class_);			\
+Features get_features() { return features; } \
+void create_init_method(CodeContainer& ccon, MemoryManager& mem_man);\
 void dump_with_types(ostream&,int);    \
-
+int maxmintmp(std::vector<attr_class*> attrs);
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0; 	\
 virtual void filter_feature(std::vector<attr_class*>& attrs) = 0; \
 virtual void filter_feature(std::vector<method_class*>& meths) = 0; \
-virtual Symbol get_name() = 0;
+virtual Symbol get_name() = 0; \
+virtual int mintmps() = 0;
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);    		\
 void filter_feature(std::vector<attr_class*>& attrs);	\
 void filter_feature(std::vector<method_class*>& meths);\
-Symbol get_name() { return name; }
+Symbol get_name() { return name; } \
+int mintmps();
+
 
 #define method_EXTRAS			\
-int mintmps();
+std::string label;				    
+
+#define attr_EXTRAS						\
+Symbol get_type() { return type_decl; }
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;	\
@@ -125,16 +135,16 @@ int mintmps();
 Symbol type;                                 \
 Symbol get_type() { return type; }           \
 Expression set_type(Symbol s) { type = s; return this; } \
-virtual void code(ostream&) = 0; \
 virtual void dump_with_types(ostream&,int) = 0;  \
 void dump_type(ostream&, int);               \
 Expression_class() { type = (Symbol) NULL; }  \
 virtual int mintmps() = 0;
 
 #define Expression_SHARED_EXTRAS           \
-void code(ostream&); 			   \
 void dump_with_types(ostream&,int);  \
 int mintmps();
+
+
 
 
 #endif

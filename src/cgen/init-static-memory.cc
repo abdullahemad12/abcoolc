@@ -16,26 +16,16 @@
 // object prototype
 //////////////////////////////////////////////////////////////
 
-void program_class::assign_classes_tags()
-{
-    initialize_constants();
-    int n = classes->len();
-    for(int i = 0; i < n; i++)
-        classes->nth(i)->tag = i;
-}
+
 void program_class::initialize_static_memory(StaticMemory& s_mem)
 {
-    assign_classes_tags();
+    initialize_constants();
     int n = classes->len();
     for(int i = 0; i < n; i++)
     {
         Class_ object_class = classes->nth(i);
         if(object_class->get_name() == Object)
-        {
-            ObjectPrototype empty_prot;
-            s_mem.add_object_prot(NULL, empty_prot); // because object has no parent
             object_class->initialize_static_memory(s_mem);
-        }
     }
 
 }
@@ -45,9 +35,9 @@ void class__class::initialize_static_memory(StaticMemory& s_mem)
     s_mem.add_const(filename->get_string());
     s_mem.add_const(name->get_string());
     // initialize this class first and its features
-    ObjectPrototype& parent_prot = s_mem.lookup_objectprot(parent);
-    ObjectPrototype obj_prot(this, features, parent_prot);
-    s_mem.add_object_prot(name, obj_prot);
+
+    s_mem.install_class(this);
+
     recurse_init_static_mem(s_mem);
     
     for(Class_ child : children_classes)

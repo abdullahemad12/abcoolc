@@ -1,6 +1,8 @@
-#include "code-container.h"
 #include <sstream>
 #include <string>
+#include <assert.h>
+#include "code-container.h"
+
 
 using namespace std;
 
@@ -28,9 +30,19 @@ void CodeContainer::lw(Register* dest, Register* addr_reg, int offset)
     CGEN(LW << dest << ", " << offset << "(" << addr_reg << ")");
 }
 
+void CodeContainer::li(Register* dest, int imm)
+{
+    CGEN(LI << dest << ", " << imm);
+}
+
 void CodeContainer::sw(Register* src, Register* addr_reg, int offset)
 {
     CGEN(SW << src << ", " << offset << "(" << addr_reg << ")");
+}
+
+void CodeContainer::la(Register* dest, string label)
+{
+    CGEN(LA << dest << ", " << label); 
 }
 
 void CodeContainer::move(Register* dest, Register* src)
@@ -48,18 +60,10 @@ void CodeContainer::addiu(Register* dest, Register* src, int immediate)
     CGEN(ADDIU << dest << ", " << src <<  ", " << immediate);
 }
 
-void CodeContainer::global_word(string label, string str)
-{
-    CGEN(GLOBAL << label);
-    CGEN(label << ":");
-    CGEN(WORD << str);
-}
 
-void CodeContainer::global_word(string label, int i)
+void CodeContainer::global(string label)
 {
     CGEN(GLOBAL << label);
-    CGEN(label << ":");
-    CGEN(WORD << i);
 }
 
 void CodeContainer::label(string lab)
@@ -92,7 +96,31 @@ void CodeContainer::byte(int i)
     CGEN(BYTE << i);
 }
 
+void  CodeContainer::text()
+{
+    CGEN(TEXT);
+}
+
 void CodeContainer::ascii(string s)
 {
-    CGEN(ASCII << s);
+    if(s.length() > 0)
+    {
+        CGEN(ASCII << "\"" << s << "\"");
+    }
+}
+
+void CodeContainer::jal(string label)
+{
+    CGEN(JAL << label);
+}
+
+void CodeContainer::data()
+{
+    CGEN(DATA);
+}
+
+void CodeContainer::jr(Register* reg)
+{
+    assert(reg->get_name() == "$ra");
+    CGEN(RET << reg);
 }

@@ -6,8 +6,7 @@
 #include <vector>
 #include <sstream>
 enum Basicness     {Basic, NotBasic};
-#define TRUE 1
-#define FALSE 0
+
 
 using namespace std;
 
@@ -30,19 +29,8 @@ private:
 
    void code_global_data();
    void code_global_text();
-   void code_bools(int);
    void code_select_gc();
    void code_constants();
 
-};
-
-class BoolConst 
-{
- private: 
-  int val;
- public:
-  BoolConst(int);
-  void code_def(ostream&, int boolclasstag);
-  void code_ref(ostream&) const;
 };
 

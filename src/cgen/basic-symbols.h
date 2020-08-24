@@ -10,16 +10,14 @@
 #ifndef BASIC_SYMBOLS_H
 #define BASIC_SYMBOLS_H
 
+#include <vector>
 #include <string>
 #include "cool-tree.h"
 
 using namespace std;
 
-#define EMPTY_STRING        "string_const_"
-#define NULL_VALUE          "0"
-#define FALSE               "bool_const0"
-#define TRUE                "bool_const1"
-#define ZERO                "int_const_0"
+static vector<Symbol> system_symbols;
+
 static Symbol 
        arg,
        arg2,
@@ -80,6 +78,8 @@ static void initialize_constants(void)
   substr      = idtable.add_string("substr");
   type_name   = idtable.add_string("type_name");
   val         = idtable.add_string("_val");
+
+  system_symbols = { prim_slot };
 }
 
 #endif /*BASIC_SYMBOLS_H*/

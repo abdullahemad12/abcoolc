@@ -20,6 +20,8 @@
 #include <vector>
 
 class StaticMemory;
+class MemoryManager;
+class CodeContainer;
 class Class__class;
 typedef Class__class* Class_;
 
@@ -67,6 +69,7 @@ public:
     virtual std::vector<tree_node*> get_children() = 0;
     virtual void propagate_containing_class(Class_ class_) = 0;
     virtual void initialize_static_memory(StaticMemory& s_mem) = 0;
+    virtual void cgen(CodeContainer& ccon, MemoryManager& mem_man) = 0;
     int get_line_number();
     tree_node *set(tree_node *);
 };
@@ -124,6 +127,7 @@ public:
 
 template <class Elem> class list_node : public tree_node {
 public:
+    void cgen(CodeContainer& ccon, MemoryManager& mem_man) { }
     void initialize_static_memory(StaticMemory& s_mem) {  }
     void propagate_containing_class(Class_ class_) {  }
     std::vector<tree_node*> get_children() { std::vector<tree_node*> vec; return vec; }

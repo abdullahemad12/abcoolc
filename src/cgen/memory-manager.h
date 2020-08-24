@@ -81,7 +81,7 @@ class MemoryManager
     };
 
     private: 
-      StaticMemory& static_memory;
+      StaticMemory& static_memory_attr;
       Scope* scope = NULL;
       MipsRegisters mregs;
     public:
@@ -150,6 +150,18 @@ class MemoryManager
         * @param CodeContainer& ccon
         */
        void push_ac(CodeContainer& ccon);
+
+      /**
+        * @brief return the accumulator register $a0
+        * @returns Register* $a0
+        */ 
+       Register* acc();
+
+      /**
+        * @brief returns the static memory
+        * @returns the static memory
+        */ 
+       StaticMemory& static_memory();
 };
 
 #endif /*MEMORY_MANAGER_H*/

@@ -11,8 +11,11 @@
 #include <iterator>
 #include "cool-tree.h"
 
+
 using namespace std;
 
+class StaticMemory;
+class CodeContainer;
 
 class AncestorsTable 
 {
@@ -29,6 +32,7 @@ class AncestorsTable
         string label();
         auto begin();
         auto end();
+        void cgen(CodeContainer& ccon, StaticMemory& stat_mem);
 };
 
 #endif /*ANCESTORS_TABLE_H*/

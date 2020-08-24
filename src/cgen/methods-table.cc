@@ -2,6 +2,7 @@
 #include <vector>
 #include "cool-tree.h"
 #include "methods-table.h"
+#include "emit.h"
 
 auto MethodsTable::begin() { return methods_attr.begin(); }
 auto MethodsTable::end() { return methods_attr.end(); }
@@ -17,7 +18,7 @@ MethodsTable::MethodsTable()
 MethodsTable::MethodsTable(MethodsTable& parent_method_table, Class_ class_, Features features)
 {
     string class_name(class_->get_name()->get_string());
-    label_attr = class_name + DISPATCH_LABEL_SUFFIX;
+    label_attr = DISPTABLE_LABEL(class_name);
     int i;
     unordered_map<Symbol, int> map;
     
@@ -29,7 +30,8 @@ MethodsTable::MethodsTable(MethodsTable& parent_method_table, Class_ class_, Fea
     }
 
     vector<method_class*> self_methods = extract_methods(features);
-    
+    label_self_methods(class_name, self_methods);
+
     for(method_class* method : self_methods)
     {
         if(map.find(method->get_name()) != map.end())
@@ -46,8 +48,21 @@ MethodsTable::MethodsTable(MethodsTable& parent_method_table, Class_ class_, Fea
 vector<method_class*> MethodsTable::extract_methods(Features features)
 {
     vector<method_class*> methods;
-    int n = 0;
+    int n = features->len();
     for(int i = 0; i < n; i++)
         features->nth(i)->filter_feature(methods);
     return methods;
+}
+
+void MethodsTable::label_self_methods(string class_name, vector<method_class*>& methods)
+{
+    for(auto meth : methods)
+        meth->label = METHOD_LABEL(class_name, meth->get_name()->get_string());
+}
+
+void MethodsTable::cgen(CodeContainer& ccon)
+{
+    ccon.label(label());
+    for(auto meth : methods_attr)
+        ccon.word(meth->label);
 }

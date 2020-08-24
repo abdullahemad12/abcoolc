@@ -11,12 +11,17 @@
 //     String constant           str_const<Symbol>
 //
 ///////////////////////////////////////////////////////////////////////
-
+#include <string>
 #include "stringtab.h"
+
+using namespace std;
 
 #define MAXINT  100000000    
 #define WORD_SIZE    4
 #define LOG_WORD_SIZE 2     // for logical shifts
+
+
+
 
 // Global names
 #define CLASSNAMETAB         "class_nameTab"
@@ -35,16 +40,31 @@
 #define INTCONST_PREFIX      "int_const"
 #define STRCONST_PREFIX      "str_const"
 #define BOOLCONST_PREFIX     "bool_const"
+#define ANCESTORS_SUFFIX     "_ancestors"
+#define DISPATCH_LABEL_SUFFIX "_dispTab"
+
+// Labels Generators
+#define OBJECT_PROTOTYPE_LABEL(class_name)    (class_name + PROTOBJ_SUFFIX)
+#define ANCESTORS_TABLE_LABEL(class_name)     (class_name + ANCESTORS_SUFFIX)
+#define INT_CONST_LABEL(i) (INTCONST_PREFIX + std::to_string(i))
+#define STR_CONST_LABEL(i) (STRCONST_PREFIX + std::to_string(i))
+
+// Default values
+#define EMPTY_STRING        "_empty_string"
+#define NULL_VALUE          "0"
+#define FALSE               BOOLCONST_PREFIX "0"
+#define TRUE                BOOLCONST_PREFIX "1"
+#define ZERO_INT            "zero_int"
 
 
 #define EMPTYSLOT            0
 #define LABEL                ":\n"
 
-#define STRINGNAME (char *) "String"
-#define INTNAME    (char *) "Int"
-#define BOOLNAME   (char *) "Bool"
-#define MAINNAME   (char *) "Main"
-
+#define STRINGNAME          "String"
+#define INTNAME             "Int"
+#define BOOLNAME            "Bool"
+#define MAINNAME            "Main"
+#define MAINMETHOD          "main"
 //
 // information about object headers
 //

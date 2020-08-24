@@ -28,6 +28,8 @@ using namespace std;
 #define WORD          "\t.word\t"
 #define ASCII         "\t.ascii\t"
 #define BYTE          "\t.byte\t"
+#define DATA          "\t.data\t"
+#define TEXT          "\t.text"
 /////////////////
 // Opcodes
 /////////////////
@@ -70,19 +72,24 @@ class CodeContainer
     public:
         CodeContainer(ostream& os);
         void lw(Register* dest, Register* addr_reg, int offset);
+        void la(Register* dest, string label);
+        void li(Register* dest, int imm);
         void sw(Register* src, Register* addr_reg, int offset);
         void move(Register* dest, Register* src);
         void addiu(Register* dst, Register* src, int imm);
         void sub(Register* dest, Register* op1, Register* op2);
-        void global_word(string label, string str);
-        void global_word(string label, int i);
+        void global(string label);
         void label(string lab);
         void label(string lab, int index);
         void ascii(string str);
         void byte(int i);
+        void text();
         void align(int i);
         void word(int i);
         void word(string s);
+        void jal(string label);
+        void jr(Register* reg);
+        void data();
         void write_out();
 };
 

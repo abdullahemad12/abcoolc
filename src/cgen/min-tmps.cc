@@ -3,6 +3,12 @@
 
 using namespace std;
 
+
+int attr_class::mintmps()
+{
+    return init->mintmps();
+}
+
 int method_class::mintmps()
 {
     return expr->mintmps();

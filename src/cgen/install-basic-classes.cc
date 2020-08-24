@@ -1,5 +1,9 @@
 #include "cool-tree.h"
 #include "basic-symbols.h"
+#include "default-value.h"
+
+#include "emit.h"
+
 //////////////////////////////////////
 // 
 //  Installing and uninstalling basic Classes
@@ -41,7 +45,7 @@ void program_class::install_basic_classes()
 					       single_Features(method(type_name, nil_Formals(), Str, no_expr()))),
 			       single_Features(method(copyy, nil_Formals(), SELF_TYPE, no_expr()))),
 	       filename);
-    Object_class->default_value = NULL_VALUE;
+    Object_class->default_value = new DefaultNull();
     // 
     // The IO class inherits from Object. Its methods are
     //        out_string(Str) : SELF_TYPE       writes a string to the output
@@ -62,7 +66,7 @@ void program_class::install_basic_classes()
 					       single_Features(method(in_string, nil_Formals(), Str, no_expr()))),
 			       single_Features(method(in_int, nil_Formals(), Int, no_expr()))),
 	       filename);  
-    IO_class->default_value = NULL_VALUE;
+    IO_class->default_value = new DefaultNull();
     //
     // The Int class has no methods and only a single attribute, the
     // "val" for the integer. 
@@ -72,13 +76,15 @@ void program_class::install_basic_classes()
 	       Object,
 	       single_Features(attr(val, prim_slot, no_expr())),
 	       filename);
-    Int_class->default_value = ZERO;
+
+    Int_class->default_value = new DefaultValueLabel(ZERO_INT);
     //
     // Bool also has only the "val" slot.
     //
     Class_ Bool_class =
 	class_(Bool, Object, single_Features(attr(val, prim_slot, no_expr())),filename);
-
+    
+    Bool_class->default_value = new DefaultValueLabel(FALSE);
     //
     // The class Str has a number of slots and operations:
     //       val                                  the length of the string
@@ -107,7 +113,8 @@ void program_class::install_basic_classes()
 						      Str, 
 						      no_expr()))),
 	       filename);
-        Str_class->default_value = EMPTY_STRING;
+
+        Str_class->default_value = new DefaultValueLabel(EMPTY_STRING);
         // append everything to the classes
         classes = append_Classes(single_Classes(Object_class), classes);
         classes = append_Classes(single_Classes(IO_class), classes);

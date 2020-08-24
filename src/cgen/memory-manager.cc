@@ -151,7 +151,7 @@ void MemoryManager::Scope::bind_mem_slot(Symbol identifier, MemSlot* slot)
 /////////////////////////////////////////////////
 
 
-MemoryManager::MemoryManager(StaticMemory& static_memory) : static_memory(static_memory)
+MemoryManager::MemoryManager(StaticMemory& static_memory) : static_memory_attr(static_memory)
 {
 
 }
@@ -161,7 +161,7 @@ void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRe
     assert(scope == NULL);
     Register *sp, *fp, *ra, *acc;
     int ntmps;
-    ObjectPrototype& obj_prot = static_memory.lookup_objectprot(class_->get_name());
+    ObjectPrototype& obj_prot = static_memory_attr.lookup_objectprot(class_->get_name());
 
     sp = mregs.sp();
     fp = mregs.fp();
@@ -204,10 +204,12 @@ void MemoryManager::exit_scope(CodeContainer& ccon)
     ccon.addiu(mregs.sp(), mregs.fp(), (4 * nargs) + (4 * ntmps) + 8);
 
     // restore $ra
-    scope->ar_ra->load(ccon);
+    Register* ra = scope->ar_ra->load(ccon);
 
     // restore $fp
     scope->ar_old_fp->load(ccon);
+
+    ccon.jr(ra);
 }
 
 MemSlot* MemoryManager::memalloc()
@@ -261,3 +263,7 @@ void MemoryManager::push_ac(CodeContainer& ccon)
     ccon.sw(mregs.acc(), mregs.sp(), 0);
     ccon.addiu(mregs.sp(), mregs.sp(), -4);
 }
+
+Register* MemoryManager::acc() { return mregs.acc(); }
+
+StaticMemory& MemoryManager::static_memory() { return static_memory_attr; }

@@ -1,6 +1,8 @@
 #include <string>
 #include "ancestors-table.h"
-#include "labels.h"
+#include "emit.h"
+#include "static-memory.h"
+
 
 using namespace std;
 
@@ -21,4 +23,14 @@ AncestorsTable::AncestorsTable(AncestorsTable& parent_table, Class_ myself)
 AncestorsTable::AncestorsTable()
 {
     label_attr = "empty_ancestor";
+}
+
+void AncestorsTable::cgen(CodeContainer& ccon, StaticMemory& stat_mem)
+{
+    ccon.label(label());
+    for(Class_ ancestor : ancestors_attr)
+    {
+        ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(ancestor->get_name());
+        ccon.word(obj_prot.tag());
+    }
 }

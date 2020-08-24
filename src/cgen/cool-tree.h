@@ -137,6 +137,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Program_SHARED_EXTRAS
@@ -167,6 +168,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Class__SHARED_EXTRAS
@@ -196,6 +198,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Feature_SHARED_EXTRAS
@@ -223,6 +226,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Feature_SHARED_EXTRAS
@@ -248,6 +252,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Formal_SHARED_EXTRAS
@@ -275,6 +280,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Case_SHARED_EXTRAS
@@ -300,6 +306,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -329,6 +336,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -356,6 +364,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -383,6 +392,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -408,6 +418,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -433,6 +444,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -456,6 +468,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -485,6 +498,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -510,6 +524,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -535,6 +550,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -560,6 +576,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -585,6 +602,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -608,6 +626,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -633,6 +652,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -658,6 +678,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -683,6 +704,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -706,6 +728,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -729,6 +752,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -752,6 +776,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -775,6 +800,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -798,6 +824,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -821,6 +848,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -842,6 +870,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS
@@ -865,6 +894,7 @@ public:
    void propagate_containing_class(Class_ class_);
    std::vector<tree_node*> get_children();
    void initialize_static_memory(StaticMemory& s_mem);
+   void cgen(CodeContainer& ccon, MemoryManager& mem_man);
    void dump(ostream& stream, int n);
 
 #ifdef Expression_SHARED_EXTRAS

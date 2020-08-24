@@ -10,78 +10,69 @@
 
 
 #include <vector>
+#include "code-container.h"
 #include "ancestors-table.h"
 #include "methods-table.h"
+
+#include "emit.h"
 
 #define OBJ_HEADER_SIZE 3
 #define INT_OBJ_SIZE 4
 
-
 using namespace std;
 
+class StaticMemory;
+class MemoryManager;
+class Register;
+class DefaultValue;
 
 class ObjectPrototype
 {
     private:
+      string name_attr;
       string label_attr;
-      int tag_attr;
+      int tag_attr = 0;
       vector<attr_class*> attrs_attr;
+      vector<attr_class*> self_attrs_attr;
       AncestorsTable ancestors_table_attr;
       MethodsTable methods_table_attr;
       int depth_attr;
 
     protected:
-      string default_value_attr = "0";
+      DefaultValue* default_value_attr;
     
     public:
       /**
         * @brief creates an empty object with tag -1 and label empty
         */ 
       ObjectPrototype();
+      virtual ~ObjectPrototype();
       /**
         * @brief instantiates an object prototype for the given class 
         * @param Class_ the class which this prototype belongs to
         * @param Features the features of the class
         * @param parent_obj_prot the object prototype of the parent
         */ 
-      ObjectPrototype(Class_ class_, Features features, ObjectPrototype& parent_obj_prot);
+      ObjectPrototype(Class_ class_, int tag, ObjectPrototype& parent_obj_prot);
 
+      string name();
       string label();
       int tag();
       int depth();
       vector<attr_class*> attributes();
-      
+      vector<attr_class*> self_attributes();
       MethodsTable& methods_table();
       AncestorsTable& ancestors_table();
-      string default_value();
-
-      virtual void write_out(CodeContainer& ccon);
+      DefaultValue* default_value();
+      
+      virtual void cgen(CodeContainer& ccon, StaticMemory& stat_mem);
 };
 
-class ObjectObjectPrototype : public ObjectPrototype
+class SystemObjectPrototype : public ObjectPrototype
 {
-  ObjectObjectPrototype(Class_ class_, ObjectPrototype& parent_obj_prot);
+  public:
+    void cgen(CodeContainer& ccon, StaticMemory& stat_mem);
 };
-class StringObjectPrototype : public ObjectPrototype
-{
-  StringObjectPrototype(Class_ class_, ObjectPrototype& parent_obj_prot);
-};
-
-class IntObjectPrototype : public ObjectPrototype
-{
-  IntObjectPrototype(Class_ class_, ObjectPrototype& parent_obj_prot);
-};
-
-class BoolObjectPrototype : public ObjectPrototype
-{
-  BoolObjectPrototype(Class_ class_, ObjectPrototype& parent_obj_prot);
-};
-
-class IOObjectPrototype : public ObjectPrototype
-{
-  IOObjectPrototype(Class_ class_, ObjectPrototype& parent_obj_prot);
-};
-
 
 #endif /*OBJECT_PROTOTYPE_H*/
 

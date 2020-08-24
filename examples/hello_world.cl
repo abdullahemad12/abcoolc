@@ -3,3 +3,7 @@ class Main inherits IO {
 	out_string("Hello, World.\n")
    };
 };
+
+class A {
+	a() : Int { 0 };
+};
