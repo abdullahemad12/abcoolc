@@ -210,6 +210,8 @@ void MemoryManager::exit_scope(CodeContainer& ccon)
     scope->ar_old_fp->load(ccon);
 
     ccon.jr(ra);
+    delete scope;
+    scope = NULL;
 }
 
 MemSlot* MemoryManager::memalloc()

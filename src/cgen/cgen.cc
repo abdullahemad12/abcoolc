@@ -72,7 +72,7 @@ void program_class::cgen(ostream &os)
   MemoryManager memory_manager(static_memory);
   create_init_methods(ccon, memory_manager);
   cgen(ccon, memory_manager);
-  
+
   ccon.write_out();
 }
 

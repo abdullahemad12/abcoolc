@@ -31,7 +31,6 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
     StaticMemory& stat_mem =  mem_man.static_memory();
     ObjectPrototype& prot = stat_mem.lookup_objectprot(name);
     vector<attr_class*> attrs = prot.self_attributes();
-    parent_init = string(parent->get_string()) + CLASSINIT_SUFFIX;
     init_name = string(name->get_string()) + CLASSINIT_SUFFIX;
     ntmps = maxmintmp(attrs);
 
@@ -40,7 +39,11 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
     ActivationRecord ar(nil_Formals(), ntmps);
     mem_man.enter_scope(ccon, this, ar);
 
-    ccon.jal(parent_init);
+    if(parent != NULL)
+    {
+        parent_init = string(parent->get_string()) + CLASSINIT_SUFFIX;
+        ccon.jal(parent_init);
+    }
 
     for(auto& attr : attrs)
         attr->cgen(ccon, mem_man);
