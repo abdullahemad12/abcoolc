@@ -249,9 +249,9 @@ void StaticMemory::cgen_global_text(CodeContainer& ccon)
     ccon.global(HEAP_START);
     ccon.label(HEAP_START);
     ccon.text();
-    ccon.label(string(MAINNAME) + CLASSINIT_SUFFIX);
-    ccon.label(string(INTNAME) + CLASSINIT_SUFFIX);
-    ccon.label(string(STRINGNAME) + CLASSINIT_SUFFIX);
-    ccon.label(string(BOOLNAME) + CLASSINIT_SUFFIX);
-    ccon.label(string(MAINNAME) + METHOD_SEP + MAINMETHOD);
+    ccon.global(string(MAINNAME) + CLASSINIT_SUFFIX);
+    ccon.global(string(INTNAME) + CLASSINIT_SUFFIX);
+    ccon.global(string(STRINGNAME) + CLASSINIT_SUFFIX);
+    ccon.global(string(BOOLNAME) + CLASSINIT_SUFFIX);
+    ccon.global(string(MAINNAME) + METHOD_SEP + MAINMETHOD);
 }
