@@ -248,6 +248,7 @@ void StaticMemory::cgen_global_text(CodeContainer& ccon)
 {
     ccon.global(HEAP_START);
     ccon.label(HEAP_START);
+    ccon.word(0);
     ccon.text();
     ccon.global(string(MAINNAME) + CLASSINIT_SUFFIX);
     ccon.global(string(INTNAME) + CLASSINIT_SUFFIX);
