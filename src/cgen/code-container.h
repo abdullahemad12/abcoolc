@@ -20,46 +20,6 @@
 
 using namespace std;
 
-/////////////////
-// Statics
-/////////////////
-#define GLOBAL        "\t.globl\t"
-#define ALIGN         "\t.align\t"
-#define WORD          "\t.word\t"
-#define ASCII         "\t.ascii\t"
-#define BYTE          "\t.byte\t"
-#define DATA          "\t.data\t"
-#define TEXT          "\t.text"
-/////////////////
-// Opcodes
-/////////////////
-#define JALR  "\tjalr\t"  
-#define JAL   "\tjal\t"                 
-#define RET   "\tjr\t" RA "\t"
-
-#define SW    "\tsw\t"
-#define LW    "\tlw\t"
-#define LI    "\tli\t"
-#define LA    "\tla\t"
-
-#define MOVE  "\tmove\t"
-#define NEG   "\tneg\t"
-#define ADD   "\tadd\t"
-#define ADDI  "\taddi\t"
-#define ADDU  "\taddu\t"
-#define ADDIU "\taddiu\t"
-#define DIV   "\tdiv\t"
-#define MUL   "\tmul\t"
-#define SUB   "\tsub\t"
-#define SLL   "\tsll\t"
-#define BEQZ  "\tbeqz\t"
-#define BRANCH   "\tb\t"
-#define BEQ      "\tbeq\t"
-#define BNE      "\tbne\t"
-#define BLEQ     "\tble\t"
-#define BLT      "\tblt\t"
-#define BGT      "\tbgt\t"
-
 
 class CodeContainer 
 {

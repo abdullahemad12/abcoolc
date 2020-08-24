@@ -22,6 +22,17 @@ using namespace std;
 
 
 
+/////////////////
+// Statics
+/////////////////
+#define GLOBAL        "\t.globl\t"
+#define ALIGN         "\t.align\t"
+#define WORD          "\t.word\t"
+#define ASCII         "\t.ascii\t"
+#define BYTE          "\t.byte\t"
+#define DATA          "\t.data\t"
+#define TEXT          "\t.text"
+
 
 // Global names
 #define CLASSNAMETAB         "class_nameTab"
@@ -99,7 +110,7 @@ using namespace std;
 //
 #define JALR  "\tjalr\t"  
 #define JAL   "\tjal\t"                 
-#define RET   "\tjr\t" RA "\t"
+#define RET   "\tjr\t"
 
 #define SW    "\tsw\t"
 #define LW    "\tlw\t"

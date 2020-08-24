@@ -2,7 +2,7 @@
 #include <string>
 #include <assert.h>
 #include "code-container.h"
-
+#include "emit.h"
 
 using namespace std;
 
@@ -121,6 +121,6 @@ void CodeContainer::data()
 
 void CodeContainer::jr(Register* reg)
 {
-    assert(reg->get_name() == "$ra");
+    assert(reg->get_name() == RA);
     CGEN(RET << reg);
 }

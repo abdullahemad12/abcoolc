@@ -123,7 +123,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
 void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, MemoryManager::MipsRegisters& mregs)
 {
     vector<attr_class*> attrs = obj_prot.attributes();
-    ar_self = new RamMemLoc(mregs.fp(), mregs.acc(), 4 * ar.ntmps() + 4);
+    ar_self = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * ar.ntmps() + 4);
 
     int i = 0;
     for(auto attr : attrs)

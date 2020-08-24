@@ -19,6 +19,7 @@ class MethodsTable
     private:
         string label_attr;
         vector<method_class*> methods_attr;
+        vector<method_class*> self_methods_attr;
         vector<method_class*> extract_methods(Features features);
         void label_self_methods(string class_name, vector<method_class*>& methods);
     public:
@@ -27,6 +28,7 @@ class MethodsTable
         void cgen(CodeContainer& ccon);
         string label();
         vector<method_class*> methods();
+        vector<method_class*> self_methods();
         auto begin();
         auto end();
 };

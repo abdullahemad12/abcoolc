@@ -71,8 +71,8 @@ void program_class::cgen(ostream &os)
   static_memory.cgen(ccon);
   MemoryManager memory_manager(static_memory);
   create_init_methods(ccon, memory_manager);
+  uninstall_basic_classes();
   cgen(ccon, memory_manager);
-
   ccon.write_out();
 }
 
@@ -93,12 +93,19 @@ void program_class::initialize_default_values()
 /////////////////////////////////////////////////////////////////
 void program_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  int n = classes->len();
+  for(int i = 0; i < n; i++)
+    classes->nth(i)->cgen(ccon, mem_man);
 }
 
 void class__class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  // generate code for the local non-inherited methods only
+  ObjectPrototype& prot = mem_man.static_memory().lookup_objectprot(name);
+  vector<method_class*> methods = prot.methods_table().self_methods();
+  int n = features->len();
+  for(method_class* method : methods)
+    method->cgen(ccon, mem_man);
 }
 
 void method_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -108,7 +115,18 @@ void method_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void attr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  StaticMemory& stat_mem = mem_man.static_memory();
+
+  ObjectPrototype& type_proto = stat_mem.lookup_objectprot(type_decl);
+  Register* acc = type_proto.default_value()->load_value(ccon, mem_man);
+
+  assert(acc->get_name() == ACC);
+  
+  init->cgen(ccon, mem_man);
+
+  MemSlot* attr_loc = mem_man.lookup_identifier(name);
+  attr_loc->save(ccon, acc);
+
 }
 
 void formal_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)

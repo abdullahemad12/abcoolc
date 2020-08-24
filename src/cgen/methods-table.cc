@@ -8,7 +8,7 @@ auto MethodsTable::begin() { return methods_attr.begin(); }
 auto MethodsTable::end() { return methods_attr.end(); }
 string MethodsTable::label() { return label_attr; }
 vector<method_class*> MethodsTable::methods() { return methods_attr; }
-
+vector<method_class*> MethodsTable::self_methods() { return self_methods_attr; }
 
 MethodsTable::MethodsTable() 
 {
@@ -29,10 +29,10 @@ MethodsTable::MethodsTable(MethodsTable& parent_method_table, Class_ class_, Fea
         methods_attr.push_back(method);
     }
 
-    vector<method_class*> self_methods = extract_methods(features);
-    label_self_methods(class_name, self_methods);
+    self_methods_attr = extract_methods(features);
+    label_self_methods(class_name, self_methods_attr);
 
-    for(method_class* method : self_methods)
+    for(method_class* method : self_methods_attr)
     {
         if(map.find(method->get_name()) != map.end())
         {
@@ -66,3 +66,4 @@ void MethodsTable::cgen(CodeContainer& ccon)
     for(auto meth : methods_attr)
         ccon.word(meth->label);
 }
+

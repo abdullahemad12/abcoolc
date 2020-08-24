@@ -72,6 +72,7 @@ void StaticMemory::cgen(CodeContainer& ccon)
     cgen_class_table(ccon);
     cgen_object_prototypes(ccon);
     cgen_global_text(ccon);
+    install_system_prototypes();
 }
 
 string StaticMemory::lookup_label(string str_const)
