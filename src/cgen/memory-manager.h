@@ -29,6 +29,7 @@
 
 using namespace std;
 
+#define GEN_LABEL(ctr) "gen_label" + to_string(ctr)
 class MemoryManager 
 {
   // use this to store the registers and pass it to the scope
@@ -42,8 +43,10 @@ class MemoryManager
         Register* sp_reg;
         Register* fp_reg;
         Register* t0_reg;
+        Register* t1_reg;
         Register* ra_reg;
         Register* a0_reg;
+        Register* zero_reg;
       public:
         /**
           * Gets a list of persistant registers that are not used by 
@@ -51,9 +54,11 @@ class MemoryManager
           * i.e: non-scratch registers
           */  
         vector<Register*> pregs();
+        Register* zero();
         Register* sp();
         Register* fp();
         Register* t0();
+        Register* t1();
         Register* ra();
         Register* acc();
     };
@@ -84,6 +89,8 @@ class MemoryManager
       StaticMemory& static_memory_attr;
       Scope* scope = NULL;
       MipsRegisters mregs;
+      int labels_ctr = 0;
+      void push_register(CodeContainer& ccon, Register* reg);
     public:
       MemoryManager(const MemoryManager&) = delete;
       MemoryManager(StaticMemory& static_memory);
@@ -149,19 +156,36 @@ class MemoryManager
         * @brief pushes the AC register onto the stack
         * @param CodeContainer& ccon
         */
-       void push_ac(CodeContainer& ccon);
+       void push_acc(CodeContainer& ccon);
+
+      /**
+        * @brief pushes the frame pointer onto the stack
+        * @param CodeContainer& ccon
+        */ 
+       void push_fp(CodeContainer& ccon);
 
       /**
         * @brief return the accumulator register $a0
         * @returns Register* $a0
+        * @warning no guarantees are made on these registers
         */ 
        Register* acc();
+       Register* tmp();
+       Register* zero();
+       MemSlot* self();
 
       /**
         * @brief returns the static memory
         * @returns the static memory
         */ 
        StaticMemory& static_memory();
+
+      /**
+        * @brief generates a new label that has not been used before
+        * @returns string the generated label
+        */ 
+       string gen_label();
+
 };
 
 #endif /*MEMORY_MANAGER_H*/

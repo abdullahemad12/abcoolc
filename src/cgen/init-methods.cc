@@ -27,7 +27,7 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
     int ntmps;
     string parent_init;
     string init_name;
-
+    
     StaticMemory& stat_mem =  mem_man.static_memory();
     ObjectPrototype& prot = stat_mem.lookup_objectprot(name);
     vector<attr_class*> attrs = prot.self_attributes();
@@ -42,6 +42,7 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
     if(parent != NULL)
     {
         parent_init = string(parent->get_string()) + CLASSINIT_SUFFIX;
+        mem_man.push_fp(ccon);
         ccon.jal(parent_init);
     }
 

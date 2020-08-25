@@ -10,6 +10,7 @@ string MethodsTable::label() { return label_attr; }
 vector<method_class*> MethodsTable::methods() { return methods_attr; }
 vector<method_class*> MethodsTable::self_methods() { return self_methods_attr; }
 
+
 MethodsTable::MethodsTable() 
 {
     label_attr = "empty";
@@ -43,6 +44,7 @@ MethodsTable::MethodsTable(MethodsTable& parent_method_table, Class_ class_, Fea
             methods_attr.push_back(method);
         }
     }
+    assign_offsets();
 }
 
 vector<method_class*> MethodsTable::extract_methods(Features features)
@@ -67,3 +69,24 @@ void MethodsTable::cgen(CodeContainer& ccon)
         ccon.word(meth->label);
 }
 
+void MethodsTable::assign_offsets()
+{
+    int i = 0;
+    for(auto meth : methods_attr)
+        meth_offset[meth->get_name()] = i++;
+}
+int MethodsTable::operator[](Symbol method_name) 
+{ 
+    assert(meth_offset.find(method_name) != meth_offset.end());
+    assert(meth_offset[method_name] >= 0);
+    assert(meth_offset[method_name] < (int)methods_attr.size());
+    return meth_offset[method_name];
+}
+
+
+string MethodsTable::lookup_label(Symbol method_name)
+{
+    int index = (*this)[method_name];
+    assert(methods_attr[index]->label != "");
+    return methods_attr[index]->label;
+}

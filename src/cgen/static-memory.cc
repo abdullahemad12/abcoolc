@@ -5,8 +5,10 @@
 #include "cgen_gc.h"
 #include "emit.h"
 
+
 using namespace std;
 
+static string escape_string(string str);
 static char *gc_init_names[] =
   { "_NoGC_Init", "_GenGC_Init", "_ScnGC_Init" };
 static char *gc_collect_names[] =
@@ -222,7 +224,7 @@ void StaticMemory::cgen_string_consts(CodeContainer& ccon)
         float size = ceil(bytes / 4.0);
         cgen_object_header(ccon, entry.second, string_prot.tag(), size, string_prot.methods_table().label());
         ccon.word(lookup_label(entry.first.length()));
-        ccon.ascii(entry.first);
+        ccon.ascii(escape_string(entry.first));
         ccon.byte(0);
         ccon.align(2);
     }
@@ -256,4 +258,26 @@ void StaticMemory::cgen_global_text(CodeContainer& ccon)
     ccon.global(string(STRINGNAME) + CLASSINIT_SUFFIX);
     ccon.global(string(BOOLNAME) + CLASSINIT_SUFFIX);
     ccon.global(string(MAINNAME) + METHOD_SEP + MAINMETHOD);
+}
+
+
+static string escape_char(char c)
+{
+    string s(1, c);
+    switch(c)
+    {
+        case '\n': return "\\n";
+        case '\b': return "\\b";
+        case '\f': return "\\f";
+        case '\t': return "\\t";
+        case '\0': return "\\0";
+        default  : return s; 
+    }
+}
+static string escape_string(string str)
+{
+    string ret;
+    for(unsigned int i = 0; i < str.length(); i++)
+        ret += escape_char(str[i]);
+    return ret;
 }

@@ -44,7 +44,10 @@ static Symbol
        str_field,
        substr,
        type_name,
-       val;
+       val,
+       obj_tag,
+       obj_size,
+       obj_disp_ptr;
 //
 // Initializing the predefined symbols.
 //
@@ -78,7 +81,9 @@ static void initialize_constants(void)
   substr      = idtable.add_string("substr");
   type_name   = idtable.add_string("type_name");
   val         = idtable.add_string("_val");
-
+  obj_tag     = idtable.add_string("_obj_tag");
+  obj_size    = idtable.add_string("_obj_size");
+  obj_disp_ptr= idtable.add_string("_obj_disp_ptr");
   system_symbols = { prim_slot };
 }
 

@@ -33,6 +33,11 @@ using namespace std;
 #define DATA          "\t.data\t"
 #define TEXT          "\t.text"
 
+// cool system procedures
+#define EQUALITY_TEST   "equality_test"
+#define DISPATCH_ABORT  "_dispatch_abort"
+#define CASE_ABORT      "_case_abort"
+#define CASE_ABORT_VOID "_case_abort2"
 
 // Global names
 #define CLASSNAMETAB         "class_nameTab"
@@ -94,16 +99,34 @@ using namespace std;
 //
 // register names
 //
-#define ZERO "$zero"		// Zero register 
+#define ZERO "$0"		// Zero register 
 #define ACC  "$a0"		// Accumulator 
 #define A1   "$a1"		// For arguments to prim funcs 
+#define A2   "$a2"      // $a2 Register
+#define A3   "$a3"      // $a3 Register
 #define SELF "$s0"		// Ptr to self (callee saves) 
+#define T0   "$t0"      // Temporary 0
 #define T1   "$t1"		// Temporary 1 
 #define T2   "$t2"		// Temporary 2 
 #define T3   "$t3"		// Temporary 3 
+#define T4   "$t4"      // Temporary 4
+#define T5   "$t5"      // Temporary 5
+#define T6   "$t6"      // Temporary 6
+#define T7   "$t7"      // Temporary 7
+#define T8   "$t8"      // Temporary 8
+#define T9   "$t9"      // Temporary 9
+#define S0   "$s0"      // Saved 0
+#define S1   "$s1"      // Saved 1
+#define S2   "$s2"      // Saved 2
+#define S3   "$s3"      // Saved 3
+#define S4   "$s4"      // Saved 4
+#define S5   "$s5"      // Saved 5
+#define S6   "$s6"      // Saved 6
+#define S7   "$s7"      // Saved 7
 #define SP   "$sp"		// Stack pointer 
 #define FP   "$fp"		// Frame pointer 
 #define RA   "$ra"		// Return address 
+
 
 //
 // Opcodes

@@ -20,9 +20,12 @@ MemoryManager::MipsRegisters::MipsRegisters()
     vector<string> pregs = {T5, T6, T7, T8, T9, S1, S2, S3, S4, S5, S6};
     for(string reg : pregs) 
         pregv.push_back(new Register(reg));
+
+    zero_reg = new Register(ZERO);
     sp_reg = new Register(SP);
     fp_reg = new Register(FP);
     t0_reg = new Register(T0);
+    t1_reg = new Register(T1);
     ra_reg = new Register(RA);
     a0_reg = new Register(ACC);  
 }
@@ -34,17 +37,20 @@ MemoryManager::MipsRegisters::~MipsRegisters()
     delete sp_reg;
     delete fp_reg;
     delete t0_reg;
+    delete t1_reg;
     delete ra_reg;
     delete a0_reg;
+    delete zero_reg;
 }
 
 vector<Register*> MemoryManager::MipsRegisters::pregs() { return pregv; }
 Register* MemoryManager::MipsRegisters::sp() { return sp_reg; }
 Register* MemoryManager::MipsRegisters::fp()  { return fp_reg; }
 Register* MemoryManager::MipsRegisters::t0() { return t0_reg; }
+Register* MemoryManager::MipsRegisters::t1() { return t1_reg; }
 Register* MemoryManager::MipsRegisters::ra() { return ra_reg; }
 Register* MemoryManager::MipsRegisters::acc() { return a0_reg; }
-
+Register* MemoryManager::MipsRegisters::zero() { return zero_reg; }
 ///////////////////////////////////
 //
 // Code for Scope class
@@ -122,16 +128,24 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
 
 void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, MemoryManager::MipsRegisters& mregs)
 {
+    MemSlot* location;
     vector<attr_class*> attrs = obj_prot.attributes();
     ar_self = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * ar.ntmps() + 4);
 
     int i = 0;
     for(auto attr : attrs)
     {
-        MemSlot* location = new SelfAttribute(ar_self, (i * 4) + 12);
+        location = new SelfAttribute(ar_self, (i * 4) + 12);
         bind_mem_slot(attr->get_name(), location);
         ++i;
     }
+
+    location = new SelfAttribute(ar_self, 0);
+    bind_mem_slot(obj_tag, location);
+    location = new SelfAttribute(ar_self, 4);
+    bind_mem_slot(obj_size, location);
+    location = new SelfAttribute(ar_self, 8);
+    bind_mem_slot(obj_disp_ptr, location);
 }
 
 void MemoryManager::Scope::bind_mem_slot(Symbol identifier, MemSlot* slot)
@@ -153,7 +167,7 @@ void MemoryManager::Scope::bind_mem_slot(Symbol identifier, MemSlot* slot)
 
 MemoryManager::MemoryManager(StaticMemory& static_memory) : static_memory_attr(static_memory)
 {
-
+    initialize_constants();
 }
 
 void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRecord& ar)
@@ -260,12 +274,30 @@ void MemoryManager::remove_identifier(Symbol name)
 }
 
 
-void MemoryManager::push_ac(CodeContainer& ccon)
+void MemoryManager::push_register(CodeContainer& ccon, Register* reg)
 {
-    ccon.sw(mregs.acc(), mregs.sp(), 0);
+    ccon.sw(reg, mregs.sp(), 0);
     ccon.addiu(mregs.sp(), mregs.sp(), -4);
 }
 
+void MemoryManager::push_acc(CodeContainer& ccon)
+{
+    push_register(ccon, mregs.acc());
+}
+
+void MemoryManager::push_fp(CodeContainer& ccon)
+{
+    push_register(ccon, mregs.fp());
+}
+
+string MemoryManager::gen_label() { return GEN_LABEL(labels_ctr++); }
+
 Register* MemoryManager::acc() { return mregs.acc(); }
+
+Register* MemoryManager::tmp() { return mregs.t1(); }
+
+Register* MemoryManager::zero() { return mregs.zero(); }
+
+MemSlot* MemoryManager::self() { return scope->ar_self; }
 
 StaticMemory& MemoryManager::static_memory() { return static_memory_attr; }

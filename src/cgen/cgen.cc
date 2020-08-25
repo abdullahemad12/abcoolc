@@ -31,6 +31,9 @@
 
 extern void emit_string_constant(ostream& str, char *s);
 extern int cgen_debug;
+static void eval_and_push_actual(CodeContainer& ccon, MemoryManager& mem_man, Expressions actual);
+static void handle_dispatch_on_void(CodeContainer& ccon, MemoryManager& mem_man, 
+                                      string file_name, int line_no);
 
 //////////////////////////////////////////////////////////////////////////
 // Three symbols from the semantic analyzer (semant.cc) are used.
@@ -62,6 +65,7 @@ static char *gc_collect_names[] =
 void program_class::cgen(ostream &os) 
 {
   initialize_constants();
+  propagate_containing_class(NULL);
   initialize_default_values();
   CodeContainer ccon(os);
   install_basic_classes();
@@ -89,7 +93,9 @@ void program_class::initialize_default_values()
 //
 // The implementation of the actual code generation of methods 
 // and their expressions. Main theme is to recursively generate
-// code for subexpressions the generate code the expression
+// code for subexpressions the generate code the expression. 
+// Important invariant is that the result of evaluating an 
+// expression is stored in the accumelator ($a0)
 /////////////////////////////////////////////////////////////////
 void program_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
@@ -110,7 +116,12 @@ void class__class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void method_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  ccon.label(label);
+  ActivationRecord ar(formals, mintmps());
+  mem_man.enter_scope(ccon, containing_class, ar);
+  expr->cgen(ccon, mem_man);
+  mem_man.exit_scope(ccon);
+
 }
 
 void attr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -136,17 +147,64 @@ void formal_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void assign_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  expr->cgen(ccon, mem_man);
+  MemSlot* attr_loc = mem_man.lookup_identifier(name);
+  attr_loc->save(ccon, mem_man.acc());
 }
 
 void static_dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  int n, method_offset;
+
+  StaticMemory& stat_mem = mem_man.static_memory();
+  ObjectPrototype& prot = stat_mem.lookup_objectprot(type_name);
+  MethodsTable& meth_tab = prot.methods_table();
+  string file_name(containing_class->get_filename()->get_string());
+  
+  mem_man.push_fp(ccon);
+
+  eval_and_push_actual(ccon, mem_man, actual);
+
+  expr->cgen(ccon, mem_man);
+  handle_dispatch_on_void(ccon, mem_man, file_name, line_number);
+
+  // call method if not void 
+  ccon.jal(meth_tab.lookup_label(name));
+
 }
 
 void dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  int n, method_offset;
+  Register *tmp, *acc;
+
+  // resolve class
+  Symbol class_name = expr->type;
+  if(class_name == SELF_TYPE)
+    class_name = containing_class->get_name();
+  
+  StaticMemory& stat_mem = mem_man.static_memory();
+  ObjectPrototype& prot = stat_mem.lookup_objectprot(class_name);
+  MethodsTable& meth_tab = prot.methods_table();
+  string file_name(containing_class->get_filename()->get_string());
+
+  method_offset = meth_tab[name];
+
+  mem_man.push_fp(ccon);
+
+  eval_and_push_actual(ccon, mem_man, actual);
+
+  expr->cgen(ccon, mem_man);
+  
+  // terminates if not void
+  handle_dispatch_on_void(ccon, mem_man, file_name, line_number);
+
+  // call method if not void 
+  tmp = mem_man.tmp();
+  acc = mem_man.acc();
+  MemSlot* disp_ptr = mem_man.lookup_identifier(obj_disp_ptr);
+  ccon.lw(tmp, disp_ptr->load(ccon), method_offset * WORD_SIZE);
+  ccon.jalr(tmp);
 }
 
 void cond_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -236,7 +294,9 @@ void bool_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void string_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  StaticMemory& stat_mem = mem_man.static_memory();
+  string label = stat_mem.lookup_label(token->get_string());
+  ccon.la(mem_man.acc(), label);
 }
 
 void new__class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -265,10 +325,36 @@ void object_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 
 
+//////////////////////////////////////////////
+// Helper functions for cgen
+// 
+/////////////////////////////////////////////
 
+void eval_and_push_actual(CodeContainer& ccon, MemoryManager& mem_man, Expressions actual)
+{
+  int n = actual->len();
+  for(int i = 0; i < n; i++)
+  {
+    actual->nth(i)->cgen(ccon, mem_man);
+    mem_man.push_acc(ccon);
+  }
+}
 
+// checks that the value in the accumelator is not zero
+static void handle_dispatch_on_void(CodeContainer& ccon, MemoryManager& mem_man, 
+                                    string file_name, int line_no)
+{
+  StaticMemory& stat_mem = mem_man.static_memory();
+  string label = mem_man.gen_label();
+  Register* acc = mem_man.acc();
+  Register* zero = mem_man.zero();
 
-
+  ccon.bne(acc, zero, label);
+  ccon.li(mem_man.tmp(), line_no);
+  ccon.la(mem_man.acc(), stat_mem.lookup_label(file_name));
+  ccon.jal(DISPATCH_ABORT);
+  ccon.label(label);
+}
 
 
 

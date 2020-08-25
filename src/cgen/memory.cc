@@ -1,7 +1,8 @@
-#include "code-container.h"
-#include "memory.h"
 #include <assert.h>
 #include <iostream>
+#include "code-container.h"
+#include "memory.h"
+#include "emit.h"
 
 Register::Register(string name) : name(name) { }
 

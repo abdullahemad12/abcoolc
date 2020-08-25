@@ -48,6 +48,8 @@ class CodeContainer
         void word(int i);
         void word(string s);
         void jal(string label);
+        void jalr(Register* addr);
+        void bne(Register* src1, Register* src2, string label);
         void jr(Register* reg);
         void data();
         void write_out();

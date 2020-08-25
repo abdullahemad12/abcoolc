@@ -124,3 +124,14 @@ void CodeContainer::jr(Register* reg)
     assert(reg->get_name() == RA);
     CGEN(RET << reg);
 }
+
+
+void CodeContainer::bne(Register* src1, Register* src2, string label)
+{
+    CGEN(BNE << src1 << ", " << src2 << ", " << label);
+}
+
+void CodeContainer::jalr(Register* dest)
+{
+    CGEN(JALR << dest);
+}
