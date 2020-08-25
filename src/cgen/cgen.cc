@@ -161,8 +161,6 @@ void static_dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   MethodsTable& meth_tab = prot.methods_table();
   string file_name(containing_class->get_filename()->get_string());
   
-  mem_man.push_fp(ccon);
-
   eval_and_push_actual(ccon, mem_man, actual);
 
   expr->cgen(ccon, mem_man);
@@ -189,8 +187,6 @@ void dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   string file_name(containing_class->get_filename()->get_string());
 
   method_offset = meth_tab[name];
-
-  mem_man.push_fp(ccon);
 
   eval_and_push_actual(ccon, mem_man, actual);
 

@@ -50,8 +50,9 @@ TEST_CASE( "MemoryManager Test1", "[enter_scope]" )
 {
     vector<string> expected_ordered = {
         "\tsw\t$a0, 0($sp)",
-        "\tsw\t$ra, -4($sp)",
-        "\taddiu\t$sp, $sp, -36",
+        "\tsw\t$fp, -4($sp)",
+        "\tsw\t$ra, -8($sp)",
+        "\taddiu\t$sp, $sp, -40",
         "\taddiu\t$fp, $sp, 4"
     };
 
@@ -75,10 +76,9 @@ TEST_CASE( "MemoryManager Test1", "[enter_scope]" )
     formals = append_Formals(formals, single_Formals(formal4));
 
     ActivationRecord ar(formals, 7);
-    Class_ classs = class_(idtable.add_string("A"), idtable.add_string("Object"), nil_Features(), idtable.add_string("file.cl"));
-    ObjectPrototype obj;
+    Class_ classs = class_(idtable.add_string("A"), NULL, nil_Features(), idtable.add_string("file.cl"));
     StaticMemory sm;
-    sm.add_object_prot(idtable.add_string("A"), obj);
+    sm.install_class(classs);
 
     MemoryManager mm(sm);
 
@@ -87,12 +87,12 @@ TEST_CASE( "MemoryManager Test1", "[enter_scope]" )
     mm.enter_scope(ccon, classs, ar);
     ccon.write_out();
     vector<string> lines = split(s.str());
-    REQUIRE(lines.size() == 13);
-    for(int i = 1; i < 5; i++)
+    REQUIRE(lines.size() == 14);
+    for(int i = 1; i < 6; i++)
     {
         REQUIRE(lines[i] == expected_ordered[i - 1]);
     }
-    for(int i = 5; i < 12; i++)
+    for(int i = 6; i < 13; i++)
     {
         REQUIRE(expected_unordered.find(lines[i]) != expected_unordered.end());
         expected_unordered.erase(lines[i]);
@@ -114,7 +114,7 @@ TEST_CASE( "MemoryManager Test2", "[exit_scope]" )
     vector<string> expected_ordered = {
         "\taddiu\t$sp, $fp, 52",
         "\tlw\t$ra, 28($fp)",
-        "\tlw\t$fp, 52($fp)"
+        "\tlw\t$fp, 32($fp)"
     };
 
     
@@ -129,10 +129,10 @@ TEST_CASE( "MemoryManager Test2", "[exit_scope]" )
     formals = append_Formals(formals, single_Formals(formal4));
 
     ActivationRecord ar(formals, 7);
-    Class_ classs = class_(idtable.add_string("A"), idtable.add_string("Object"), nil_Features(), idtable.add_string("file.cl"));
+    Class_ classs = class_(idtable.add_string("A"), NULL, nil_Features(), idtable.add_string("file.cl"));
     ObjectPrototype obj;
     StaticMemory sm;
-    sm.add_object_prot(idtable.add_string("A"), obj);
+    sm.install_class(classs);
 
     MemoryManager mm(sm);
 
@@ -143,14 +143,14 @@ TEST_CASE( "MemoryManager Test2", "[exit_scope]" )
     mm.exit_scope(ccon);
     ccon.write_out();
     vector<string> lines = split(s.str());
-    for(int i = 12; i < 19; i++)
+    for(int i = 13; i < 20; i++)
     {
         REQUIRE(expected_unordered.find(lines[i]) != expected_unordered.end());
         expected_unordered.erase(lines[i]);
     }
-    for(int i = 19; i < 22; i++)
+    for(int i = 20; i < 23; i++)
     {
-        REQUIRE(lines[i] == expected_ordered[i - 19]);
+        REQUIRE(lines[i] == expected_ordered[i - 20]);
     }
     
     
@@ -170,10 +170,9 @@ TEST_CASE("Memory Manager Test 3", "[memalloc and free]")
     formals = append_Formals(formals, single_Formals(formal4));
 
     ActivationRecord ar(formals, tmps);
-    Class_ classs = class_(idtable.add_string("A"), idtable.add_string("Object"), nil_Features(), idtable.add_string("file.cl"));
-    ObjectPrototype obj;
+    Class_ classs = class_(idtable.add_string("A"), NULL, nil_Features(), idtable.add_string("file.cl"));
     StaticMemory sm;
-    sm.add_object_prot(idtable.add_string("A"), obj);
+    sm.install_class(classs);
 
     MemoryManager mm(sm);
     stringstream sss;
@@ -245,11 +244,9 @@ TEST_CASE( "MemoryManager", "[identifiers]" )
     formals = append_Formals(formals, single_Formals(formal4));
 
     ActivationRecord ar(formals, tmps);
-    Class_ classs = class_(idtable.add_string("A"), idtable.add_string("Object"), features, idtable.add_string("file.cl"));
-    ObjectPrototype nil_op;
-    ObjectPrototype obj(classs, features, nil_op);
+    Class_ classs = class_(idtable.add_string("A"), NULL, features, idtable.add_string("file.cl"));
     StaticMemory sm;
-    sm.add_object_prot(idtable.add_string("A"), obj);
+    sm.install_class(classs);
 
     stringstream s;
     CodeContainer ccon(s);
@@ -260,37 +257,37 @@ TEST_CASE( "MemoryManager", "[identifiers]" )
 
     MemSlot* mem = mm.lookup_identifier(idtable.add_string("x"));
     Register* reg = mem->load(ccon1);
-    REQUIRE(reg->get_name() == ACC);
+    REQUIRE(reg->get_name() == T0);
     ccon1.write_out();
     vector<string> lines = split(s1.str());
     REQUIRE(lines.size() == 4);
 
-    REQUIRE(lines[1] == "\tlw\t$a0, 84($fp)");
-    REQUIRE(lines[2] == "\tlw\t$a0, 12($a0)");
+    REQUIRE(lines[1] == "\tlw\t$t0, 88($fp)");
+    REQUIRE(lines[2] == "\tlw\t$t0, 12($t0)");
 
     stringstream s2; 
     CodeContainer ccon2(s2);
     mem = mm.lookup_identifier(idtable.add_string("y"));
     reg = mem->load(ccon2);
-    REQUIRE(reg->get_name() == ACC);
+    REQUIRE(reg->get_name() == T0);
     ccon2.write_out();
     lines = split(s2.str());
     REQUIRE(lines.size() == 4);
 
-    REQUIRE(lines[1] == "\tlw\t$a0, 84($fp)");
-    REQUIRE(lines[2] == "\tlw\t$a0, 16($a0)");
+    REQUIRE(lines[1] == "\tlw\t$t0, 88($fp)");
+    REQUIRE(lines[2] == "\tlw\t$t0, 16($t0)");
 
     stringstream s3; 
     CodeContainer ccon3(s3);
     mem = mm.lookup_identifier(idtable.add_string("z"));
     reg = mem->load(ccon3);
-    REQUIRE(reg->get_name() == ACC);
+    REQUIRE(reg->get_name() == T0);
     ccon3.write_out();
     lines = split(s3.str());
     REQUIRE(lines.size() == 4);
 
-    REQUIRE(lines[1] == "\tlw\t$a0, 84($fp)");
-    REQUIRE(lines[2] == "\tlw\t$a0, 20($a0)");
+    REQUIRE(lines[1] == "\tlw\t$t0, 88($fp)");
+    REQUIRE(lines[2] == "\tlw\t$t0, 20($t0)");
 
 
     mm.add_identifier(idtable.add_string("x"));
@@ -308,13 +305,13 @@ TEST_CASE( "MemoryManager", "[identifiers]" )
     CodeContainer ccon5(s5);
     mem = mm.lookup_identifier(idtable.add_string("x"));
     reg = mem->load(ccon5);
-    REQUIRE(reg->get_name() == ACC);
+    REQUIRE(reg->get_name() == T0);
     ccon5.write_out();
     lines = split(s5.str());
     REQUIRE(lines.size() == 4);
 
-    REQUIRE(lines[1] == "\tlw\t$a0, 84($fp)");
-    REQUIRE(lines[2] == "\tlw\t$a0, 12($a0)");
+    REQUIRE(lines[1] == "\tlw\t$t0, 88($fp)");
+    REQUIRE(lines[2] == "\tlw\t$t0, 12($t0)");
 
     
     mm.add_identifier(idtable.add_string("h"));

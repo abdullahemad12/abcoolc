@@ -42,7 +42,6 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
     if(parent != NULL)
     {
         parent_init = string(parent->get_string()) + CLASSINIT_SUFFIX;
-        mem_man.push_fp(ccon);
         ccon.jal(parent_init);
     }
 

@@ -114,7 +114,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
     nargs = ar.argc();
     ntmps = ar.ntmps();
 
-    offset = (4 * ntmps + 8);
+    offset = (4 * ntmps + 12);
     for(int i = 0; i < nargs; i++)
     {
         rml = new RamMemLoc(mregs.fp(), mregs.t0(),  offset + (nargs - 1 ) - (4 * i));
@@ -122,7 +122,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
         all_ram_mem.insert(rml);
     }
     ar_ra = new RamMemLoc(mregs.fp(), mregs.ra(), 4 * ntmps);
-    ar_old_fp = new RamMemLoc(mregs.fp(), mregs.fp(), (4 * ntmps) + (4 * nargs) + 8);
+    ar_old_fp = new RamMemLoc(mregs.fp(), mregs.fp(), (4 * ntmps) + 4);
 
 }
 
@@ -130,7 +130,7 @@ void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, Memor
 {
     MemSlot* location;
     vector<attr_class*> attrs = obj_prot.attributes();
-    ar_self = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * ar.ntmps() + 4);
+    ar_self = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * ar.ntmps() + 8);
 
     int i = 0;
     for(auto attr : attrs)
@@ -184,11 +184,12 @@ void MemoryManager::enter_scope(CodeContainer& ccon, Class_ class_, ActivationRe
     scope = new Scope(obj_prot, ar, mregs);
 
     ccon.sw(acc, sp, 0);
-    ccon.sw(ra, sp, -4);
+    ccon.sw(fp, sp, -4);
+    ccon.sw(ra, sp, -8);
 
     ntmps = ar.ntmps();
     // sp is set to the first free loc after temps
-    ccon.addiu(sp, sp, -(4 * ntmps + 8));
+    ccon.addiu(sp, sp, -(4 * ntmps + 12));
     // fp is set to the last location (self)
     ccon.addiu(fp, sp, 4);
 
