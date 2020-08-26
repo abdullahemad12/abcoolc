@@ -60,6 +60,8 @@ class StaticMemory
           */ 
         string const_label(int i);
         string const_label(string s);
+        string false_lable();
+        string true_label();
         
         /**
           * @brief looks up the object prototype of a given class 

@@ -328,7 +328,6 @@ void eq_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void leq_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
 }
 
 void comp_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -338,12 +337,21 @@ void comp_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void int_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  StaticMemory& stat_mem = mem_man.static_memory();
+  Register* acc = mem_man.acc();
+  string s(val->get_string());
+  ccon.la(acc, stat_mem.lookup_label(stoi(s)));
 }
 
 void bool_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  StaticMemory& stat_mem = mem_man.static_memory();
+  Register* acc = mem_man.acc();
+
+  if(val == 0)
+    ccon.la(acc, stat_mem.false_lable());
+  else
+    ccon.la(acc, stat_mem.true_label());
 }
 
 void string_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -360,7 +368,23 @@ void new__class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void isvoid_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  Register *acc, *zero;
+  string is_not_void, end;
+  StaticMemory& stat_mem = mem_man.static_memory();
+  is_not_void = mem_man.gen_label();
+  end = mem_man.gen_label();
+  acc = mem_man.acc();
+  zero = mem_man.zero();
+
+  e1->cgen(ccon, mem_man);
+
+
+  ccon.bne(acc, zero, is_not_void);
+  ccon.la(acc, stat_mem.true_label());
+  ccon.jump(end);
+  ccon.label(is_not_void);
+  ccon.la(acc, stat_mem.false_lable());
+  ccon.label(end);
 }
 
 void no_expr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -370,11 +394,11 @@ void no_expr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void object_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    /*MemSlot* obj;
+    MemSlot* obj;
     Register* cache;
     obj = mem_man.lookup_identifier(name);
     cache = obj->load(ccon);
-    ccon.move(mem_man.acc(), cache);*/
+    ccon.move(mem_man.acc(), cache);
 }
 
 

@@ -32,6 +32,8 @@ StaticMemory::StaticMemory()
     construct_prototypes[NULL] = nil_obj_prot;
 }
 
+string StaticMemory::true_label() { return TRUE; }
+string StaticMemory::false_lable() { return FALSE; }
 
 string StaticMemory::const_label(int i)
 {
