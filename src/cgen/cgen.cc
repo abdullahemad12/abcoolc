@@ -293,7 +293,37 @@ void let_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void plus_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  MemSlot* slot;
+  Register *cache, *acc, *t1;
+  slot = mem_man.memalloc();
+  acc = mem_man.acc();
+  t1 = mem_man.tmp1();
+  StaticMemory& stat_mem = mem_man.static_memory();
+  ObjectPrototype& int_prot = stat_mem.lookup_objectprot(Int);
+  MethodsTable& meth_tab = int_prot.methods_table();
+
+  // create new int object
+  ccon.la(acc, int_prot.label());
+  ccon.jal(meth_tab.lookup_label(copyy));
+
+  slot->save(ccon, acc);
+
+  e1->cgen(ccon, mem_man);
+
+  // add the result to the new object
+  cache = slot->load(ccon);
+  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.sw(acc, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+
+  // accumelate the result
+  e2->cgen(ccon, mem_man);
+  cache = slot->load(ccon);
+  ccon.lw(t1, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.add(acc, t1, acc);
+  ccon.sw(acc, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.move(acc, cache);
+  mem_man.memfree(slot);
 }
 
 void sub_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
