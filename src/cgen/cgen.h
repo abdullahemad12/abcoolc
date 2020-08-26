@@ -1,3 +1,13 @@
+//////////////////////////////////////////////
+// cgen.h
+//
+// Contains some classes and helpers for the 
+// code generation routine
+/////////////////////////////////////////////
+
+#ifndef _CGEN_H
+#define _CGEN_H
+
 #include <assert.h>
 #include <stdio.h>
 #include "emit.h"
@@ -5,32 +15,42 @@
 #include "symtab.h"
 #include <vector>
 #include <sstream>
-enum Basicness     {Basic, NotBasic};
 
 
 using namespace std;
 
-class CgenClassTable;
-typedef CgenClassTable *CgenClassTableP;
+class Register;
+class CodeContainer;
 
-class CgenNode;
-typedef CgenNode *CgenNodeP;
-
-class CgenClassTable : public SymbolTable<Symbol,CgenNode> {
-private:
-   stringstream str;
-   int stringclasstag;
-   int intclasstag;
-   int boolclasstag;
-
-
-// The following methods emit code for
-// constants and global declarations.
-
-   void code_global_data();
-   void code_global_text();
-   void code_select_gc();
-   void code_constants();
-
+class GenArithOperation
+{
+   public:
+      virtual void cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2) = 0;
 };
 
+
+class PlusCgen : public GenArithOperation
+{
+   public:
+      void cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2);
+};
+
+class SubCgen : public GenArithOperation
+{
+   public:
+      void cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2);
+};
+
+class MulCgen : public GenArithOperation
+{
+   public:
+      void cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2);
+};
+
+class DivCgen : public GenArithOperation
+{
+   public:
+      void cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2);
+};
+
+#endif /*CGEN_H*/

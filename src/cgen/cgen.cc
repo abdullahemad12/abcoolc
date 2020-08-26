@@ -34,6 +34,8 @@ extern int cgen_debug;
 static void eval_and_push_actual(CodeContainer& ccon, MemoryManager& mem_man, Expressions actual);
 static void handle_dispatch_on_void(CodeContainer& ccon, MemoryManager& mem_man, 
                                       string file_name, int line_no);
+static void cgen_arith(CodeContainer& ccon, MemoryManager& mem_man, Expression e1, 
+                      Expression e2, GenArithOperation& arith);
 
 //////////////////////////////////////////////////////////////////////////
 // Three symbols from the semantic analyzer (semant.cc) are used.
@@ -293,52 +295,26 @@ void let_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void plus_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-  MemSlot* slot;
-  Register *cache, *acc, *t1;
-  slot = mem_man.memalloc();
-  acc = mem_man.acc();
-  t1 = mem_man.tmp1();
-  StaticMemory& stat_mem = mem_man.static_memory();
-  ObjectPrototype& int_prot = stat_mem.lookup_objectprot(Int);
-  MethodsTable& meth_tab = int_prot.methods_table();
-
-  // create new int object
-  ccon.la(acc, int_prot.label());
-  ccon.jal(meth_tab.lookup_label(copyy));
-
-  slot->save(ccon, acc);
-
-  e1->cgen(ccon, mem_man);
-
-  // add the result to the new object
-  cache = slot->load(ccon);
-  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
-  ccon.sw(acc, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
-
-  // accumelate the result
-  e2->cgen(ccon, mem_man);
-  cache = slot->load(ccon);
-  ccon.lw(t1, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
-  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
-  ccon.add(acc, t1, acc);
-  ccon.sw(acc, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
-  ccon.move(acc, cache);
-  mem_man.memfree(slot);
+  PlusCgen arith;
+  cgen_arith(ccon, mem_man, e1, e2, arith); 
 }
 
 void sub_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  SubCgen arith;
+  cgen_arith(ccon, mem_man, e1, e2, arith);
 }
 
 void mul_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+    MulCgen arith;
+    cgen_arith(ccon, mem_man, e1, e2, arith);
 }
 
 void divide_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+    DivCgen arith;
+    cgen_arith(ccon, mem_man, e1, e2, arith);
 }
 
 void neg_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -558,8 +534,65 @@ void typcase_class::no_match_error(CodeContainer& ccon, MemoryManager& mem_man, 
   ccon.jal(CASE_ABORT);
 }
 
+/////////////////////////
+// Arithmetic Helpers
+////////////////////////
+static void cgen_arith(CodeContainer& ccon, MemoryManager& mem_man, Expression e1, 
+                      Expression e2, GenArithOperation& arith)
+{
+  MemSlot* slot;
+  Register *cache, *acc, *t1;
+  acc = mem_man.acc();
+  t1 = mem_man.tmp1();
+  StaticMemory& stat_mem = mem_man.static_memory();
+  ObjectPrototype& int_prot = stat_mem.lookup_objectprot(Int);
+  MethodsTable& meth_tab = int_prot.methods_table();
 
 
+  e1->cgen(ccon, mem_man);
+
+  slot = mem_man.memalloc();
+  slot->save(ccon, acc);
+
+  // create new int object
+  ccon.la(acc, int_prot.label());
+  ccon.jal(meth_tab.lookup_label(copyy));
+
+  // add the result to the new object
+  cache = slot->load(ccon);
+  ccon.lw(cache, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.sw(cache, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  slot->save(ccon, acc);
+
+  // accumelate the result
+  e2->cgen(ccon, mem_man);
+  cache = slot->load(ccon);
+  ccon.lw(t1, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  arith.cgen(ccon, acc, t1, acc);
+  ccon.sw(acc, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.move(acc, cache);
+  mem_man.memfree(slot);
+}
+
+void PlusCgen::cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2)
+{
+  ccon.add(dest, op1, op2);
+}
+void SubCgen::cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2)
+{
+  ccon.sub(dest, op1, op2);
+}
+void MulCgen::cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2)
+{
+  ccon.mul(dest, op1, op2);
+}
+
+void DivCgen::cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2)
+{
+  ccon.div(dest, op1, op2);
+
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //

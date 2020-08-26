@@ -70,7 +70,7 @@ int typcase_class::mintmps()
     ans = expr->mintmps();
     n = cases->len();
     for(int i = 0; i < n; i++)
-        max(cases->nth(i)->mintmps(), ans);
+        ans = max(cases->nth(i)->mintmps(), ans);
 
     // ancestor table must be store somewhere 
     // object itself should be stored somewhere

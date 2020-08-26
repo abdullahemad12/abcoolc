@@ -65,11 +65,15 @@ void CodeContainer::mul(Register* dest, Register* op1, Register* op2)
     CGEN(MUL << dest << ", " << op1 << ", " << op2);
 }
 
+void CodeContainer::div(Register* dest, Register* op1, Register* op2)
+{
+    CGEN(DIV << dest << ", " << op1 << ", " << op2);
+}
+
 void CodeContainer::sli(Register* dest, Register* src, int val)
 {
     CGEN(SLL << dest << ", " << src << ", " << val);
 }
-
 
 
 void CodeContainer::addi(Register* dest, Register* src, int immediate)

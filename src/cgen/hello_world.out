@@ -14,41 +14,77 @@ _program
       _no_expr
       : _no_type
     #3
+    _attr
+      k
+      Int
+      #3
+      _plus
+        #3
+        _int
+          5
+        : Int
+        #3
+        _int
+          5
+        : Int
+      : Int
+    #4
     _method
       a
       Object
-      #4
+      #5
       _typcase
-        #4
+        #5
         _string
           "hello"
         : String
-        #5
+        #6
         _branch
           x
           String
-          #5
+          #6
           _dispatch
-            #5
+            #6
             _object
               self
             : SELF_TYPE
             out_int
             (
-            #5
-            _int
-              3
+            #6
+            _plus
+              #6
+              _plus
+                #6
+                _plus
+                  #6
+                  _int
+                    3
+                  : Int
+                  #6
+                  _int
+                    4
+                  : Int
+                : Int
+                #6
+                _int
+                  9
+                : Int
+              : Int
+              #6
+              _object
+                k
+              : Int
             : Int
             )
           : SELF_TYPE
       : SELF_TYPE
-    #8
+    #9
     _method
       main
       Object
-      #9
+      #10
       _dispatch
-        #9
+        #10
         _object
           self
         : SELF_TYPE
@@ -57,14 +93,14 @@ _program
         )
       : Object
     )
-  #14
+  #15
   _class
     A
     Object
     "hello_world.cl"
     (
     )
-  #18
+  #19
   _class
     B
     Object
