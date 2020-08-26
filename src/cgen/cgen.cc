@@ -370,7 +370,11 @@ void no_expr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void object_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+    /*MemSlot* obj;
+    Register* cache;
+    obj = mem_man.lookup_identifier(name);
+    cache = obj->load(ccon);
+    ccon.move(mem_man.acc(), cache);*/
 }
 
 

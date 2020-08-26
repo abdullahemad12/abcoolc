@@ -24,6 +24,7 @@ void program_class::create_init_methods(CodeContainer& ccon, MemoryManager& mem_
 
 void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_man)
 {
+    Register *cache;
     int ntmps;
     string parent_init;
     string init_name;
@@ -47,6 +48,10 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
 
     for(auto& attr : attrs)
         attr->cgen(ccon, mem_man);
+
+    // restore object in $a0
+    cache = mem_man.self()->load(ccon);
+    mem_man.acc()->save(ccon, cache); 
 
     mem_man.exit_scope(ccon);
 }

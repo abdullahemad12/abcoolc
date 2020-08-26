@@ -74,7 +74,7 @@ class MemoryManager
             ActivationRecord& ar;
             stack<MemSlot*> free_mem;
             unordered_map<Register*, RamMemLoc*> regs_to_mem;
-            unordered_map<Symbol, stack<MemSlot*>> identifiers; 
+            unordered_map<string, stack<MemSlot*>> identifiers; 
             unordered_set<RamMemLoc*> all_ram_mem;
             RamMemLoc* ar_ra;
             RamMemLoc* ar_old_fp;

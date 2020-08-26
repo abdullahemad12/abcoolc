@@ -134,7 +134,7 @@ void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, Memor
     MemSlot* location;
     vector<attr_class*> attrs = obj_prot.attributes();
     ar_self = new RamMemLoc(mregs.fp(), mregs.t0(), 4 * ar.ntmps() + 8);
-
+    bind_mem_slot(self_sym, ar_self);
     int i = 0;
     for(auto attr : attrs)
     {
@@ -151,8 +151,9 @@ void MemoryManager::Scope::initialize_self_attr(ObjectPrototype& obj_prot, Memor
     bind_mem_slot(obj_disp_ptr, location);
 }
 
-void MemoryManager::Scope::bind_mem_slot(Symbol identifier, MemSlot* slot)
+void MemoryManager::Scope::bind_mem_slot(Symbol identifier_sym, MemSlot* slot)
 {
+    string identifier(identifier_sym->get_string());
     if(identifiers.find(identifier) == identifiers.end())
     {
         std::stack<MemSlot*> s;
@@ -269,8 +270,9 @@ MemSlot* MemoryManager::add_identifier(Symbol name, MemSlot* location)
 }
 
 
-MemSlot* MemoryManager::lookup_identifier(Symbol name)
+MemSlot* MemoryManager::lookup_identifier(Symbol name_sym)
 {
+    string name(name_sym->get_string());
     assert(scope);
     assert(scope->identifiers.find(name)
             != scope->identifiers.end());
@@ -278,16 +280,18 @@ MemSlot* MemoryManager::lookup_identifier(Symbol name)
     return scope->identifiers[name].top();
 }
 
-void MemoryManager::remove_identifier(Symbol name)
+void MemoryManager::remove_identifier(Symbol name_sym)
 {
+    string name(name_sym->get_string());
     assert(scope);
-    lookup_identifier(name);
+    lookup_identifier(name_sym);
     scope->identifiers[name].pop();
 }
-void MemoryManager::remove_and_free_identifier(Symbol name)
+void MemoryManager::remove_and_free_identifier(Symbol name_sym)
 {
+    string name(name_sym->get_string());
     assert(scope);
-    memfree(lookup_identifier(name));
+    memfree(lookup_identifier(name_sym));
     scope->identifiers[name].pop();
 }
 

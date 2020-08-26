@@ -38,7 +38,7 @@ static Symbol
        out_int,
        out_string,
        prim_slot,
-       self,
+       self_sym,
        SELF_TYPE,
        Str,
        str_field,
@@ -74,7 +74,7 @@ static void initialize_constants(void)
   out_int     = idtable.add_string("out_int");
   out_string  = idtable.add_string("out_string");
   prim_slot   = idtable.add_string("_prim_slot");
-  self        = idtable.add_string("self");
+  self_sym    = idtable.add_string("self");
   SELF_TYPE   = idtable.add_string("SELF_TYPE");
   Str         = idtable.add_string("String");
   str_field   = idtable.add_string("_str_field");

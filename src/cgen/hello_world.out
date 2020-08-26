@@ -7,21 +7,103 @@ _program
     "hello_world.cl"
     (
     #2
+    _attr
+      aa
+      A
+      #0
+      _no_expr
+      : _no_type
+    #3
+    _method
+      a
+      Object
+      #4
+      _typcase
+        #4
+        _object
+          aa
+        : A
+        #5
+        _branch
+          x
+          B
+          #5
+          _dispatch
+            #5
+            _object
+              self
+            : SELF_TYPE
+            out_string
+            (
+            #5
+            _string
+              "hello B\n"
+            : String
+            )
+          : SELF_TYPE
+        #6
+        _branch
+          x
+          A
+          #6
+          _dispatch
+            #6
+            _object
+              self
+            : SELF_TYPE
+            out_string
+            (
+            #6
+            _string
+              "hello A\n"
+            : String
+            )
+          : SELF_TYPE
+        #7
+        _branch
+          x
+          Object
+          #7
+          _dispatch
+            #7
+            _object
+              self
+            : SELF_TYPE
+            out_string
+            (
+            #7
+            _string
+              "hello Object\n"
+            : String
+            )
+          : SELF_TYPE
+      : SELF_TYPE
+    #11
     _method
       main
-      SELF_TYPE
-      #3
+      Object
+      #12
       _dispatch
-        #3
+        #12
         _object
           self
         : SELF_TYPE
-        out_string
+        a
         (
-        #3
-        _string
-          "Hello, World.\n"
-        : String
         )
-      : SELF_TYPE
+      : Object
+    )
+  #17
+  _class
+    A
+    Object
+    "hello_world.cl"
+    (
+    )
+  #21
+  _class
+    B
+    Object
+    "hello_world.cl"
+    (
     )
