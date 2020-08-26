@@ -339,7 +339,7 @@ void int_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
   StaticMemory& stat_mem = mem_man.static_memory();
   Register* acc = mem_man.acc();
-  string s(val->get_string());
+  string s(token->get_string());
   ccon.la(acc, stat_mem.lookup_label(stoi(s)));
 }
 

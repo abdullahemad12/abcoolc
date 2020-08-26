@@ -2,9 +2,7 @@ class Main inherits IO {
    aa : A;
    a() : Object {
    	case "hello" of
-   		x : B         => out_string("hello B\n");
-   		x : A         => out_string("hello A\n");
-   		x : Bool    => out_string("hello Object\n");
+   		x : String  => out_int(3);
    	esac
    };
    main(): Object {

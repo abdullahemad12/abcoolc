@@ -20,71 +20,35 @@ _program
       #4
       _typcase
         #4
-        _object
-          aa
-        : A
+        _string
+          "hello"
+        : String
         #5
         _branch
           x
-          B
+          String
           #5
           _dispatch
             #5
             _object
               self
             : SELF_TYPE
-            out_string
+            out_int
             (
             #5
-            _string
-              "hello B\n"
-            : String
-            )
-          : SELF_TYPE
-        #6
-        _branch
-          x
-          A
-          #6
-          _dispatch
-            #6
-            _object
-              self
-            : SELF_TYPE
-            out_string
-            (
-            #6
-            _string
-              "hello A\n"
-            : String
-            )
-          : SELF_TYPE
-        #7
-        _branch
-          x
-          Object
-          #7
-          _dispatch
-            #7
-            _object
-              self
-            : SELF_TYPE
-            out_string
-            (
-            #7
-            _string
-              "hello Object\n"
-            : String
+            _int
+              3
+            : Int
             )
           : SELF_TYPE
       : SELF_TYPE
-    #11
+    #8
     _method
       main
       Object
-      #12
+      #9
       _dispatch
-        #12
+        #9
         _object
           self
         : SELF_TYPE
@@ -93,14 +57,14 @@ _program
         )
       : Object
     )
-  #17
+  #14
   _class
     A
     Object
     "hello_world.cl"
     (
     )
-  #21
+  #18
   _class
     B
     Object
