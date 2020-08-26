@@ -72,6 +72,7 @@ void StaticMemory::cgen(CodeContainer& ccon)
     cgen_int_consts(ccon);
     cgen_string_consts(ccon);
     cgen_class_table(ccon);
+    cgen_ancestors_table_ptrs(ccon);
     cgen_object_prototypes(ccon);
     cgen_global_text(ccon);
     install_system_prototypes();
@@ -258,6 +259,18 @@ void StaticMemory::cgen_global_text(CodeContainer& ccon)
     ccon.global(string(STRINGNAME) + CLASSINIT_SUFFIX);
     ccon.global(string(BOOLNAME) + CLASSINIT_SUFFIX);
     ccon.global(string(MAINNAME) + METHOD_SEP + MAINMETHOD);
+}
+
+void StaticMemory::cgen_ancestors_table_ptrs(CodeContainer& ccon)
+{
+
+    vector<string> labels(obj_prototypes.size());
+    for(auto prot : obj_prototypes)
+        labels[prot.second->tag()] = prot.second->ancestors_table().label();
+
+    ccon.label(ANCESTORS_TAB_PTR);
+    for(auto label : labels)
+        ccon.word(label);
 }
 
 

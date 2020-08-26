@@ -46,6 +46,7 @@ class StaticMemory
       void cgen_false_const(CodeContainer& ccon);
       void cgen_class_table(CodeContainer& ccon);
       void cgen_global_text(CodeContainer& ccon);
+      void cgen_ancestors_table_ptrs(CodeContainer& ccon);
       StaticMemory(const StaticMemory&) = delete;
       
     public:

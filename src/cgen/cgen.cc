@@ -196,7 +196,7 @@ void dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   handle_dispatch_on_void(ccon, mem_man, file_name, line_number);
 
   // call method if not void 
-  tmp = mem_man.tmp();
+  tmp = mem_man.tmp1();
   acc = mem_man.acc();
   MemSlot* disp_ptr = mem_man.lookup_identifier(obj_disp_ptr);
   ccon.lw(tmp, disp_ptr->load(ccon), method_offset * WORD_SIZE);
@@ -215,12 +215,70 @@ void loop_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void typcase_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
+  // declarations
+  int n, index;
+  Register *t1, *t2, *acc, *cache, *zero;
+  MemSlot *anc_tab, *id_slot;
+  string next_label, end_label;
+  StaticMemory& stat_mem = mem_man.static_memory();
+
+  zero = mem_man.zero();
+  acc = mem_man.acc();
+  t1 = mem_man.tmp1();
+  t2 = mem_man.tmp2();
+
+  expr->cgen(ccon, mem_man);
+
+  case_on_void_check(ccon, mem_man);  
+
+  id_slot = mem_man.memalloc();
+  id_slot->save(ccon, acc);
+  
+  // load ancestors table into a memory location
+  anc_tab = mem_man.memalloc();
+  load_ancestors_table(ccon, mem_man, anc_tab);
+  
+  sort_branches(stat_mem);
+  end_label = mem_man.gen_label();
+  n = sorted_cases.size();
+  for(int i = 0; i < n; i++)
+  {
+    next_label = mem_man.gen_label();
+    Case branch = sorted_cases[i];
+    ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(branch->get_type());
+    index = obj_prot.ancestors_table().size();
+    cache = anc_tab->load(ccon);
+
+    // ancestors table length check (avoids out of bound check)
+    ccon.lw(t1, cache, ANC_LEN_OFFSET * WORD_SIZE);
+    ccon.addi(t1, t1, -1 * (index));
+    ccon.bltz(t1, next_label);
     
+    // ancestors check
+    ccon.lw(t1, cache, index * WORD_SIZE);
+    ccon.li(t2, obj_prot.tag());
+    ccon.bne(t1, t2, next_label);
+
+    // generate code for branch
+    id_slot = mem_man.add_identifier(branch->get_name(), id_slot);
+    branch->cgen(ccon, mem_man);
+    mem_man.remove_identifier(branch->get_name());
+    ccon.jump(end_label);
+    ccon.label(next_label);
+  }
+
+  no_match_error(ccon, mem_man, id_slot);
+
+  ccon.label(end_label);
+  
+  // reclaim memory
+  mem_man.memfree(id_slot);
+  mem_man.memfree(anc_tab);
 }
 
 void branch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+    expr->cgen(ccon, mem_man);
 }
 
 void block_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -326,6 +384,10 @@ void object_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 // 
 /////////////////////////////////////////////
 
+
+////////////////////////
+// dispatch
+///////////////////////
 void eval_and_push_actual(CodeContainer& ccon, MemoryManager& mem_man, Expressions actual)
 {
   int n = actual->len();
@@ -346,13 +408,97 @@ static void handle_dispatch_on_void(CodeContainer& ccon, MemoryManager& mem_man,
   Register* zero = mem_man.zero();
 
   ccon.bne(acc, zero, label);
-  ccon.li(mem_man.tmp(), line_no);
+  ccon.li(mem_man.tmp1(), line_no);
   ccon.la(mem_man.acc(), stat_mem.lookup_label(file_name));
   ccon.jal(DISPATCH_ABORT);
   ccon.label(label);
 }
 
 
+/////////////////////
+// Case Statement
+/////////////////////
+void typcase_class::load_ancestors_table(CodeContainer& ccon, MemoryManager& mem_man, MemSlot* mem_slot)
+{
+  Register *t1, *t2, *acc;
+  StaticMemory& stat_mem = mem_man.static_memory();
+  t1 = mem_man.tmp1();
+  t2 = mem_man.tmp2();
+  acc = mem_man.acc();
+  ccon.la(t1, ANCESTORS_TAB_PTR);
+  ccon.lw(t2, acc, TAG_OFFSET * WORD_SIZE);
+  ccon.sli(t2, t2, 2);
+  ccon.add(t1, t1, t2);
+  ccon.lw(t1, t1, 0);
+  mem_slot->save(ccon, t1);
+}
+
+void typcase_class::sort_branches(StaticMemory& stat_mem)
+{
+  int n, max;
+  Case max_case;
+
+  vector<Case> my_branches;
+  
+  n = cases->len();
+  for(int i = 0; i < n; i++)
+    my_branches.push_back(cases->nth(i));
+  
+  // selection sort
+  for(int i = 0; i < n; i++)
+  {
+      max = -1;
+      max_case = NULL;
+      for(int j = i; j < n; j++)
+      {
+        ObjectPrototype& prot = stat_mem.lookup_objectprot(my_branches[j]->get_type());
+        if(prot.depth() >= max)
+        {
+          max = prot.depth();
+          max_case = my_branches[j];
+        }
+      }
+      sorted_cases.push_back(max_case);
+  }
+}
+
+void typcase_class::case_on_void_check(CodeContainer& ccon, MemoryManager& mem_man)
+{
+  Register *acc, *t1, *zero;
+  string file_name(containing_class->get_filename()->get_string());
+  string success = mem_man.gen_label();
+  StaticMemory& stat_mem = mem_man.static_memory();
+
+  acc = mem_man.acc();
+  t1 = mem_man.tmp1();
+  zero = mem_man.zero();
+
+  // case on void
+  ccon.bne(acc, zero, success);
+  ccon.li(t1, line_number);
+  ccon.la(acc, stat_mem.lookup_label(file_name));
+  ccon.jal(CASE_ABORT_VOID);
+
+  // begin the case check
+  ccon.label(success);
+}
+
+void typcase_class::no_match_error(CodeContainer& ccon, MemoryManager& mem_man, MemSlot* id_slot)
+{
+  Register *t1, *t2, *acc;
+
+  t1 = mem_man.tmp1();
+  t2 = mem_man.tmp2();
+  acc = mem_man.acc();
+
+  // no match error
+  ccon.lw(t2, id_slot->load(ccon), WORD_SIZE * TAG_OFFSET);
+  ccon.sli(t2, t2, 2);
+  ccon.la(t1, CLASSNAMETAB);
+  ccon.add(t2, t2, t1);
+  ccon.lw(acc, t2, 0);
+  ccon.jal(CASE_ABORT);
+}
 
 
 
@@ -382,11 +528,6 @@ static void emit_gc_check(char *source, ostream &s)
   if (source != (char*)A1) emit_move(A1, source, s);
   s << JAL << "_gc_check" << endl;
 */
-
-
-
-
-
 
 
 

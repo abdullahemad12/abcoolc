@@ -72,7 +72,9 @@ int typcase_class::mintmps()
     for(int i = 0; i < n; i++)
         max(cases->nth(i)->mintmps(), ans);
 
-    return ans + 1;
+    // ancestor table must be store somewhere 
+    // object itself should be stored somewhere
+    return ans + 2;
 }
 
 int branch_class::mintmps()

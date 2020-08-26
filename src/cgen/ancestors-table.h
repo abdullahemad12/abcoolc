@@ -2,6 +2,15 @@
 // AncestorsTable
 // 
 // Represents all the ancestors of a given class
+// The format of an ancestor table in the generated 
+// code is as follows 
+// o The size of the table not including this (in words)
+// o ancestor 1
+// o .....
+// o .....
+// o ancestor n (parent)
+// o The class itself
+// Thus the ancestors table is 1 indexed
 //////////////////////////////////////////////////
 #ifndef ANCESTORS_TABLE_H
 #define ANCESTORS_TABLE_H
@@ -11,6 +20,10 @@
 #include <iterator>
 #include "cool-tree.h"
 
+
+
+#define ANC_HEADER_SIZE    1
+#define ANC_LEN_OFFSET     0
 
 using namespace std;
 
@@ -32,6 +45,7 @@ class AncestorsTable
         string label();
         auto begin();
         auto end();
+        unsigned int size();
         void cgen(CodeContainer& ccon, StaticMemory& stat_mem);
 };
 

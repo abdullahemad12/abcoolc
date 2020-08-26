@@ -46,6 +46,7 @@ using namespace std;
 #define BOOLTAG              "_bool_tag"
 #define STRINGTAG            "_string_tag"
 #define HEAP_START           "heap_start"
+#define ANCESTORS_TAB_PTR    "ancestors_TabPtr"
 
 // Naming conventions
 #define DISPTAB_SUFFIX       "_dispTab"
@@ -134,6 +135,7 @@ using namespace std;
 #define JALR  "\tjalr\t"  
 #define JAL   "\tjal\t"                 
 #define RET   "\tjr\t"
+#define JUMP  "\tj\t"
 
 #define SW    "\tsw\t"
 #define LW    "\tlw\t"
@@ -154,6 +156,7 @@ using namespace std;
 #define BRANCH   "\tb\t"
 #define BEQ      "\tbeq\t"
 #define BNE      "\tbne\t"
+#define BLTZ     "\tbltz\t"
 #define BLEQ     "\tble\t"
 #define BLT      "\tblt\t"
 #define BGT      "\tbgt\t"

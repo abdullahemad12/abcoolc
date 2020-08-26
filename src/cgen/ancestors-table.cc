@@ -28,9 +28,15 @@ AncestorsTable::AncestorsTable()
 void AncestorsTable::cgen(CodeContainer& ccon, StaticMemory& stat_mem)
 {
     ccon.label(label());
+    ccon.word(ancestors_attr.size());
     for(Class_ ancestor : ancestors_attr)
     {
         ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(ancestor->get_name());
         ccon.word(obj_prot.tag());
     }
+}
+
+unsigned int AncestorsTable::size()
+{
+    return ancestors_attr.size();
 }

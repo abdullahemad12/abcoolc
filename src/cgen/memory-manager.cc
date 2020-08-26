@@ -26,6 +26,7 @@ MemoryManager::MipsRegisters::MipsRegisters()
     fp_reg = new Register(FP);
     t0_reg = new Register(T0);
     t1_reg = new Register(T1);
+    t2_reg = new Register(T2);
     ra_reg = new Register(RA);
     a0_reg = new Register(ACC);  
 }
@@ -38,6 +39,7 @@ MemoryManager::MipsRegisters::~MipsRegisters()
     delete fp_reg;
     delete t0_reg;
     delete t1_reg;
+    delete t2_reg;
     delete ra_reg;
     delete a0_reg;
     delete zero_reg;
@@ -48,6 +50,7 @@ Register* MemoryManager::MipsRegisters::sp() { return sp_reg; }
 Register* MemoryManager::MipsRegisters::fp()  { return fp_reg; }
 Register* MemoryManager::MipsRegisters::t0() { return t0_reg; }
 Register* MemoryManager::MipsRegisters::t1() { return t1_reg; }
+Register* MemoryManager::MipsRegisters::t2() { return t2_reg; }
 Register* MemoryManager::MipsRegisters::ra() { return ra_reg; }
 Register* MemoryManager::MipsRegisters::acc() { return a0_reg; }
 Register* MemoryManager::MipsRegisters::zero() { return zero_reg; }
@@ -258,6 +261,14 @@ MemSlot* MemoryManager::add_identifier(Symbol name)
     return slot;
 }
 
+MemSlot* MemoryManager::add_identifier(Symbol name, MemSlot* location)
+{
+    assert(scope);
+    scope->bind_mem_slot(name, location);
+    return location;
+}
+
+
 MemSlot* MemoryManager::lookup_identifier(Symbol name)
 {
     assert(scope);
@@ -268,6 +279,12 @@ MemSlot* MemoryManager::lookup_identifier(Symbol name)
 }
 
 void MemoryManager::remove_identifier(Symbol name)
+{
+    assert(scope);
+    lookup_identifier(name);
+    scope->identifiers[name].pop();
+}
+void MemoryManager::remove_and_free_identifier(Symbol name)
 {
     assert(scope);
     memfree(lookup_identifier(name));
@@ -295,7 +312,9 @@ string MemoryManager::gen_label() { return GEN_LABEL(labels_ctr++); }
 
 Register* MemoryManager::acc() { return mregs.acc(); }
 
-Register* MemoryManager::tmp() { return mregs.t1(); }
+Register* MemoryManager::tmp1() { return mregs.t1(); }
+
+Register* MemoryManager::tmp2() { return mregs.t2(); }
 
 Register* MemoryManager::zero() { return mregs.zero(); }
 

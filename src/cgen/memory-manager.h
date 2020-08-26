@@ -12,6 +12,9 @@
 //  2. After any dispatch made in the current method m being process, 
 //     all the temporaries and memory given to m will not be altered 
 //     by this dispatch
+// Note: the memory manager does not use tmp registers $t1-$t4; thus
+//       they can be used without consulting the manager, but not 
+//       any guarantee on their persistance will not be made
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -44,6 +47,7 @@ class MemoryManager
         Register* fp_reg;
         Register* t0_reg;
         Register* t1_reg;
+        Register* t2_reg;
         Register* ra_reg;
         Register* a0_reg;
         Register* zero_reg;
@@ -59,6 +63,7 @@ class MemoryManager
         Register* fp();
         Register* t0();
         Register* t1();
+        Register* t2();
         Register* ra();
         Register* acc();
     };
@@ -135,6 +140,15 @@ class MemoryManager
         */ 
       MemSlot* add_identifier(Symbol name);
 
+    /**
+      * @brief binds the identifier name to the given memory location
+      * @modifies: scope
+      * @param Symbol the name of the identifier
+      * @param MemSlot* the location to be bound to this id
+      * @returns the given MemSlot* on success. On failure hangs
+      */ 
+      MemSlot* add_identifier(Symbol name, MemSlot* location);
+
       /**
         * @brief looks up an identifier
         * @requires: the identifier to be already added. Hangs
@@ -150,8 +164,17 @@ class MemoryManager
         *            if the identifier is not found
         * @param Symbol the name of the identifier
         */
+      void remove_and_free_identifier(Symbol name);
+
+    /**
+        * @brief removes an identifier but does not free the memory associated with it
+        * @requires: the identifier to be already added. Hangs
+        *            if the identifier is not found
+        * @param Symbol the name of the identifier
+        */
       void remove_identifier(Symbol name);
 
+      
       /**
         * @brief pushes the AC register onto the stack
         * @param CodeContainer& ccon
@@ -170,7 +193,8 @@ class MemoryManager
         * @warning no guarantees are made on these registers
         */ 
        Register* acc();
-       Register* tmp();
+       Register* tmp1();
+       Register* tmp2();
        Register* zero();
        MemSlot* self();
 

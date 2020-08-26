@@ -50,9 +50,31 @@ void CodeContainer::move(Register* dest, Register* src)
     CGEN(MOVE << dest << ", " << src);
 }
 
+void CodeContainer::add(Register* dest, Register* op1, Register* op2)
+{
+    CGEN(ADD << dest << ", " << op1 << ", " << op2);
+}
+
 void CodeContainer::sub(Register* dest, Register* op1, Register* op2)
 {
     CGEN(SUB << dest << ", " << op1 << ", " << op2);
+}
+
+void CodeContainer::mul(Register* dest, Register* op1, Register* op2)
+{
+    CGEN(MUL << dest << ", " << op1 << ", " << op2);
+}
+
+void CodeContainer::sli(Register* dest, Register* src, int val)
+{
+    CGEN(SLL << dest << ", " << src << ", " << val);
+}
+
+
+
+void CodeContainer::addi(Register* dest, Register* src, int immediate)
+{
+    CGEN(ADDI << dest << ", " << src <<  ", " << immediate);
 }
 
 void CodeContainer::addiu(Register* dest, Register* src, int immediate)
@@ -131,7 +153,18 @@ void CodeContainer::bne(Register* src1, Register* src2, string label)
     CGEN(BNE << src1 << ", " << src2 << ", " << label);
 }
 
+void CodeContainer::bltz(Register* src, string label)
+{
+    CGEN(BLTZ << src << ", " << label);
+}
+
+
 void CodeContainer::jalr(Register* dest)
 {
     CGEN(JALR << dest);
+}
+
+void CodeContainer::jump(string label)
+{
+    CGEN(JUMP << label);
 }

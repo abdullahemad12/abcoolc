@@ -19,6 +19,7 @@ class ObjectPrototype;
 class method_class;
 class attr_class;
 class DefaultValue;
+class MemSlot;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
@@ -123,12 +124,23 @@ Symbol get_name() { return name; }
 
 #define Case_EXTRAS                             \
 virtual void dump_with_types(ostream& ,int) = 0; \
-virtual int mintmps() = 0;
+virtual int mintmps() = 0; \
+virtual Symbol get_type() = 0; \
+virtual Symbol get_name() = 0;
 
 #define branch_EXTRAS                                   \
 void dump_with_types(ostream& ,int);				\
+Symbol get_type() { return type_decl; }	\
+Symbol get_name() { return name; } \
 int mintmps();
 
+#define typcase_EXTRAS 	\
+std::vector<Case> sorted_cases; \
+private: 						\
+void sort_branches(StaticMemory& stat_mem); \
+void load_ancestors_table(CodeContainer& ccon, MemoryManager& mem_man, MemSlot* mem_slot);\
+void case_on_void_check(CodeContainer& ccon, MemoryManager& mem_man); \
+void no_match_error(CodeContainer& ccon, MemoryManager& mem_man, MemSlot* id_slot);
 
 
 #define Expression_EXTRAS                    \

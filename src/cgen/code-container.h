@@ -36,8 +36,12 @@ class CodeContainer
         void li(Register* dest, int imm);
         void sw(Register* src, Register* addr_reg, int offset);
         void move(Register* dest, Register* src);
-        void addiu(Register* dst, Register* src, int imm);
+        void addi(Register* dest, Register* src, int imm);
+        void addiu(Register* dest, Register* src, int imm);
+        void add(Register* dest, Register* op1, Register* op2);
         void sub(Register* dest, Register* op1, Register* op2);
+        void mul(Register* dest, Register* op1, Register* op2);
+        void sli(Register* dest, Register* src, int val);
         void global(string label);
         void label(string lab);
         void label(string lab, int index);
@@ -51,6 +55,8 @@ class CodeContainer
         void jalr(Register* addr);
         void bne(Register* src1, Register* src2, string label);
         void jr(Register* reg);
+        void jump(string label);
+        void bltz(Register* src, string label);
         void data();
         void write_out();
 };
