@@ -8,60 +8,74 @@ _program
     (
     #2
     _attr
-      aa
+      a
       A
-      #0
-      _no_expr
-      : _no_type
+      #2
+      _new
+        B
+      : B
     #3
-    _attr
-      k
-      Int
-      #3
-      _plus
-        #3
-        _mul
-          #3
-          _int
-            3
-          : Int
-          #3
-          _int
-            5
-          : Int
-        : Int
-        #3
-        _int
-          5
-        : Int
-      : Int
-    #4
     _method
       main
-      Bool
-      #5
-      _leq
-        #5
-        _int
-          1
-        : Int
-        #5
-        _int
-          0
-        : Int
-      : Bool
+      Object
+      #4
+      _dispatch
+        #4
+        _object
+          a
+        : A
+        hello
+        (
+        )
+      : A
     )
-  #10
+  #9
   _class
     A
-    Object
+    IO
     "hello_world.cl"
     (
+    #11
+    _method
+      hello
+      SELF_TYPE
+      #13
+      _dispatch
+        #13
+        _object
+          self
+        : SELF_TYPE
+        out_string
+        (
+        #13
+        _string
+          "parent method"
+        : String
+        )
+      : SELF_TYPE
     )
-  #14
+  #16
   _class
     B
-    Object
+    A
     "hello_world.cl"
     (
+    #18
+    _method
+      hello
+      SELF_TYPE
+      #20
+      _dispatch
+        #20
+        _object
+          self
+        : SELF_TYPE
+        out_string
+        (
+        #20
+        _string
+          "child_method"
+        : String
+        )
+      : SELF_TYPE
     )

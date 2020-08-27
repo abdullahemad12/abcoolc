@@ -1,16 +1,25 @@
 class Main inherits IO {
-   aa : A;
-   k : Int <- 3 * 5 + 5;
-   main(): Bool {
-	1 <= 0
+   a : A <- new A;
+   main(): Object {
+   {
+   	a.hello();
+   }
+
    };
 };
 
 
-class A 
+class A inherits IO
 {
-
+	hello() : SELF_TYPE
+	{
+		out_string("parent method")
+	};
 };
-class B
+class B inherits A
 {
+	hello() : SELF_TYPE
+	{
+		out_string("child_method")
+	};
 };

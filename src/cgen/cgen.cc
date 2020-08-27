@@ -145,7 +145,6 @@ void attr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   attr_loc->save(ccon, acc);
 
 }
-
 void formal_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
     
@@ -201,11 +200,13 @@ void dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   // terminates if not void
   handle_dispatch_on_void(ccon, mem_man, file_name, line_number);
 
-  // call method if not void 
+  // call method if not void
+  // (acc still holds the object at this point
+  //  because handle dispatch will not execute in this case)
   tmp = mem_man.tmp1();
   acc = mem_man.acc();
-  MemSlot* disp_ptr = mem_man.lookup_identifier(obj_disp_ptr);
-  ccon.lw(tmp, disp_ptr->load(ccon), method_offset * WORD_SIZE);
+  ccon.lw(tmp, acc, DISPTABLE_OFFSET * WORD_SIZE);
+  ccon.lw(tmp, tmp, method_offset * WORD_SIZE);
   ccon.jalr(tmp);
 }
 
