@@ -1,25 +1,31 @@
 class Main inherits IO {
-   a : A <- new A;
-   main(): Object {
-   {
-   	a.hello();
-   }
 
+   main(): Object {
+	   (new A).method2(2)
    };
+
 };
 
 
 class A inherits IO
 {
-	hello() : SELF_TYPE
-	{
-		out_string("parent method")
+	method2(num : Int) : Int {  -- negate
+      (let x : Int in
+	 {
+            x <- ~num;
+			(new C).set_var(x);
+	 }
+      )
+   };
+
+};
+
+class C {
+	var : Int;
+	set_var(num : Int) : Int {
+		{
+			var <- num;
+		}
 	};
 };
-class B inherits A
-{
-	hello() : SELF_TYPE
-	{
-		out_string("child_method")
-	};
-};
+

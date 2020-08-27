@@ -153,6 +153,7 @@ using namespace std;
 #define DIV   "\tdiv\t"
 #define MUL   "\tmul\t"
 #define SUB   "\tsub\t"
+#define SUBU   "\tsubu\t"
 #define SLL   "\tsll\t"
 #define BEQZ  "\tbeqz\t"
 #define BRANCH   "\tb\t"

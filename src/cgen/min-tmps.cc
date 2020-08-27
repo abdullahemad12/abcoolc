@@ -123,7 +123,7 @@ int divide_class::mintmps()
 
 int neg_class::mintmps()
 {
-    return e1->mintmps();
+    return max(1, e1->mintmps());
 }
 
 int lt_class::mintmps()

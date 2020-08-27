@@ -40,6 +40,7 @@ class CodeContainer
         void addiu(Register* dest, Register* src, int imm);
         void add(Register* dest, Register* op1, Register* op2);
         void sub(Register* dest, Register* op1, Register* op2);
+        void subu(Register* dest, Register* op1, Register* op2);
         void mul(Register* dest, Register* op1, Register* op2);
         void div(Register* dest, Register* op1, Register* op2);
         void sli(Register* dest, Register* src, int val);

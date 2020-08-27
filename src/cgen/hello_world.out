@@ -6,14 +6,6 @@ _program
     IO
     "hello_world.cl"
     (
-    #2
-    _attr
-      a
-      A
-      #2
-      _new
-        B
-      : B
     #3
     _method
       main
@@ -21,61 +13,42 @@ _program
       #4
       _dispatch
         #4
-        _object
-          a
+        _new
+          A
         : A
-        hello
+        method2
         (
+        #4
+        _int
+          2
+        : Int
+        #4
+        _int
+          4
+        : Int
         )
-      : A
+      : Int
     )
-  #9
+  #10
   _class
     A
     IO
     "hello_world.cl"
     (
-    #11
+    #12
     _method
-      hello
-      SELF_TYPE
+      method2
+      #12
+      _formal
+        num1
+        Int
+      #12
+      _formal
+        num2
+        Int
+      Int
       #13
-      _dispatch
-        #13
-        _object
-          self
-        : SELF_TYPE
-        out_string
-        (
-        #13
-        _string
-          "parent method"
-        : String
-        )
-      : SELF_TYPE
-    )
-  #16
-  _class
-    B
-    A
-    "hello_world.cl"
-    (
-    #18
-    _method
-      hello
-      SELF_TYPE
-      #20
-      _dispatch
-        #20
-        _object
-          self
-        : SELF_TYPE
-        out_string
-        (
-        #20
-        _string
-          "child_method"
-        : String
-        )
-      : SELF_TYPE
+      _object
+        num2
+      : Int
     )

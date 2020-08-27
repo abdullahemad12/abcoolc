@@ -60,6 +60,11 @@ void CodeContainer::sub(Register* dest, Register* op1, Register* op2)
     CGEN(SUB << dest << ", " << op1 << ", " << op2);
 }
 
+void CodeContainer::subu(Register* dest, Register* op1, Register* op2)
+{
+    CGEN(SUBU << dest << ", " << op1 << ", " << op2);
+}
+
 void CodeContainer::mul(Register* dest, Register* op1, Register* op2)
 {
     CGEN(MUL << dest << ", " << op1 << ", " << op2);
@@ -182,3 +187,5 @@ void CodeContainer::jump(string label)
 {
     CGEN(JUMP << label);
 }
+
+

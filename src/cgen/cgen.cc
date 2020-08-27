@@ -343,7 +343,15 @@ void block_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void let_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
+  Register *acc, *cache;
   MemSlot* slot;
+  StaticMemory& stat_mem = mem_man.static_memory();
+  ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(type_decl);
+  acc = mem_man.acc();
+
+  cache = obj_prot.default_value()->load_value(ccon, mem_man);
+  acc->save(ccon, acc);
+
   init->cgen(ccon, mem_man);
 
   slot = mem_man.add_identifier(identifier);
@@ -380,28 +388,31 @@ void divide_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void neg_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-  Register *acc, *t1, *zero;
-  string true_label, end_label;
+  Register *acc, *zero, *t1, *cache;
+  MemSlot* slot;
   StaticMemory& stat_mem = mem_man.static_memory();
-
-  true_label = mem_man.gen_label();
-  end_label = mem_man.gen_label();
-
+  ObjectPrototype& int_prot = stat_mem.lookup_objectprot(Int);
+  MethodsTable& meth_tab = int_prot.methods_table();
   acc = mem_man.acc();
-  t1 = mem_man.tmp1();
   zero = mem_man.zero();
+  t1 = mem_man.tmp1();
 
   e1->cgen(ccon, mem_man);
 
-  ccon.lw(t1, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  slot = mem_man.memalloc();
 
-  ccon.bne(t1, zero, true_label);
-  ccon.la(acc, stat_mem.true_label());
-  ccon.jump(end_label);
-  
-  ccon.label(true_label);
-  ccon.la(acc, stat_mem.false_lable());
-  ccon.label(end_label);
+  slot->save(ccon, acc);
+
+  ccon.la(acc, int_prot.label());
+  ccon.jal(meth_tab.lookup_label(copyy));
+
+  cache = slot->load(ccon);
+
+  ccon.lw(t1, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+  ccon.subu(t1, zero, t1);
+  ccon.sw(t1, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+
+  mem_man.memfree(slot);
 }
 
 void lt_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -466,7 +477,28 @@ void eq_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void comp_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  Register *acc, *t1, *zero;
+  string true_label, end_label;
+  StaticMemory& stat_mem = mem_man.static_memory();
+
+  true_label = mem_man.gen_label();
+  end_label = mem_man.gen_label();
+
+  acc = mem_man.acc();
+  t1 = mem_man.tmp1();
+  zero = mem_man.zero();
+
+  e1->cgen(ccon, mem_man);
+
+  ccon.lw(t1, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+
+  ccon.bne(t1, zero, true_label);
+  ccon.la(acc, stat_mem.true_label());
+  ccon.jump(end_label);
+  
+  ccon.label(true_label);
+  ccon.la(acc, stat_mem.false_lable());
+  ccon.label(end_label);
 }
 
 void int_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -605,27 +637,28 @@ void typcase_class::sort_branches(StaticMemory& stat_mem)
   int n, max;
   Case max_case;
 
-  vector<Case> my_branches;
+  unordered_set<Case> my_branches;
   
   n = cases->len();
   for(int i = 0; i < n; i++)
-    my_branches.push_back(cases->nth(i));
+    my_branches.insert(cases->nth(i));
   
   // selection sort
   for(int i = 0; i < n; i++)
   {
       max = -1;
       max_case = NULL;
-      for(int j = i; j < n; j++)
+      for(auto my_branch : my_branches)
       {
-        ObjectPrototype& prot = stat_mem.lookup_objectprot(my_branches[j]->get_type());
+        ObjectPrototype& prot = stat_mem.lookup_objectprot(my_branch->get_type());
         if(prot.depth() >= max)
         {
           max = prot.depth();
-          max_case = my_branches[j];
+          max_case = my_branch;
         }
       }
       sorted_cases.push_back(max_case);
+      my_branches.erase(max_case);
   }
 }
 

@@ -124,7 +124,7 @@ void MemoryManager::Scope::initialize_ar_mem(MemoryManager::MipsRegisters& mregs
     offset = (4 * ntmps + 12);
     for(int i = 0; i < nargs; i++)
     {
-        rml = new RamMemLoc(mregs.fp(), mregs.t0(),  offset + (nargs - 1 ) - (4 * i));
+        rml = new RamMemLoc(mregs.fp(), mregs.t0(),  offset + (nargs - i - 1) * WORD_SIZE);
         bind_mem_slot(argv[i]->get_name(), rml);
         all_ram_mem.insert(rml);
     }
