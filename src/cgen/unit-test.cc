@@ -320,7 +320,7 @@ TEST_CASE( "MemoryManager", "[identifiers]" )
     mem = mm.lookup_identifier(idtable.add_string("h"));
     reg = mem->load(ccon6);
     ccon6.write_out();
-    REQUIRE(reg->get_name() == T5);
+    REQUIRE(reg->get_name() == T6);
     REQUIRE(split(s6.str()).size() == 2);
 
     mm.remove_identifier(idtable.add_string("h"));
