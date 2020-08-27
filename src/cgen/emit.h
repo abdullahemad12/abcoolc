@@ -85,6 +85,8 @@ using namespace std;
 //
 // information about object headers
 //
+#define OBJ_HEADER_SIZE 3
+#define INT_OBJ_SIZE 4
 #define DEFAULT_OBJFIELDS 3
 #define TAG_OFFSET 0
 #define SIZE_OFFSET 1
@@ -157,6 +159,7 @@ using namespace std;
 #define BEQ      "\tbeq\t"
 #define BNE      "\tbne\t"
 #define BLTZ     "\tbltz\t"
+#define BLEZ     "\tblez\t"
 #define BLEQ     "\tble\t"
 #define BLT      "\tblt\t"
 #define BGT      "\tbgt\t"

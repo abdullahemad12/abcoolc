@@ -55,9 +55,11 @@ class CodeContainer
         void jal(string label);
         void jalr(Register* addr);
         void bne(Register* src1, Register* src2, string label);
+        void beq(Register* src1, Register* src2, string label);
         void jr(Register* reg);
         void jump(string label);
         void bltz(Register* src, string label);
+        void blez(Register* src, string label);
         void data();
         void write_out();
 };

@@ -3,6 +3,7 @@
 #include "memory-manager.h"
 #include "static-memory.h"
 #include "default-value.h"
+#include "emit.h"
 
 string ObjectPrototype::label() { return label_attr; }
 
@@ -21,6 +22,8 @@ int ObjectPrototype::depth() { return depth_attr; }
 DefaultValue* ObjectPrototype::default_value() { return default_value_attr; }
 
 string ObjectPrototype::name() { return name_attr; }
+
+string ObjectPrototype::init_method_label() { return name() + CLASSINIT_SUFFIX; }
 
 ObjectPrototype::~ObjectPrototype() 
 {

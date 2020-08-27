@@ -50,6 +50,7 @@ class MemoryManager
         Register* t2_reg;
         Register* ra_reg;
         Register* a0_reg;
+        Register* a1_reg;
         Register* zero_reg;
       public:
         /**
@@ -66,6 +67,7 @@ class MemoryManager
         Register* t2();
         Register* ra();
         Register* acc();
+        Register* a1();
     };
     class Scope 
     {
@@ -193,6 +195,7 @@ class MemoryManager
         * @warning no guarantees are made on these registers
         */ 
        Register* acc();
+       Register* a1();
        Register* tmp1();
        Register* tmp2();
        Register* zero();

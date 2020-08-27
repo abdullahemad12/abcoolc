@@ -28,7 +28,8 @@ MemoryManager::MipsRegisters::MipsRegisters()
     t1_reg = new Register(T1);
     t2_reg = new Register(T2);
     ra_reg = new Register(RA);
-    a0_reg = new Register(ACC);  
+    a0_reg = new Register(ACC);
+    a1_reg = new Register(A1);  
 }
 MemoryManager::MipsRegisters::~MipsRegisters()
 {
@@ -42,6 +43,7 @@ MemoryManager::MipsRegisters::~MipsRegisters()
     delete t2_reg;
     delete ra_reg;
     delete a0_reg;
+    delete a1_reg;
     delete zero_reg;
 }
 
@@ -53,7 +55,9 @@ Register* MemoryManager::MipsRegisters::t1() { return t1_reg; }
 Register* MemoryManager::MipsRegisters::t2() { return t2_reg; }
 Register* MemoryManager::MipsRegisters::ra() { return ra_reg; }
 Register* MemoryManager::MipsRegisters::acc() { return a0_reg; }
+Register* MemoryManager::MipsRegisters::a1() { return a1_reg; }
 Register* MemoryManager::MipsRegisters::zero() { return zero_reg; }
+
 ///////////////////////////////////
 //
 // Code for Scope class
@@ -315,6 +319,8 @@ void MemoryManager::push_fp(CodeContainer& ccon)
 string MemoryManager::gen_label() { return GEN_LABEL(labels_ctr++); }
 
 Register* MemoryManager::acc() { return mregs.acc(); }
+
+Register* MemoryManager::a1() { return mregs.a1(); }
 
 Register* MemoryManager::tmp1() { return mregs.t1(); }
 

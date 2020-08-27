@@ -53,4 +53,22 @@ class DivCgen : public GenArithOperation
       void cgen(CodeContainer& ccon, Register* dest, Register* op1, Register* op2);
 };
 
+class ComparisonCgen
+{
+   public:
+      virtual void cgen(CodeContainer& ccon, Register* res, string destination) = 0;
+};
+
+class LeqCgen : public ComparisonCgen
+{
+   public:
+      void cgen(CodeContainer& ccon, Register* res, string destination);
+};
+
+class LtCgen : public ComparisonCgen
+{
+   public:
+      void cgen(CodeContainer& ccon, Register* res, string destination);
+};
+
 #endif /*CGEN_H*/

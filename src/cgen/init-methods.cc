@@ -32,7 +32,7 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
     StaticMemory& stat_mem =  mem_man.static_memory();
     ObjectPrototype& prot = stat_mem.lookup_objectprot(name);
     vector<attr_class*> attrs = prot.self_attributes();
-    init_name = string(name->get_string()) + CLASSINIT_SUFFIX;
+    init_name = prot.init_method_label();
     ntmps = maxmintmp(attrs);
 
     ccon.label(init_name);
@@ -42,7 +42,8 @@ void class__class::create_init_method(CodeContainer& ccon, MemoryManager& mem_ma
 
     if(parent != NULL)
     {
-        parent_init = string(parent->get_string()) + CLASSINIT_SUFFIX;
+        ObjectPrototype& parent_prot = stat_mem.lookup_objectprot(parent);
+        parent_init = parent_prot.init_method_label();
         ccon.jal(parent_init);
     }
 

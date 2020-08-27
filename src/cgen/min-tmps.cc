@@ -96,9 +96,9 @@ int let_class::mintmps()
 {
     int ans;
     ans = init->mintmps();
-    ans = max(ans, body->mintmps());
+    ans = max(ans, body->mintmps() + 1);
 
-    return ans + 1;
+    return ans;
 }
 
 int plus_class::mintmps()

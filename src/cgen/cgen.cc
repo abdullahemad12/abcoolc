@@ -37,6 +37,10 @@ static void handle_dispatch_on_void(CodeContainer& ccon, MemoryManager& mem_man,
 static void cgen_arith(CodeContainer& ccon, MemoryManager& mem_man, Expression e1, 
                       Expression e2, GenArithOperation& arith);
 
+static void cgen_comp(CodeContainer& ccon, MemoryManager& mem_man, Expression e1,
+                      Expression e2, ComparisonCgen& op);
+
+
 //////////////////////////////////////////////////////////////////////////
 // Three symbols from the semantic analyzer (semant.cc) are used.
 // If e : No_type, then no code is generated for e.
@@ -207,12 +211,58 @@ void dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void cond_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  Register *t1, *t2, *acc, *zero;
+  string else_label, end_if;
+
+  else_label = mem_man.gen_label();
+  end_if = mem_man.gen_label();
+
+  t1 = mem_man.tmp1();
+  t2 = mem_man.tmp2();
+  acc = mem_man.acc();
+  zero = mem_man.zero();
+
+  pred->cgen(ccon, mem_man);
+  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+
+  // if false go to else
+  ccon.beq(acc, zero, else_label);
+
+  then_exp->cgen(ccon, mem_man);
+  ccon.jump(end_if);
+
+  ccon.label(else_label);
+  else_exp->cgen(ccon, mem_man);
+
+  ccon.label(end_if);
+  
 }
 
 void loop_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  Register *t1, *t2, *acc, *zero;
+  string start_loop, end_loop;
+
+  start_loop = mem_man.gen_label();
+  end_loop = mem_man.gen_label();
+
+  t1 = mem_man.tmp1();
+  t2 = mem_man.tmp2();
+  acc = mem_man.acc();
+  zero = mem_man.zero();
+
+  ccon.label(start_loop);
+  pred->cgen(ccon, mem_man);
+
+  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  // if false exit loop
+  ccon.beq(acc, zero, end_loop);
+  
+  body->cgen(ccon, mem_man);
+
+  ccon.jump(start_loop);
+  ccon.label(end_loop);
+  
 }
 
 void typcase_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -285,12 +335,22 @@ void branch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void block_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+    int n = body->len();
+    for(int i = 0; i < n; i++)
+      body->nth(i)->cgen(ccon, mem_man);
 }
 
 void let_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  MemSlot* slot;
+  init->cgen(ccon, mem_man);
+
+  slot = mem_man.add_identifier(identifier);
+  slot->save(ccon, mem_man.acc());
+
+  body->cgen(ccon, mem_man);
+
+  mem_man.remove_and_free_identifier(identifier);
 }
 
 void plus_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -319,21 +379,88 @@ void divide_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void neg_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  Register *acc, *t1, *zero;
+  string true_label, end_label;
+  StaticMemory& stat_mem = mem_man.static_memory();
+
+  true_label = mem_man.gen_label();
+  end_label = mem_man.gen_label();
+
+  acc = mem_man.acc();
+  t1 = mem_man.tmp1();
+  zero = mem_man.zero();
+
+  e1->cgen(ccon, mem_man);
+
+  ccon.lw(t1, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+
+  ccon.bne(t1, zero, true_label);
+  ccon.la(acc, stat_mem.true_label());
+  ccon.jump(end_label);
+  
+  ccon.label(true_label);
+  ccon.la(acc, stat_mem.false_lable());
+  ccon.label(end_label);
 }
 
 void lt_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
-}
-
-void eq_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
-{
-    
+    LtCgen comp;
+    cgen_comp(ccon, mem_man, e1, e2, comp);
 }
 
 void leq_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
+  LeqCgen comp;
+  cgen_comp(ccon, mem_man, e1, e2, comp);
+}
+
+
+void eq_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
+{
+  MemSlot *slot;
+  Register *cache, *acc, *a1, *t1, *t2;
+  StaticMemory& stat_mem = mem_man.static_memory();
+  string true_label, end_label;
+
+  acc = mem_man.acc();
+  a1 = mem_man.a1();
+  t1 = mem_man.tmp1();
+  t2 = mem_man.tmp2();
+  true_label = mem_man.gen_label();
+  end_label = mem_man.gen_label();
+
+  e1->cgen(ccon, mem_man);
+  
+  slot = mem_man.memalloc();
+  slot->save(ccon, acc);
+
+  e2->cgen(ccon, mem_man);
+  
+  ccon.move(t1, acc);
+  cache = slot->load(ccon);
+  ccon.move(t2, cache);
+
+  // check if the ptrs are equal
+  ccon.beq(t1, t2, true_label);
+  
+  ccon.li(acc, 1);
+  ccon.li(a1, 0);
+  ccon.jal(EQUALITY_TEST);
+  ccon.li(a1, 0);
+  ccon.bne(acc, a1, true_label);
+  
+  //not equal
+  ccon.la(acc, stat_mem.false_lable());
+  ccon.jump(end_label);
+  
+  // equal
+  ccon.label(true_label);
+  ccon.la(acc, stat_mem.true_label());
+  
+  ccon.label(end_label);
+  
+  mem_man.memfree(slot);
 }
 
 void comp_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -369,7 +496,15 @@ void string_const_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 
 void new__class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
-    
+  Register *acc;
+  StaticMemory& stat_mem = mem_man.static_memory();
+  ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(type_name);
+  MethodsTable& meth_table = obj_prot.methods_table();
+  acc = mem_man.acc();
+
+  ccon.la(acc, obj_prot.label());
+  ccon.jal(meth_table.lookup_label(copyy));
+  ccon.jal(obj_prot.init_method_label());
 }
 
 void isvoid_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
@@ -406,9 +541,6 @@ void object_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
     cache = obj->load(ccon);
     ccon.move(mem_man.acc(), cache);
 }
-
-
-
 
 
 
@@ -592,6 +724,52 @@ void DivCgen::cgen(CodeContainer& ccon, Register* dest, Register* op1, Register*
 {
   ccon.div(dest, op1, op2);
 
+}
+
+//////////////////
+// Comparisons
+//////////////////
+static void cgen_comp(CodeContainer& ccon, MemoryManager& mem_man, Expression e1, Expression e2, ComparisonCgen& op)
+{
+  MemSlot* slot;
+  Register *cache, *acc;
+  string true_label, end_label;
+
+  StaticMemory& stat_mem = mem_man.static_memory();
+
+  true_label = mem_man.gen_label();
+  end_label = mem_man.gen_label();
+
+  acc = mem_man.acc();
+
+  e1->cgen(ccon, mem_man);
+  slot = mem_man.memalloc();
+  slot->save(ccon, acc);
+
+  e2->cgen(ccon, mem_man);
+  ccon.lw(acc, acc, DEFAULT_OBJFIELDS * WORD_SIZE);
+  cache = slot->load(ccon);
+  ccon.lw(cache, cache, DEFAULT_OBJFIELDS * WORD_SIZE);
+
+  ccon.sub(acc, cache, acc);
+  op.cgen(ccon, acc, true_label);
+  ccon.la(acc, stat_mem.false_lable());
+  ccon.jump(end_label);
+
+  ccon.label(true_label);
+  ccon.la(acc, stat_mem.true_label());
+  ccon.label(end_label);
+  mem_man.memfree(slot);
+}
+
+void LeqCgen::cgen(CodeContainer& ccon, Register* res, string destination)
+{
+  ccon.blez(res, destination);
+}
+
+void LtCgen::cgen(CodeContainer& ccon, Register* res, string destination)
+{
+  ccon.bltz(res, destination);
 }
 
 //////////////////////////////////////////////////////////////////////////////

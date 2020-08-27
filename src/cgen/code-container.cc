@@ -70,10 +70,12 @@ void CodeContainer::div(Register* dest, Register* op1, Register* op2)
     CGEN(DIV << dest << ", " << op1 << ", " << op2);
 }
 
+
 void CodeContainer::sli(Register* dest, Register* src, int val)
 {
     CGEN(SLL << dest << ", " << src << ", " << val);
 }
+
 
 
 void CodeContainer::addi(Register* dest, Register* src, int immediate)
@@ -151,6 +153,10 @@ void CodeContainer::jr(Register* reg)
     CGEN(RET << reg);
 }
 
+void CodeContainer::beq(Register* src1, Register* src2, string label)
+{
+    CGEN(BEQ << src1 << ", " << src2 << ", " << label);
+}
 
 void CodeContainer::bne(Register* src1, Register* src2, string label)
 {
@@ -162,6 +168,10 @@ void CodeContainer::bltz(Register* src, string label)
     CGEN(BLTZ << src << ", " << label);
 }
 
+void CodeContainer::blez(Register* src, string label)
+{
+    CGEN(BLEZ << src << ", " << label);
+}
 
 void CodeContainer::jalr(Register* dest)
 {

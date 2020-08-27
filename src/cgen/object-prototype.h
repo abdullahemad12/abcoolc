@@ -16,8 +16,7 @@
 
 #include "emit.h"
 
-#define OBJ_HEADER_SIZE 3
-#define INT_OBJ_SIZE 4
+
 
 using namespace std;
 
@@ -54,7 +53,7 @@ class ObjectPrototype
         * @param parent_obj_prot the object prototype of the parent
         */ 
       ObjectPrototype(Class_ class_, int tag, ObjectPrototype& parent_obj_prot);
-
+      string init_method_label();
       string name();
       string label();
       int tag();
