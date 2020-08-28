@@ -110,7 +110,7 @@ int mintmps();
 std::string label;				    
 
 #define attr_EXTRAS						\
-Symbol get_type() { return type_decl; }
+Symbol get_type() { return resolve_self_type(type_decl); }
 
 #define Formal_EXTRAS                              \
 virtual void dump_with_types(ostream&,int) = 0;	\
@@ -130,7 +130,7 @@ virtual Symbol get_name() = 0;
 
 #define branch_EXTRAS                                   \
 void dump_with_types(ostream& ,int);				\
-Symbol get_type() { return type_decl; }	\
+Symbol get_type() { return resolve_self_type(type_decl); }	\
 Symbol get_name() { return name; } \
 int mintmps();
 

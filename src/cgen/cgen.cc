@@ -134,7 +134,7 @@ void attr_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
   StaticMemory& stat_mem = mem_man.static_memory();
 
-  ObjectPrototype& type_proto = stat_mem.lookup_objectprot(type_decl);
+  ObjectPrototype& type_proto = stat_mem.lookup_objectprot(resolve_self_type(type_decl));
   Register* acc = type_proto.default_value()->load_value(ccon, mem_man);
 
   assert(acc->get_name() == ACC);
@@ -162,7 +162,7 @@ void static_dispatch_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   int n, method_offset;
 
   StaticMemory& stat_mem = mem_man.static_memory();
-  ObjectPrototype& prot = stat_mem.lookup_objectprot(type_name);
+  ObjectPrototype& prot = stat_mem.lookup_objectprot(resolve_self_type(type_name));
   MethodsTable& meth_tab = prot.methods_table();
   string file_name(containing_class->get_filename()->get_string());
   
@@ -298,7 +298,7 @@ void typcase_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   {
     next_label = mem_man.gen_label();
     Case branch = sorted_cases[i];
-    ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(branch->get_type());
+    ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(resolve_self_type(branch->get_type()));
     index = obj_prot.ancestors_table().size();
     cache = anc_tab->load(ccon);
 
@@ -346,7 +346,7 @@ void let_class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
   Register *acc, *cache;
   MemSlot* slot;
   StaticMemory& stat_mem = mem_man.static_memory();
-  ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(type_decl);
+  ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(resolve_self_type(type_decl));
   acc = mem_man.acc();
 
   cache = obj_prot.default_value()->load_value(ccon, mem_man);
@@ -531,7 +531,8 @@ void new__class::cgen(CodeContainer& ccon, MemoryManager& mem_man)
 {
   Register *acc;
   StaticMemory& stat_mem = mem_man.static_memory();
-  ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(type_name);
+  
+  ObjectPrototype& obj_prot = stat_mem.lookup_objectprot(resolve_self_type(type_name));
   MethodsTable& meth_table = obj_prot.methods_table();
   acc = mem_man.acc();
 
@@ -650,7 +651,7 @@ void typcase_class::sort_branches(StaticMemory& stat_mem)
       max_case = NULL;
       for(auto my_branch : my_branches)
       {
-        ObjectPrototype& prot = stat_mem.lookup_objectprot(my_branch->get_type());
+        ObjectPrototype& prot = stat_mem.lookup_objectprot(resolve_self_type(my_branch->get_type()));
         if(prot.depth() >= max)
         {
           max = prot.depth();

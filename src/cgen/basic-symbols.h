@@ -86,5 +86,4 @@ static void initialize_constants(void)
   obj_disp_ptr= idtable.add_string("_obj_disp_ptr");
   system_symbols = { prim_slot };
 }
-
 #endif /*BASIC_SYMBOLS_H*/

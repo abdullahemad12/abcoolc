@@ -14,6 +14,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include "tree.h"
+#include "basic-symbols.h"
 #include <vector>
 
 using namespace std;
@@ -50,6 +51,15 @@ tree_node *tree_node::set(tree_node *t) {
    line_number = t->line_number;
    return this;
 }
+
+Symbol tree_node::resolve_self_type(Symbol type)
+{
+    initialize_constants();
+    if(type == SELF_TYPE)
+        return containing_class->get_name();
+    return type;
+}
+
 
 void tree_node::recurse_init_static_mem(StaticMemory& smem)
 {

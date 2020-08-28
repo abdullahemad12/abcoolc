@@ -72,6 +72,8 @@ public:
     virtual void cgen(CodeContainer& ccon, MemoryManager& mem_man) = 0;
     int get_line_number();
     tree_node *set(tree_node *);
+
+    Symbol resolve_self_type(Symbol type);
 };
 
 ///////////////////////////////////////////////////////////////////
