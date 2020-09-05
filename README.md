@@ -1,7 +1,7 @@
 <h1><img src ="docs/cranberries_white_small.png" alt = "cranberries" width="12%">ABCOOLC</h1>
 
 Abcoolc is a compiler for the COOL programming language. Abcoolc compiles the source program
-from the [COOL programming language](https://en.wikipedia.org/wiki/Cool_(programming_language)) to the target MIPS assembly code. The assembly code can be executed by [SPIM](https://en.wikipedia.org/wiki/Spim) afterwards.
+from the [COOL programming language](https://en.wikipedia.org/wiki/Cool_(programming_language)) to the target assembly code. The assembly code can be executed by [SPIM](https://en.wikipedia.org/wiki/Spim) afterwards.
 
 ## Language Overview 
 
@@ -18,6 +18,8 @@ While static typing imposes a strong discipline on programming in Cool, it guara
 type errors can arise in the execution of Cool programs.
  
 For more information refer to the [COOL manual](docs/cool-manual.pdf)
+
+General information on the runtime system and the general code structure refer to [COOL Tour](docs/cool-tour.pdf)
 
 Example programs can be found in the [Examples folder](examples)
 
