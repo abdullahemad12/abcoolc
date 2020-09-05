@@ -99,7 +99,6 @@ Instructions
 	If at some point you get weird errors from the linker,	
 	you probably forgot this step.
 
-	GOOD LUCK!
 
 ---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
 
