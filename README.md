@@ -37,4 +37,4 @@ To be filled in
 Find documentation for each component at the following locations
 
 1. [Lexer](src/lexer)
-2. [parser](scr/parser)
+2. [parser](src/parser)
