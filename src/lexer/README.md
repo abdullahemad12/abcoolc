@@ -103,7 +103,9 @@ Instructions
 
 ---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
 
-Write-up for PA2
+Author Abdullah Emad
+
+Lexer
 ----------------
 
 The core implementation can be found in "cool.flex". The file starts by defining important regular expressions and naming them. Those regular expressions and their actions will be discussed in details one by one.   

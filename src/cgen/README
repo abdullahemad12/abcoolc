@@ -25,17 +25,15 @@ The directory should now contain the following files:
  cgen-phase.cc	            -> [cool root]/src/cgen/cgen-phase.cc
  cgen.cc                    -> [cool root]/src/cgen/cgen.cc
  cgen.h                     -> [cool root]/src/cgen/cgen.h
- cgen_supp.cc               -> []
- cool-tree.cc	      -> [cool root]/src/cgen/cool-tree.cc
- cool-tree.handcode.h
- dumptype.cc	      -> [cool root]/src/cgen/dumptype.cc
- emit.h
- example.cl
- handle_flags.cc      -> [cool root]/src/cgen/handle_flags.cc
- mycoolc	      -> [cool root]/src/cgen/mycoolc*
- stringtab.cc	      -> [cool root]/src/cgen/stringtab.cc
- tree.cc	      -> [cool root]/src/cgen/tree.cc
- utilities.cc	      -> [cool root]/src/cgen/utilities.cc
+ cool-tree.cc	            -> [cool root]/src/cgen/cool-tree.cc
+ cool-tree.handcode.h       -> [cool root]/src/cgen/cool-tree.handcode
+ dumptype.cc	            -> [cool root]/src/cgen/dumptype.cc
+ emit.h                     -> [cool root]/src/emit.h
+ handle_flags.cc            -> [cool root]/src/cgen/handle_flags.cc
+ mycoolc	                -> [cool root]/src/cgen/mycoolc*
+ stringtab.cc	            -> [cool root]/src/cgen/stringtab.cc
+ tree.cc	                -> [cool root]/src/cgen/tree.cc
+ utilities.cc	            -> [cool root]/src/cgen/utilities.cc
  *.d
 
 The include (.h) files for this assignment can be found in 
@@ -51,37 +49,112 @@ The include (.h) files for this assignment can be found in
     assignment to clearly and concisely explain things in text as
     well as to comment your code. Just edit this file.
 
-    In example.cl you should write a correct Cool program which
-    tests as many aspects of the code generator as possible. It
-    should pass your code generator, and running spim on the
-    generated output should run the program correctly.
+    unit-test.cc contains unit tests for the memory manager class. 
+    The tests that lives in this file asserts certain aspects of the 
+    memory manager, such as regsters allocation and code generation 
+    for entring a new scope.
 
-    cgen.cc is the skeleton file for the code generator. This
-    skeleton is much larger than the ones for previous
-    assignments.  The skeleton provides three components of the
-    code generator:
+    activation-record.cc/h contains a very simple class definition 
+    for an activation record that only serves as a data holder. The 
+    activationrecord stores the number of temporaries and arguments
+     for a given method
 
-        - functions to build the inheritance graph; (we supply
-          this in case you didn't get this working for PA4)
+    ancestors-table.cc/h contains the class for managing the ancestors
+    of a certain cool class. The ancestors of a given class are all
+    the classes j where i <= j. (the <= operator means that class i 
+    inherits class j directly or inherits from some class k where 
+    k <= j)
 
-        - functions to emit global data and constants;
-         
-        - functions to emit spim instructions; (we supply
-          these last two to save you some tedious coding)
+    basic-symbols.h  For convenience, a large number of symbols 
+    are predefined here. These symbols include the primitive type 
+    and method names, as well as fixed names used by the runtime 
+    system.
 
-    You should work to understand this code, and it will help you
-        write the rest of the code generator.
+    cgen.cc is the main file for the code generator. It contains 
+    the starting  point of the code generation lives in this file, 
+    as well as the main functions responsible generating code for 
+    user defined methods and expressions 
 
-    cgen.h is the header file for the code generator. Feel free to
-    add anything you need.
+    code-container.cc/h contains the definition and implementation 
+    for the class CodeContainer. The CodeContainer is responsible 
+    for providing a convenient interface for generating MIPS 
+    instructionsand when all code generation has been done, outputing 
+    all the generated code to an outputstream.
 
-    cgen_supp.cc is general support code for the code generator.
-    You can add functions as you see fit, but do not modify the 3
-    functions:
+    default-value.h contains the definition for the class DefaultValue.
+    This class provide an abstraction of the default value an attribute 
+    of a certain class should get according to the COOL manual. For 
+    example, an attribute of class Int should intially hold a pointer
+    to an int object with value zero, while an attribute of class Foo
+    should hold a NULL pointer.
 
-        o byte_mode
-        o ascii_mode
-        o emit_string_constant
+    filter-features.cc contains implementation for functions that 
+    seperates methods from attributes in given abstract features.
+    The idea is that a features implements an abstract polymorphic 
+    method 'filter_feature' that take either a list of attributes or 
+    a list of methods, and decides whether to add itself to this list 
+    or do nothing.
+
+    inheritance-graph.cc contains implementation for functions that 
+    construct the inheritance graph. 
+
+    init-methods.cc contains implementation for functions responsible 
+    for creating the init subroutines of all the classes. The init 
+    subroutine is called whenever a 'new' object is created on the
+    heap by the runtime system.The init subroutine should perform any
+    necessary initialization including evaluating any initialization 
+    expression.
+
+
+    init-static-memory.cc contains implementation for functions that 
+    gather and records necessary static information from the AST. This 
+    includes constant strings, constant integers and object prototypes.
+
+    install-basic-class.cc contains a function for adding and removing
+    the basic classes (Object, IO, Bool, Int and String) to the program 
+    node.  
+
+    memory.cc/h contains definition for a Memory word. The MemSlot is 
+    an abstraction for a memory word, where this word could be a register
+    or a main memory word.
+
+    memory-manager.cc/h contains definintion and implementation of the
+    memory manager. The memory manager is responsible for managing the
+    memory of the generated program so that critical invariants are 
+    reserved.
+
+    methods-table.cc/h contains definition and implementation of the 
+    MethodsTable class. The MethodsTable is responsible for storing
+    and managing all the methods for the associated class. the Methods-
+    Table should store all the defined methods as well as the inherited 
+    methods in the correct order.
+
+    min-tmps.cc contains functions for calculating the minimum temp-
+    oraries required to execute a method in the AST.
+    
+    node-children.cc for each node in the AST, defines a method that 
+    returns all the children, or in other words a list of the next 
+    nodes to be visited, of the given node.
+
+    object-prototype.cc/h contains definition and implementation of an 
+    object prototype. The object prototype stores the following info: 
+    the methods table as defined above, the ancestors table, and a list 
+    of attributes. The list of attributes contains the class attributes
+    in the order they were define preceeded by the inherited attributes
+    in the order they were defined in the parent.
+
+    propagate-class.cc each tree node contains a function propagate_class
+    which takes a class as an argument and passes it down to the children.
+    The purpose of this function is mainly for each node in the tree to know
+    which class contains it, so that it would be easier to fetch relevant 
+    information in a later phase.
+
+
+    static-memory.cc/h a class that stores all the static information of the
+    program. This includes all the object prototypes and all the constants.
+
+    unit-tests.cc unit tests for particularly testing the memory manager.
+
 
     emit.h defines a bunch of macros which should come in handy
     when you actually want to emit code. Feel free to change
@@ -160,10 +233,588 @@ Instructions
     some point you get weird errors from the linker, you probably
     forgot this step.
 
-    GOOD LUCK!
 
 ---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
+Author Abdullah Emad
 
-Write-up for cgen
-----------------
+DISCLAIMER: the documentation found here is not complete on its own but 
+            rather builds on the information found in the COOL Manual 
+            and the COOL Tour documents to create a more complete 
+            documentation.
 
+Terminology
+------------
+
+These are common definitions that will be used through out the 
+documentation unless otherwise specified.
+
+o ''this'' is used to refer to an object instance of the class of interest.
+o 'Label' is used to refer to a MIPS assembly label. 
+o 'acc', 'accumelator' or '$a0' are used to refer to the 
+   $a0 register in a MIPS machine.
+o 'ancestor(s)' or 'class ancestor(s)' are used to refer
+   to the ancestors of class. class A is an ancestor of 
+   class B if class B <= class A.
+o 'B <= A' is used to describe the relation between two classes
+  A and B. B <= A means one of three situations
+  1. B = A. That is A and B refer to the same class.
+  2. B directly inherits from A.
+  3. B directly inherits from class C and C <= A.
+o 'Basic classes' is used to refer to the following COOL builtin
+  classes:
+    1. Object
+    2. Int
+    3. String
+    4. Bool
+    5. IO
+o 'persistent register' is used to refer to one of the following
+  MIPS registers:
+    - T5 - T9.
+    - S1 - S6.
+o 'DFS' is used to refer to the depth first search algorithm on a graph or a tree. 
+o 'stream' is an abstract term used to refer to the output of the code generator.
+o 'subroutine' is used to refer to an assembly method.
+o 'self' is used to refer to the pointer of the current object.
+o 'Class X and Class Y are incomparable' is used to refer to the situation where 
+   X is not an ancestor of Y and Y is not an ancestor of X
+
+Assembly Code Design and Conventions
+------------------------------------
+
+  The simple naming convention proposed by the COOL Tour document is adopted by this
+  code generator as follows
+
+  <X>_init        --  The initialization method for Class X.
+  <X>.<y>         --  The method y defined in the body of Class X.
+  <X>_protObj     --  The object prototype of Class X.
+  <X>_dispTab     --  The dispatch table for Class X.
+  <X>_ancestors   --  The ancestors table for Class X.
+
+Object Prototype
+
+  The object prototype is exactly the same as the one described by the COOL tour with
+  the same header design.To avoid changing the design of the object prototype proposed 
+  by the COOL Tour and  to keep things simple from that aspect, a decision to not include
+  any infromation about the ancestors or the ancestors table in the object prototype was 
+  made. Instead a table, with the name "ancestors_TabPtr", stores pointers to the different 
+  ancestors tables of each class. At offset 4 * i from "ancestors_TabPtr", a pointer to the 
+  ancestors table of Class X that has tag i can be found.
+
+Void object
+
+void objects are assigned the NULL pointer (0) by convention in this implementation of 
+the cool compiler.
+
+Memory and Registers Layout
+  
+  o According to the MIPS convention the high addresses are at the bottom of the memory
+    diagram, while the lower are at the top.
+  o The stack grows towards the lower addresses and the stack pointer $sp
+    always points to the next empty location.
+  o The frame pointer ($fp) always points to the last location in the activation frame.
+
+Activation Frame
+
+  The layout of the activation record is shown below. at the top of the stack lies temp0.
+  The number of temporaries is precomputed for every method and according to them the $fp 
+  and $sp are updated accordingly. On entry, the method will need to store everything to 
+  the activation, aside from the arguments themselves (arg0, arg1,..., argm). For example,
+  the self argument which is passed to the method in register $a0 is pushed first to the 
+  frame followed by the frame pointer of the caller activation record and so on. The caller
+  of the method is only required to push the arguments to the activation frame. The callee 
+  on the otherhand is required to push all the remaining information to the activation frame.
+  This decision was made to accomodate the case where a child method overrides a parent method.
+  To better explain this, consider the following situation where two classes A and B are defined
+  in a given program and B inherits A. Assume that A and B both implement a method "foo" and 
+  in some method "bar" a dynamic dispatch to method "foo" occurs on an expression with inferred
+  type A. Because the dynamic type of the object is not known, it is hard to tell beforehand how 
+  many temporaries to allocate for the dispatch since implementation of B could require a different
+  number of temporaries.  
+
+   ________________________
+  |        temp 0          |
+  |________________________|
+  |        temp 1          |
+  |________________________|
+  |        ......          |
+  |________________________|
+  |        ......          |
+  |________________________|
+  |        temp n          |
+  |________________________|
+  |   return addr ($ra)    |
+  |________________________|
+  |   old frame ptr ($fp)  |
+  |________________________|
+  |       self ptr         |
+  |________________________|
+  |        arg 0           |
+  |________________________|
+  |        arg 1           |
+  |________________________|
+  |        ......          |
+  |________________________|
+  |        ......          |
+  |________________________|
+  |        arg m           |
+  |________________________|
+
+Static Memory Area
+
+The static memory area of the generated program will contain the following components
+that are reffered to by the generated methods and the runtime system:
+
+  o Global conventional labels:
+    - Garbage Collector labels.
+    - Basic classes labels.
+    - Class name table.
+    - Object protoypes for basic classes.
+  o Locals  
+    - Bool, integers, strings constants.
+    - Ancestors pointers table.
+    - Class ancestors tables.
+    - Dispatch tables.
+    - Object prototypes.
+    
+Init Methods 
+
+Init methods are special subroutines that take some object in $a0 and compute 
+the initialization expressions for all the attributes of the given object. The 
+correct init methods is expected to be called everytime a new object is allocated 
+on the heap. the initialization and clean up of the init methods are the same as
+normal methods.
+
+Invariants
+
+  It is crucial that different parts of the code generator dont break the following
+  invariants:
+  
+  o Evaluating a method or an expression should not alter the following on exit:
+      1. Frame pointer register $fp
+      2. Stack Pointer register $sp. 
+  o On method exit, the whole activation frame needs to be popped from the stack 
+    including its the arguments, so that the stack is restored to its original 
+    state before the disptach.
+  o On method exit, the persistent registers must be restored to their original 
+    state, in case they are used (Those are the registers not used by the 
+    run-time system).
+  o Recursively evaluating subexpressions should not alter any persistent register
+    in use by the current expression or any parent expression.
+  o The result of evaluating an expression or the return value of a method 
+    should be stored in the accumelator ($a0).
+
+
+System Components
+-----------------
+
+This section begins by giving a high level overview of how code generation 
+is done in the code generation phase. The code generator consists of the 
+following Main components: 
+
+  o CodeContainer.
+  o MethodsTable.
+  o AncestorsTable.
+  o ObjectPrototype.
+  o Static Memory.
+  o Memory Words.
+  o Memory Manager. 
+
+- The code container is an ordered list of MIPS instructions. The code container
+  is responsible for generating MIPS instructions by calling the appropriate
+  function and passing it the desired register on the condition that register
+  objects were created by the memory manager. After all the appropriate instr-
+  uctions were generated write_out() should be called in order to save the 
+  instructions to file.
+
+- The methods table is a data structure associated with a given object prototype and
+  responsible for storing and managing the methods. The methods table is the same thing 
+  as the dispatch table referred to in the manual. Method tables is used in the code
+  generator to generate dispatch table and to later query about the label of a given
+  method name.
+
+  An inherited method of a class associated with a given methods table must be stored at 
+  the same index at which it is stored in the methods table associated with the parent class.
+  For instance, let B inherit from class A as defined below. If the method 'fun' is stored at 
+  index 0 in the methods table of A, then 'fun' must be store at index 0 too in the methods 
+  table of B.
+
+  class A {
+    fun() : Int { 1 };
+  };
+
+  class B inherits A {
+
+  };
+
+- The ancestors table is data structure responsible for storing and managing the ancestors 
+  of a given class. The order in which the ancestors are stored in the ancestors table 
+  follows the same rules as those of the methods table.
+
+- Object prototype is responsible for storing all the important information of an object 
+  prototype. This includes all the attributes (including the inherited ones) and the header
+  information as defined in the COOL Tour document. The order of which the attributes are 
+  stored in follows the same rule as with the ancestors table and methods table.
+
+- Static Memory abstracts all the interactions with the static memory including generating 
+  code for static memory memory is used to write all the constants, prototypes, tables, 
+  expected labels, garbage collector globals and everything that is statically defined in 
+  the generated code. In later phases in the code generation, the static memory is used to
+  query certain information about the static memory.
+
+- Memory Word (MemSlot, RamMemLoc, Register) represents a MIPS memory word. It could be 
+  a Main memory word or a mips register. The goal is to abstract memory interactions as 
+  much as possible to other parts of the code generator and to leave the memory management
+  task to the Memory Manager. A MemSlot is a pure virtual class that has two operations: 
+  'load' and 'save'. The 'load' operation will load the data in this MemSlot in some 
+  register. The 'save' operation will save the data in some given register into this
+  MemSlot. For a register the 'load' returns itself. The 'save' will move the contents 
+  of the given register into 'this' register. For a main memory word, the 'load' will 
+  load first the content of the memory into some temporary register, then it will return
+  this register. The 'save' will save the given register into the memory.
+
+- Memory Manager is used to manage the registers and memory locations inorder to
+  impose the invariants and constraints required by cgen. The memory manager does
+  that by making two promises:
+    1. when a code is being generated for an expression node n, 
+       any subsequent and previous node m in the same method
+       will be/was given a  different memory slot than the ones 
+       given to node n
+    2. After any dispatch made in the current method m being process, 
+       all the temporaries and memory given to m will not be altered 
+       by this dispatch
+  Note: the memory manager does not use tmp registers $t1-$t4; thus
+        they can be used without consulting the manager, but no any
+        guarantee on their persistance will not be made
+
+  The memory manager is required to do the allocations on method entry,
+  and cleanup on method exit. All the memory allocated by the memory manager, 
+  must be reclaimed on exit. 
+  
+  Moreover, the memory manager manages all the 
+  identifiers defined in the current scope. It is possible for two memory 
+  locations to have the save identifiers; however, when this identifier
+  is looked up, only the last memory location bound to this identifier
+  is returned. This behavior is done using a stack datastructure. For
+  each identifier defined in the memory manager, a stack of locations is 
+  associated with it. When a new memory location is bound to an identifier, 
+  this memory location is pushed on the stack associated with this identifier.
+  When a location is removed, the stack is popped. When an identifier is looked 
+  up, the top of the stack associated with this identifier is returned.
+
+Code and Algorithm Walkthrough
+-------------------------------
+The main function of the code generator lives in cgen-phase.cc. First, the main function 
+opens a writable filestream for the target generated code and performs some checks in case 
+earlier phases did not succeed or the target file could not be opened. Afterwards, the code
+generation begins by calling cgen on the root of the AST.
+
+The function program_class::cgen(...), located in cgen.cc, is the starting point of the code
+generation. The lifetime of the code generation routine can be summarized into the following
+stages:
+
+1. Preprocessing.
+2. Static Memory generation.
+3. init methods generation.
+4. Code generation
+
+Preprocessing
+
+During the preprocessing stage many information is collected from and added to the AST in 
+more than one partial pass. During the first pass, classes are propagated through the tree so 
+that each node in the tree knows which class it belongs to, with the exception of the program
+node since it is the only node that cannot possibly belong to one class. 
+
+Afterwards, the program proceeds to create the inheritance graph. Although the inheritance 
+graph is not actually during the actual code generation, it is a crucial step to initialized
+the methods tables, ancestors tables, and object prototypes correctly. First, all the basic
+classes are added to the list of classes. To create the inheritance graph, the list of classes
+will be iterated over; for each class X and class Y in the list of classes, add class X to the
+lists of children of class Y if class X inherits directly from class Y. The actual implementation
+of this makes use of the appropriate data structures to make sure the algorithm runs in linear 
+time rather than quadratic as described.
+
+After the inheritance graph was constructed, information about the static memory is ready to be 
+collected in a full pass over the AST. During this pass the following happens:
+
+  o For a given class the object prototype, methods table, and ancestors table,
+    are created.
+  o Class names are recorded as string constants.
+  o File names of classes involved are recorded as string constants.
+  o All integer and string constants are recorded.
+
+The object prototype, methods table, and ancestors table for a given class X must 
+contain the same information as the object prototype, methods table, ancestors
+table as parent class of X and in the same order they appear in plus the information
+in class X itself. To illustrate this, consider the following example:
+
+  class Z {
+    f() : Int { 23 };
+    n : Int;
+  };
+
+  class Y inherits Z {
+    k : Int;
+    foo() : Int { 1 };
+    bar() : Int { 2 };
+  };
+  class X inherits Y {
+    i : Int; 
+    s : String;
+    foo() : Int { 1 };
+    baz() : Int { 13 };
+  };
+
+Then the methods table are as follows:
+  _____
+|     |
+|  f  |
+|_____|
+Table for Z
+ _______________________
+|     |         |       |
+|  f  |  foo_Y  |  bar  |
+|_____|_________|_______|
+Table for Y
+ _______________________________
+|     |         |       |       |
+|  f  |  foo_X  |  bar  |  baz  |
+|_____|_________|_______|_______|
+Table for X
+
+Note the overridden method foo().
+
+The object prototype contains the following
+ ___________________________
+|                   |       |
+|  header info ...  |  z    |
+|___________________|_______|
+Object Prototype for Z
+
+ ___________________________________
+|                   |       |       |
+|  header info ...  |  z    |   k   |
+|___________________|_______|_______|
+Object prototype for Y
+
+ ___________________________________________________
+|                   |       |       |       |       |
+|  header info ...  |   z   |   k   |   i   |   s   |
+|___________________|_______|_______|_______|_______|
+Object prototype for X
+
+
+The ancestors table follows a similar fashion 
+ _________
+|         |
+|  tag Z  |
+|_________|
+Ancestors table for Z
+ ___________________
+|         |         |
+|  tag Z  |  tag Y  |
+|_________|_________|
+Ancestors table for Y
+ ______________________________
+|         |         |          |
+|  tag Z  |  tag Y  |  tag X   |
+|_________|_________|__________|
+Ancestors table for X
+
+
+In order to efficiently intialize the tables in this fashion, the code generator adopts this 
+simple algorithm that does a DFS on the inheritance tree, starting from the root node:
+
+1. Use the object prototype and tables of the parent to create the object 
+   prototype and tables of the given node.
+2. Recursively collect all the static information from the features belonging
+   to "this" node.
+3. Recursively do the same for each child of "this" class.
+
+Because this is a DFS, it is guaranteed that the parent of the current class will be 
+processed first so that the current class node can use its information to initialize 
+itself. 
+
+Static Memory Generation
+
+Generating the static data is fairly simple given that everything was collected and
+computed at the preprocessing step. Everything collected is written write away in 
+some consistent order to the generated code stream.
+
+
+Init Methods Generation
+
+The init methods are treated like normal methods when it comes to activation records;
+on method entry and method exit, the same initialization and clean up steps are done 
+as they would be in a normal method. The general init subroutine is:
+
+  1. Dispatch initialization.
+  2. Call the init method of the immediate parent. (This will initialize all the 
+    inherited attributes).
+  3. For every attribute x of "this" object (in the order they are defined) do:
+    4. Load the default value according to the type x into $a0.
+    5. Evaluate the initialization expression.
+    6. Copy $a0 to the location of the attribute x in "this" object.
+  7. Dispatch cleanup.
+
+Note at step 4, the default value is loaded into $a0 before evaluating the 
+initialization expression. For most initialization expressions, $a0 will be
+overwritten by the result of evaluating the expression. However, the noexpr
+node (when there is not initialization defined) does not generate any code.
+This is a tradeoff between a clean code and a slightly more optimized code.
+
+
+Code Generation
+
+At this point, generating code for the classes is limited to generating code for 
+methods in each class. Before generating any code, the basic classes should be 
+removed first to avoid regenarating them. 
+
+First thing that needs to happen when generating code for method is to let the
+memory manager know that it has entered a new scope of a method with n arguments 
+that needs m temporaries. The memory manager will then do necessary initialization
+and other steps to ensure the invariants are preserved. First, the memory manager
+will store self, the old fp and the return address to their location in the 
+activation frame. the memory manager will then calculate the size of the activation
+frame and will set the stack pointer to the first free memory location after the 
+frame and the frame pointer to the last word of the frame. After setting the pointers,
+the memory manager will have to  preserve the old values of the persistent registers 
+so that when one is allocated then freed, its old value is restored. Assume the number
+of presistent registers used by the code generator is m and let k be the number of
+the temporaries needed by the method of interest. There are two scenarios that need
+to be accounted for:
+  1. when m >= k. The memory manager will generate code to store the
+     old valuesof only k registers in the temporaries section of the
+     activation frame and will allocate these registers as necessary
+     for the generating the body of the method.
+  2. when m < k. The memory manager will generate code to store the
+     old values of all the m registers to the first m slots of the
+     temporaries section of the activation frame. When any node asks
+     for memory the memory manager will hand over the registers first
+     until the m registers are consumed, then when it is asked for 
+     memory it will hand over the remaining k - m main memory slots 
+     of the activation frame temporaries.
+Assuming this is the minimum number of temporaries, then this is the minimum number
+of registers to memory stores we can get away with. 
+
+Moreover, upon entering the scope the memory manager will prepare memory slots objects
+to hand them over when requested by the tree nodes. Additionally, it will bind identifiers
+to their respective memory slots so that tree nodes do not have to worry about calculating 
+and fetching the identifiers in scope. These identifiers include all the attributes of
+self and all the arguments of the current method.
+
+After the memory manager enters the scope the method will go on and generate code for its 
+body. On exit, the method will let the memory manager know that it is done generating code 
+The memory manager will then generate code to restore the old values of all the temporaries
+used. Then it will generate code to restore the old values of the $ra, $sp and $fp pointers 
+and will jump back to the address in $ra.
+
+Whenever a node needs to hold on for a value while a subexpression evaluates, it just 
+needs to ask the memory manager for a memory slot. Once, it does not need this slot anymore
+it has to return it back to the memory manager using memfree so that other subexpression can
+possibly have it.
+
+
+The rest of this documentation highlights some design decisions and tricks used for
+generating  code for expressions. Expressions not mentioned here are straight forward
+and are implemented exactly as the operational semantics in the COOL Manual describe
+them.
+ 
+Dynamic and Static Dispatch
+
+Dynamic and static dispatch code are fairly similar. However, static disptach is
+slightly simpler. After evaluating the expression and arguments, a static dispatch
+node will generate code that jumps directly to the label of the function defined in
+the specified class. A dynamic dispatch node on the otherhand will dereference the 
+dispatch table pointer stored in the resulting object of the evaluated expression.
+It will then load the method address from the dispatch table at the index calculated
+according to the offset to a register. It will then jump to the address stored in this
+register.
+
+
+Let Expression
+
+let expression node itself does not generate complex code; however, it has unique
+interactions with the memory manager. Like the attribute node, the let node will set
+the accumelator with the default value of the type of the declared identifier. It will
+then, recursively, generate code for the initialization expression. The let node will
+then ask the memory manager to allocate a new memory slot and bind it to the identifier
+specified by the COOL program. The let node will then store the result of the initializ-
+ation into the allocated memory slot. Finally, it will ask the memory manager to remove
+the identifier and free the slot associated with it.
+
+
+Arithmetic, Strings and boolean Operations
+
+Becuase these system defined objects are immutable as described in the operational semantics
+in the COOL manual, operations on them must produce a new object holding the result. For
+example, an addition between integer objects X and Y must produce an Integer object Z holding 
+the value X.val + Y.val. It would be problemtic to either change X or Y becuase either one 
+could be the result of evaluating an integer literal. Same applies to strings and bools.
+
+
+Comparison
+
+The resulting boolean object is determined by subtracting both operands from 
+each other (e.g X < Y ---> X.val - Y.val). According to the sign of the resulting
+value, the generated code should set the object to true or false.
+
+Equality Comparison
+
+The equality comparison is a bit complicated from the other forms of comparisons in
+cool as it is not restricted between Ints only. The generated code will first check 
+the equality between the pointers of both objects being compared. If both are equal 
+the expression should load the true object in the accumelator. Otherwise, it calls
+the equality_test defined in the COOL runtime system. The equality test will handle 
+the rest of the cases as per description in the COOL tour document. According to the 
+decision of the equality_test subroutine, the generated code will decide to load true 
+or false constants to the accumelator.
+
+
+Constants
+
+Evaluating a constant reduces to looking up the label of the desired constant from
+the StaticMemory datastructure, then generating code to load this label into the 
+accumelator
+
+
+Case Expression
+
+case expression is the most complicated when it comes to code generation. First,
+the expression to be checked is evaluated, and the result of evaluating it is 
+stored in some memory slot allocated by the memory manager. Before generating the
+code for the case branches, the branches are sorted by the depth of each type in 
+the inheritance tree. Consider the following program: 
+
+class A            { };
+class B inherits A { };
+
+.... a case expression somewhere in the program .....
+
+case expr1 of 
+  a : A => expr2;
+  b : B => expr3;
+esac
+
+according to the semantics of cool, if expression1 produces an object of dynamic 
+type B, then the priority should be given to the second branch and not the first 
+one although taking the first one is a plausible choice in this case since B inherits
+A. In the example above, the Object class has depth 0, A has depth 1 and C has depth
+2. Thus, when generating code for the branches, the second branch is picked to be 
+generated first so in case one or more branches are plausible choices, the one that
+is closest to the dynamic type of expr1 is picked. If two or more types declared in 
+the branches are not comparable, then it is irrelavant which is generated first.
+
+After the branches are sorted, code generation for the branches begin. The 
+generated code will dereference the ancestors table of the dynamic object of
+expr1. Ancestors tables are dereferenced through derefrencing the ancestors
+tables pointers first using the tag of the expr1 object. Then dereferencing the
+pointer obtained from the ancestors table pointers. For each branch b, let s the 
+size of the ancestors table of the type t declared in b. If t is an ancestor of 
+the dynamic type of expr1, then the tag of t must be located in index s - 1 of 
+the ancestors table of expr1 according to how ancestors tables are constructed.
+if b is not an ancestor, a jump must occur to the beginning of the next branch.
+After generating code that does the comparison described, the name symbol of b
+is bound to the memory location storing the pointer to expr1's object and the 
+body of the branch is recursively generated. After the body is generated, a 
+jump to the end of the case expression is generated and the identifier is 
+removed from the memory manager. If no match, an error is generated.

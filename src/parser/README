@@ -1,4 +1,4 @@
-README file for Programming Assignment 3 (C++ edition)
+README file for parser
 ======================================================
 
 Your directory should now contain the following files:
@@ -128,7 +128,9 @@ Instructions
 
 ---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
 
-## Parser Design
+Author Abdullah Emad
+
+Parser Design
 ----------------------
 
 
@@ -138,7 +140,8 @@ This section contains the design of the grammar and a summary of the actions. Th
 - all-upper-case-letters strings are terminals while lower-case ones are non-terminals  
 - the only special characters I will be using below is ->, | and e where e denotes epsilon. all the other characters are part of the grammar  
 
-##### Grammar
+Grammar
+---------
 
 1. program -> class_list  
    
@@ -204,14 +207,16 @@ This section contains the design of the grammar and a summary of the actions. Th
 The type of each non-terminal can be found in the declarations section of the 'cool.y' file.  
 
 
-#### Actions 
+Actions 
+----------
 
 Nothing fancy happens in any of the actions of the rules. I depend solely on the grammar definition, with the power of recursion, to handle the somewhat complex tasks such as nesting the let expressions. The main objectives of the actions can be summarized as follows: recording the line number of the matched expression and return a node in the abstract syntax tree that represents the reduced substring. For recording the line number, the SET_NODELOC() macro is used. I choose the line number of the first matched Terminal if there is any terminal, or the line number of the first nonterminal otherwise. For example, if `case_stmts -> case_stmts OBJECTID : TYPEID => expr;` was matched, I would choose `$2` since OBJECTID is the first terminal. On the other hand, if `expr_stmts -> expr_stmts expr ;` was matched, I would use `$1`.
    
 According, to the construct being matched, I would create a tree node using the appropriate constructor and return this tree node. There are two main types of tree nodes: “normal” phyla and list phyla. list nodes stores multiple normal nodes of the same type. For more information on this visit section 6 of the [COOL Tour Document](../../docs/cool-tour.pdf). For normal constructs, the action would call the appropriate constructor with the correct arguments. For list constructs, the action would create a single-item list of the currently matched item and append it to the list of items matched so far. If the action belonged to an epsilon rule, a nil list is returned.   
   
-   
-#### Lists and Correctness  
+ 
+ Lists and Correctness  
+ -----------------------
   
 The correctness will be discussed in this section because lists are the complicated rules of the grammar. Other rules are very simple, do not include any form of recursion, which means proving their correctness is a trivial matter of just proving the base case, and they are identical to the rules in figure 1 of the [COOL Manual](../../docs/cool-tour.pdf). The cool language has different types of lists. Those that are simply separated by semicolumns include lists of classes, features (functions and attributes), statements in the body of the case expressions and expressions in a block. Other lists are separated by commas include lists of formals (function arguments), expressions as arguments to a function call and the list of identifiers in the let expressions.   
   
@@ -245,7 +250,8 @@ The correctness of the first rule depends on the second rule. Since the first ru
 In a similar fashion, by induction, we can see that the rules for the expressions are correct as well. 
 
 
-#### Let expression
+Let expression
+--------------
 
 Let expressions are treated a little bit differently because they are not actually represented the same way in the AST as they are represented in the program. When the user defines multiple identifiers within a let expression those identifiers are transformed each into its own "let" expression and let expressions are nested within each other. If for instance, if the user writes the following expression `let ID1:TYPE1, ID2:TYPE2, ..., IDN:TYPEN in x` Then each IDi is defined as it is own let expression where the let expression of IDi+1 is actually the body of IDi except for IDN which has x as its body. The following is the grammar for the let expression:    
    
@@ -265,8 +271,8 @@ Inductive step: note let_init does not have any recursive cases so it only suffi
 This design was chosen to capture the natural recursive structure of the produced let expressions. let_init will match and produce the parent let expression and will use the node produced by let_initc as its body. Note, let expressions are still expressions with the same type of expr. let_initc, on the other hand, will match the rest of the identifiers one by one. For each identifier matched at step i, it will create a new node and will set its body to the identifier matched by the recursive let_initc. If the current input that is matched is IN expr, it simply returns expr. 
 
 
-#### Precedence Declarations 
-
+Precedence Declarations 
+-------------------------
 
 According to the specifications of the COOL language in the manual, I had the following precedence declarations from high priority to low priority:
 
@@ -284,8 +290,8 @@ finally, I set the IN token to have the lowest precedence declaration to fix the
 
 
 
-#### Error Recovery
-
+Error Recovery
+-----------------
 
 To allow the program to resume parsing after a fatal error occurs to catch as many errors as possible, I used the 'error' special pseudoterminal. For each nonterminal, I added different permutations of the expression with the error terminal occurring at a specific position in it where I expect the error to be. The idea here is, according to the error, I try to match the rest of the expression related to the error, so that when the compiler resumes, it starts from a new expression while trying to keep this matching as atomic as possible so that the parser does not skip a huge chunk of the input. 
 
