@@ -102,4 +102,4 @@ Find documentation for each component at the following locations
 
 #### Disclaimer
 
-some parts of the code found here is attributed to Prof. Alex Aiken and StanfordOnline - SOE.YCSCS1. My personal work counts as ~11k lines of code and the documentation of the 4 components.
+Some parts of the code found here is attributed to Prof. Alex Aiken and StanfordOnline - SOE.YCSCS1. My personal work counts as ~11k lines of code and the documentation of the 4 components.
