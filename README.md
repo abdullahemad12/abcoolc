@@ -17,11 +17,11 @@ value and a type. Cool is type safe: procedures are guaranteed to be applied to 
 While static typing imposes a strong discipline on programming in Cool, it guarantees that no runtime
 type errors can arise in the execution of Cool programs.
  
-For more information refer to the [COOL manual](docs/cool-manual.pdf)
+For more information about COOL refer to the [COOL manual](docs/cool-manual.pdf)
 
-General information on the runtime system and the general code structure refer to [COOL Tour](docs/cool-tour.pdf)
+For general information about the runtime system and the code structure refer to [COOL Tour](docs/cool-tour.pdf)
 
-Example COOL programs can be found in the [Examples folder](examples)
+example COOL programs can be found in the [Examples folder](examples)
 
 
 # Building for Linux
