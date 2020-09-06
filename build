@@ -27,4 +27,4 @@ cp src/analyzer/semant bin/semant
 rm -f bin/cgen
 cp src/cgen/cgen bin/cgen
 
-printf "\nTo install abcoolc run './install.sh'\n\n${GREEN}Build completed successfully!\n${NC}\n"
+printf "\nTo install abcoolc run './install'\n\n${GREEN}Build completed successfully!\n${NC}\n"

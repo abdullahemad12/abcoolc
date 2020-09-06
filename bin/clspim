@@ -6,6 +6,11 @@ PRG=$0
 
 progname=`basename $0`
 
+if [ "$*" == "-v" ]; then
+	echo "CLSPIM version 1.0.0"
+	exit 0
+fi
+
 # Resolve symlinks, so that the pathname computations below find the
 # directory structure they expect.
 while [ -h "$PRG" ]; do
