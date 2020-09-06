@@ -1,0 +1,20 @@
+#!/bin/sh
+#######################################
+# Author Abdullah Emad
+# A script for removing the abcoolc
+# binaries and files from the system
+#######################################
+
+LIB=/usr/lib/abcoolc
+BIN=/usr/bin/abcoolc
+CLSPIM=/usr/bin/clspim
+
+if ! [[ -d $LIB || -f $BIN || -f $CLSPIM ]];
+then 
+    echo "abcoolc is not installed!"
+    exit 1
+fi
+sudo rm -rf $LIB
+sudo rm -f $BIN
+sudo rm -f $CLSPIM
+

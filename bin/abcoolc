@@ -1,0 +1,5 @@
+#!/bin/sh
+
+LIBDIR=/usr/lib/abcoolc/bin
+
+${LIBDIR}/lexer $* | ${LIBDIR}/parser $* | ${LIBDIR}/semant $* | ${LIBDIR}/cgen $*

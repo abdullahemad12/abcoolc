@@ -22,8 +22,8 @@ while [ -h "$PRG" ]; do
 done
 
 #COOL_INST=`/usr/bin/dirname "$PRG"`/..
-COOL_INST=$(cd `dirname $0` && pwd)/..
-
+#COOL_INST=$(cd `dirname $0` && pwd)/..
+COOL_INST='/usr/lib/abcoolc'
 # set environment for spim/xspim
 DEFAULT_TRAP_HANDLER=$COOL_INST/lib/trap.handler
 export DEFAULT_TRAP_HANDLER

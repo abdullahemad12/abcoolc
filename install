@@ -1,0 +1,71 @@
+#!/bin/sh
+##############################
+# Author Abdullah Emad
+# A script for installing 
+# cool binaries into linux 
+# machines
+##############################
+
+NC='\033[0m'
+GREEN='\033[32;1m'
+RED='\033[31m'
+err=0
+
+if ! [ -f "bin/abcoolc" ]; 
+then 
+	printf "${RED}The abcoolc script is missing!\n${NC}"
+	echo "Make sure no files are missing."
+	exit 1
+fi
+
+if ! [ -f "bin/clspim" ]; 
+then 
+	printf "${RED}The clspim script is missing!\n${NC}"
+	echo "Make sure no files are missing."
+	exit 1
+fi
+
+if ! [ -f "bin/.i686/spim" ]; 
+then 
+	printf "${RED}The spim binary is missing!\n${NC}"
+	echo "Make sure no files are missing and spim is installed."
+	exit 1
+fi
+
+if ! [ -f "bin/lexer" ]; 
+then 
+	printf "${RED}The lexer binary is missing!\n${NC}"
+	err=1
+fi
+
+if ! [ -f "bin/parser" ]; 
+then 
+	printf "${RED}The parser binary is missing!\n${NC}"
+	err=1
+fi
+
+if ! [ -f "bin/parser" ]; 
+then 
+	printf "${RED}The parser binary is missing!\n${NC}"
+	err=1
+fi
+
+if ! [ $err == 0 ];
+then
+	echo ""
+	echo "Halted due to missing files!"
+	echo "Make sure to exectute ./build.sh first."
+	exit ${err}
+fi
+
+sudo mkdir -p /usr/lib/abcoolc
+echo created the abcoolc library folder.
+sudo cp -rf bin /usr/lib/abcoolc/bin
+echo copied the COOL binaries.
+sudo cp -rf lib /usr/lib/abcoolc/lib
+echo copied the COOL run-time system
+echo copied the trap handler.
+sudo cp -f bin/abcoolc /usr/bin
+echo copied the abcoolc script.
+sudo cp -f bin/clspim /usr/bin
+echo copied COOL spim.

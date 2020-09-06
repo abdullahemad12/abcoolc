@@ -1,0 +1,30 @@
+#!/bin/sh
+##################################
+# Author Abdullah Emad
+# Compiles the components of the
+# Cool program and copies them 
+# to bin directory
+###################################
+
+NC='\033[0m'
+GREEN='\033[32;1m'
+
+make clean -C src/lexer
+make lexer -C src/lexer
+make clean -C src/parser
+make parser -C src/parser
+make clean -C src/analyzer
+make semant -C src/analyzer
+make clean -C src/cgen
+make cgen  -C src/cgen
+
+rm -f bin/lexer
+cp src/lexer/lexer bin/lexer
+rm -f bin/parser
+cp src/parser/parser bin/parser
+rm -f bin/semant
+cp src/analyzer/semant bin/semant
+rm -f bin/cgen
+cp src/cgen/cgen bin/cgen
+
+printf "\nTo install abcoolc run './install.sh'\n\n${GREEN}Build completed successfully!\n${NC}\n"
