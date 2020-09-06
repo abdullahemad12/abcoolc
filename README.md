@@ -1,6 +1,6 @@
 <h1><img src ="docs/cranberries_white_small.png" alt = "cranberries" width="12%">ABCOOLC</h1>
 
-Abcoolc is a compiler for the [COOL programming language](https://en.wikipedia.org/wiki/Cool_(programming_language)). Abcoolc compiles the source program from the COOL to MIPS assembly code, which can be executed afterwards by [SPIM](https://en.wikipedia.org/wiki/Spim).
+Abcoolc is a compiler for the [COOL programming language](https://en.wikipedia.org/wiki/Cool_(programming_language)). Abcoolc compiles the source program from COOL to MIPS assembly code, which can be executed afterwards by [SPIM](https://en.wikipedia.org/wiki/Spim).
 
 # Language Overview 
 
