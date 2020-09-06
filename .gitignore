@@ -14,4 +14,8 @@ src/*/symtab_example
 src/*/parser
 src/*/lexer
 src/lexer/cool-lex.cc
+bin/lexer
+bin/parser
+bin/semant
+bin/cgen
 .vscode
