@@ -67,5 +67,11 @@ class ObjectPrototype
       virtual void cgen(CodeContainer& ccon, StaticMemory& stat_mem);
 };
 
+class SystemObjectPrototype : public ObjectPrototype
+{
+  public:
+    void cgen(CodeContainer& ccon, StaticMemory& stat_mem);
+};
+
 #endif /*OBJECT_PROTOTYPE_H*/
 
