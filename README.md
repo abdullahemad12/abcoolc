@@ -37,7 +37,7 @@ Abcoolc is designed to run on linux machines.
 
 ## Installing the compiler
 
-**Note:** if you get something like `bash: ./script: Permission denied` error, then make the 'build', 'install' and 'uninstall' files exectubles. For example, run `chmod a+x install`.
+**Note:** if you get something like `bash: ./script: Permission denied` error, then make the 'build', 'install' and 'uninstall' files exectuble. For example, run `chmod a+x install`.
 
 - To build the abcoolc run:
 
