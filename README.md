@@ -1,6 +1,6 @@
 <h1><span><img src ="docs/art/abcoolc-logo.png" alt = "cranberries" width="12%"></span></h1>
 
-Abcoolc is a compiler for the [COOL programming language](https://en.wikipedia.org/wiki/Cool_(programming_language)). Abcoolc compiles the source program from COOL to MIPS assembly code, which can be executed afterwards by [SPIM](https://en.wikipedia.org/wiki/Spim).
+Abcoolc is my implementation of a compiler for the [COOL programming language](https://en.wikipedia.org/wiki/Cool_(programming_language)). Abcoolc compiles the source program from COOL to MIPS assembly code, which can be executed afterwards by [SPIM](https://en.wikipedia.org/wiki/Spim).
 
 # Language Overview 
 
@@ -102,4 +102,4 @@ Find documentation for each component at the following locations
 
 #### Disclaimer
 
-Some parts of the code found here is attributed to Prof. Alex Aiken and StanfordOnline - SOE.YCSCS1. My personal work counts as ~11k lines of code and the documentation of the 4 components.
+Some parts of the code found here is attributed to Prof. Alex Aiken and StanfordOnline - SOE.YCSCS1. My own contribution counts as ~11500 lines of code and the documentation of the four components.
