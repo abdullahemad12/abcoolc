@@ -26,7 +26,7 @@ example COOL programs can be found in the [Examples folder](examples)
 
 # Building for Linux
 
-Abcoolc is designed to run and generate code that run on linux machines.
+Abcoolc is designed to run on linux machines.
 
 ## Dependencies 
 
