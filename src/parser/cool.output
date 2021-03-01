@@ -198,7 +198,7 @@ Nonterminals, with rules where they appear
 
 State 0
 
-    0 $accept: . program $end
+    0 $accept: • program $end
 
     CLASS  shift, and go to state 1
 
@@ -209,26 +209,26 @@ State 0
 
 State 1
 
-    5 class: CLASS . TYPEID '{' feature_list '}' ';'
-    6      | CLASS . TYPEID INHERITS TYPEID '{' feature_list '}' ';'
-    7      | CLASS . TYPEID error '{' feature_list '}' ';'
-    8      | CLASS . TYPEID error '}' ';'
+    5 class: CLASS • TYPEID '{' feature_list '}' ';'
+    6      | CLASS • TYPEID INHERITS TYPEID '{' feature_list '}' ';'
+    7      | CLASS • TYPEID error '{' feature_list '}' ';'
+    8      | CLASS • TYPEID error '}' ';'
 
     TYPEID  shift, and go to state 5
 
 
 State 2
 
-    0 $accept: program . $end
+    0 $accept: program • $end
 
     $end  shift, and go to state 6
 
 
 State 3
 
-    1 program: class_list .
-    3 class_list: class_list . class
-    4           | class_list . error ';'
+    1 program: class_list •
+    3 class_list: class_list • class
+    4           | class_list • error ';'
 
     error  shift, and go to state 7
     CLASS  shift, and go to state 1
@@ -240,17 +240,17 @@ State 3
 
 State 4
 
-    2 class_list: class .
+    2 class_list: class •
 
     $default  reduce using rule 2 (class_list)
 
 
 State 5
 
-    5 class: CLASS TYPEID . '{' feature_list '}' ';'
-    6      | CLASS TYPEID . INHERITS TYPEID '{' feature_list '}' ';'
-    7      | CLASS TYPEID . error '{' feature_list '}' ';'
-    8      | CLASS TYPEID . error '}' ';'
+    5 class: CLASS TYPEID • '{' feature_list '}' ';'
+    6      | CLASS TYPEID • INHERITS TYPEID '{' feature_list '}' ';'
+    7      | CLASS TYPEID • error '{' feature_list '}' ';'
+    8      | CLASS TYPEID • error '}' ';'
 
     error     shift, and go to state 9
     INHERITS  shift, and go to state 10
@@ -259,29 +259,29 @@ State 5
 
 State 6
 
-    0 $accept: program $end .
+    0 $accept: program $end •
 
     $default  accept
 
 
 State 7
 
-    4 class_list: class_list error . ';'
+    4 class_list: class_list error • ';'
 
     ';'  shift, and go to state 12
 
 
 State 8
 
-    3 class_list: class_list class .
+    3 class_list: class_list class •
 
     $default  reduce using rule 3 (class_list)
 
 
 State 9
 
-    7 class: CLASS TYPEID error . '{' feature_list '}' ';'
-    8      | CLASS TYPEID error . '}' ';'
+    7 class: CLASS TYPEID error • '{' feature_list '}' ';'
+    8      | CLASS TYPEID error • '}' ';'
 
     '{'  shift, and go to state 13
     '}'  shift, and go to state 14
@@ -289,14 +289,14 @@ State 9
 
 State 10
 
-    6 class: CLASS TYPEID INHERITS . TYPEID '{' feature_list '}' ';'
+    6 class: CLASS TYPEID INHERITS • TYPEID '{' feature_list '}' ';'
 
     TYPEID  shift, and go to state 15
 
 
 State 11
 
-    5 class: CLASS TYPEID '{' . feature_list '}' ';'
+    5 class: CLASS TYPEID '{' • feature_list '}' ';'
 
     $default  reduce using rule 10 (feature_list)
 
@@ -305,14 +305,14 @@ State 11
 
 State 12
 
-    4 class_list: class_list error ';' .
+    4 class_list: class_list error ';' •
 
     $default  reduce using rule 4 (class_list)
 
 
 State 13
 
-    7 class: CLASS TYPEID error '{' . feature_list '}' ';'
+    7 class: CLASS TYPEID error '{' • feature_list '}' ';'
 
     $default  reduce using rule 10 (feature_list)
 
@@ -321,22 +321,22 @@ State 13
 
 State 14
 
-    8 class: CLASS TYPEID error '}' . ';'
+    8 class: CLASS TYPEID error '}' • ';'
 
     ';'  shift, and go to state 18
 
 
 State 15
 
-    6 class: CLASS TYPEID INHERITS TYPEID . '{' feature_list '}' ';'
+    6 class: CLASS TYPEID INHERITS TYPEID • '{' feature_list '}' ';'
 
     '{'  shift, and go to state 19
 
 
 State 16
 
-    5 class: CLASS TYPEID '{' feature_list . '}' ';'
-    9 feature_list: feature_list . feature
+    5 class: CLASS TYPEID '{' feature_list • '}' ';'
+    9 feature_list: feature_list • feature
 
     error     shift, and go to state 20
     OBJECTID  shift, and go to state 21
@@ -347,8 +347,8 @@ State 16
 
 State 17
 
-    7 class: CLASS TYPEID error '{' feature_list . '}' ';'
-    9 feature_list: feature_list . feature
+    7 class: CLASS TYPEID error '{' feature_list • '}' ';'
+    9 feature_list: feature_list • feature
 
     error     shift, and go to state 20
     OBJECTID  shift, and go to state 21
@@ -359,14 +359,14 @@ State 17
 
 State 18
 
-    8 class: CLASS TYPEID error '}' ';' .
+    8 class: CLASS TYPEID error '}' ';' •
 
     $default  reduce using rule 8 (class)
 
 
 State 19
 
-    6 class: CLASS TYPEID INHERITS TYPEID '{' . feature_list '}' ';'
+    6 class: CLASS TYPEID INHERITS TYPEID '{' • feature_list '}' ';'
 
     $default  reduce using rule 10 (feature_list)
 
@@ -375,11 +375,11 @@ State 19
 
 State 20
 
-   14 feature: error . '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-   15        | error . '(' formal_list ')' ':' error '{' expr '}' ';'
-   16        | error . '(' formal_list ')' ':' error '{' expr '}' error
-   17        | error . '(' formal_list ')' ':' TYPEID '{' expr '}' error
-   22        | error . ':' TYPEID ';'
+   14 feature: error • '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
+   15        | error • '(' formal_list ')' ':' error '{' expr '}' ';'
+   16        | error • '(' formal_list ')' ':' error '{' expr '}' error
+   17        | error • '(' formal_list ')' ':' TYPEID '{' expr '}' error
+   22        | error • ':' TYPEID ';'
 
     '('  shift, and go to state 26
     ':'  shift, and go to state 27
@@ -387,16 +387,16 @@ State 20
 
 State 21
 
-   11 feature: OBJECTID . '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-   12        | OBJECTID . ':' TYPEID ';'
-   13        | OBJECTID . ':' TYPEID ASSIGN expr ';'
-   18        | OBJECTID . '(' formal_list ')' ':' error '{' expr '}' ';'
-   19        | OBJECTID . '(' formal_list ')' ':' error '{' expr '}' error
-   20        | OBJECTID . '(' formal_list ')' ':' TYPEID '{' expr '}' error
-   21        | OBJECTID . '(' formal_list ')' ':' TYPEID '{' error '}' ';'
-   23        | OBJECTID . error TYPEID ';'
-   24        | OBJECTID . ':' error ';'
-   25        | OBJECTID . ':' TYPEID error
+   11 feature: OBJECTID • '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
+   12        | OBJECTID • ':' TYPEID ';'
+   13        | OBJECTID • ':' TYPEID ASSIGN expr ';'
+   18        | OBJECTID • '(' formal_list ')' ':' error '{' expr '}' ';'
+   19        | OBJECTID • '(' formal_list ')' ':' error '{' expr '}' error
+   20        | OBJECTID • '(' formal_list ')' ':' TYPEID '{' expr '}' error
+   21        | OBJECTID • '(' formal_list ')' ':' TYPEID '{' error '}' ';'
+   23        | OBJECTID • error TYPEID ';'
+   24        | OBJECTID • ':' error ';'
+   25        | OBJECTID • ':' TYPEID error
 
     error  shift, and go to state 28
     '('    shift, and go to state 29
@@ -405,29 +405,29 @@ State 21
 
 State 22
 
-    5 class: CLASS TYPEID '{' feature_list '}' . ';'
+    5 class: CLASS TYPEID '{' feature_list '}' • ';'
 
     ';'  shift, and go to state 31
 
 
 State 23
 
-    9 feature_list: feature_list feature .
+    9 feature_list: feature_list feature •
 
     $default  reduce using rule 9 (feature_list)
 
 
 State 24
 
-    7 class: CLASS TYPEID error '{' feature_list '}' . ';'
+    7 class: CLASS TYPEID error '{' feature_list '}' • ';'
 
     ';'  shift, and go to state 32
 
 
 State 25
 
-    6 class: CLASS TYPEID INHERITS TYPEID '{' feature_list . '}' ';'
-    9 feature_list: feature_list . feature
+    6 class: CLASS TYPEID INHERITS TYPEID '{' feature_list • '}' ';'
+    9 feature_list: feature_list • feature
 
     error     shift, and go to state 20
     OBJECTID  shift, and go to state 21
@@ -438,10 +438,10 @@ State 25
 
 State 26
 
-   14 feature: error '(' . formal_list ')' ':' TYPEID '{' expr '}' ';'
-   15        | error '(' . formal_list ')' ':' error '{' expr '}' ';'
-   16        | error '(' . formal_list ')' ':' error '{' expr '}' error
-   17        | error '(' . formal_list ')' ':' TYPEID '{' expr '}' error
+   14 feature: error '(' • formal_list ')' ':' TYPEID '{' expr '}' ';'
+   15        | error '(' • formal_list ')' ':' error '{' expr '}' ';'
+   16        | error '(' • formal_list ')' ':' error '{' expr '}' error
+   17        | error '(' • formal_list ')' ':' TYPEID '{' expr '}' error
 
     OBJECTID  shift, and go to state 34
 
@@ -453,25 +453,25 @@ State 26
 
 State 27
 
-   22 feature: error ':' . TYPEID ';'
+   22 feature: error ':' • TYPEID ';'
 
     TYPEID  shift, and go to state 37
 
 
 State 28
 
-   23 feature: OBJECTID error . TYPEID ';'
+   23 feature: OBJECTID error • TYPEID ';'
 
     TYPEID  shift, and go to state 38
 
 
 State 29
 
-   11 feature: OBJECTID '(' . formal_list ')' ':' TYPEID '{' expr '}' ';'
-   18        | OBJECTID '(' . formal_list ')' ':' error '{' expr '}' ';'
-   19        | OBJECTID '(' . formal_list ')' ':' error '{' expr '}' error
-   20        | OBJECTID '(' . formal_list ')' ':' TYPEID '{' expr '}' error
-   21        | OBJECTID '(' . formal_list ')' ':' TYPEID '{' error '}' ';'
+   11 feature: OBJECTID '(' • formal_list ')' ':' TYPEID '{' expr '}' ';'
+   18        | OBJECTID '(' • formal_list ')' ':' error '{' expr '}' ';'
+   19        | OBJECTID '(' • formal_list ')' ':' error '{' expr '}' error
+   20        | OBJECTID '(' • formal_list ')' ':' TYPEID '{' expr '}' error
+   21        | OBJECTID '(' • formal_list ')' ':' TYPEID '{' error '}' ';'
 
     OBJECTID  shift, and go to state 34
 
@@ -483,10 +483,10 @@ State 29
 
 State 30
 
-   12 feature: OBJECTID ':' . TYPEID ';'
-   13        | OBJECTID ':' . TYPEID ASSIGN expr ';'
-   24        | OBJECTID ':' . error ';'
-   25        | OBJECTID ':' . TYPEID error
+   12 feature: OBJECTID ':' • TYPEID ';'
+   13        | OBJECTID ':' • TYPEID ASSIGN expr ';'
+   24        | OBJECTID ':' • error ';'
+   25        | OBJECTID ':' • TYPEID error
 
     error   shift, and go to state 40
     TYPEID  shift, and go to state 41
@@ -494,45 +494,45 @@ State 30
 
 State 31
 
-    5 class: CLASS TYPEID '{' feature_list '}' ';' .
+    5 class: CLASS TYPEID '{' feature_list '}' ';' •
 
     $default  reduce using rule 5 (class)
 
 
 State 32
 
-    7 class: CLASS TYPEID error '{' feature_list '}' ';' .
+    7 class: CLASS TYPEID error '{' feature_list '}' ';' •
 
     $default  reduce using rule 7 (class)
 
 
 State 33
 
-    6 class: CLASS TYPEID INHERITS TYPEID '{' feature_list '}' . ';'
+    6 class: CLASS TYPEID INHERITS TYPEID '{' feature_list '}' • ';'
 
     ';'  shift, and go to state 42
 
 
 State 34
 
-   30 formal: OBJECTID . ':' TYPEID
+   30 formal: OBJECTID • ':' TYPEID
 
     ':'  shift, and go to state 43
 
 
 State 35
 
-   14 feature: error '(' formal_list . ')' ':' TYPEID '{' expr '}' ';'
-   15        | error '(' formal_list . ')' ':' error '{' expr '}' ';'
-   16        | error '(' formal_list . ')' ':' error '{' expr '}' error
-   17        | error '(' formal_list . ')' ':' TYPEID '{' expr '}' error
+   14 feature: error '(' formal_list • ')' ':' TYPEID '{' expr '}' ';'
+   15        | error '(' formal_list • ')' ':' error '{' expr '}' ';'
+   16        | error '(' formal_list • ')' ':' error '{' expr '}' error
+   17        | error '(' formal_list • ')' ':' TYPEID '{' expr '}' error
 
     ')'  shift, and go to state 44
 
 
 State 36
 
-   26 formal_list: formal . formalsc
+   26 formal_list: formal • formalsc
 
     $default  reduce using rule 29 (formalsc)
 
@@ -541,41 +541,41 @@ State 36
 
 State 37
 
-   22 feature: error ':' TYPEID . ';'
+   22 feature: error ':' TYPEID • ';'
 
     ';'  shift, and go to state 46
 
 
 State 38
 
-   23 feature: OBJECTID error TYPEID . ';'
+   23 feature: OBJECTID error TYPEID • ';'
 
     ';'  shift, and go to state 47
 
 
 State 39
 
-   11 feature: OBJECTID '(' formal_list . ')' ':' TYPEID '{' expr '}' ';'
-   18        | OBJECTID '(' formal_list . ')' ':' error '{' expr '}' ';'
-   19        | OBJECTID '(' formal_list . ')' ':' error '{' expr '}' error
-   20        | OBJECTID '(' formal_list . ')' ':' TYPEID '{' expr '}' error
-   21        | OBJECTID '(' formal_list . ')' ':' TYPEID '{' error '}' ';'
+   11 feature: OBJECTID '(' formal_list • ')' ':' TYPEID '{' expr '}' ';'
+   18        | OBJECTID '(' formal_list • ')' ':' error '{' expr '}' ';'
+   19        | OBJECTID '(' formal_list • ')' ':' error '{' expr '}' error
+   20        | OBJECTID '(' formal_list • ')' ':' TYPEID '{' expr '}' error
+   21        | OBJECTID '(' formal_list • ')' ':' TYPEID '{' error '}' ';'
 
     ')'  shift, and go to state 48
 
 
 State 40
 
-   24 feature: OBJECTID ':' error . ';'
+   24 feature: OBJECTID ':' error • ';'
 
     ';'  shift, and go to state 49
 
 
 State 41
 
-   12 feature: OBJECTID ':' TYPEID . ';'
-   13        | OBJECTID ':' TYPEID . ASSIGN expr ';'
-   25        | OBJECTID ':' TYPEID . error
+   12 feature: OBJECTID ':' TYPEID • ';'
+   13        | OBJECTID ':' TYPEID • ASSIGN expr ';'
+   25        | OBJECTID ':' TYPEID • error
 
     error   shift, and go to state 50
     ASSIGN  shift, and go to state 51
@@ -584,32 +584,32 @@ State 41
 
 State 42
 
-    6 class: CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';' .
+    6 class: CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';' •
 
     $default  reduce using rule 6 (class)
 
 
 State 43
 
-   30 formal: OBJECTID ':' . TYPEID
+   30 formal: OBJECTID ':' • TYPEID
 
     TYPEID  shift, and go to state 53
 
 
 State 44
 
-   14 feature: error '(' formal_list ')' . ':' TYPEID '{' expr '}' ';'
-   15        | error '(' formal_list ')' . ':' error '{' expr '}' ';'
-   16        | error '(' formal_list ')' . ':' error '{' expr '}' error
-   17        | error '(' formal_list ')' . ':' TYPEID '{' expr '}' error
+   14 feature: error '(' formal_list ')' • ':' TYPEID '{' expr '}' ';'
+   15        | error '(' formal_list ')' • ':' error '{' expr '}' ';'
+   16        | error '(' formal_list ')' • ':' error '{' expr '}' error
+   17        | error '(' formal_list ')' • ':' TYPEID '{' expr '}' error
 
     ':'  shift, and go to state 54
 
 
 State 45
 
-   26 formal_list: formal formalsc .
-   28 formalsc: formalsc . ',' formal
+   26 formal_list: formal formalsc •
+   28 formalsc: formalsc • ',' formal
 
     ','  shift, and go to state 55
 
@@ -618,46 +618,46 @@ State 45
 
 State 46
 
-   22 feature: error ':' TYPEID ';' .
+   22 feature: error ':' TYPEID ';' •
 
     $default  reduce using rule 22 (feature)
 
 
 State 47
 
-   23 feature: OBJECTID error TYPEID ';' .
+   23 feature: OBJECTID error TYPEID ';' •
 
     $default  reduce using rule 23 (feature)
 
 
 State 48
 
-   11 feature: OBJECTID '(' formal_list ')' . ':' TYPEID '{' expr '}' ';'
-   18        | OBJECTID '(' formal_list ')' . ':' error '{' expr '}' ';'
-   19        | OBJECTID '(' formal_list ')' . ':' error '{' expr '}' error
-   20        | OBJECTID '(' formal_list ')' . ':' TYPEID '{' expr '}' error
-   21        | OBJECTID '(' formal_list ')' . ':' TYPEID '{' error '}' ';'
+   11 feature: OBJECTID '(' formal_list ')' • ':' TYPEID '{' expr '}' ';'
+   18        | OBJECTID '(' formal_list ')' • ':' error '{' expr '}' ';'
+   19        | OBJECTID '(' formal_list ')' • ':' error '{' expr '}' error
+   20        | OBJECTID '(' formal_list ')' • ':' TYPEID '{' expr '}' error
+   21        | OBJECTID '(' formal_list ')' • ':' TYPEID '{' error '}' ';'
 
     ':'  shift, and go to state 56
 
 
 State 49
 
-   24 feature: OBJECTID ':' error ';' .
+   24 feature: OBJECTID ':' error ';' •
 
     $default  reduce using rule 24 (feature)
 
 
 State 50
 
-   25 feature: OBJECTID ':' TYPEID error .
+   25 feature: OBJECTID ':' TYPEID error •
 
     $default  reduce using rule 25 (feature)
 
 
 State 51
 
-   13 feature: OBJECTID ':' TYPEID ASSIGN . expr ';'
+   13 feature: OBJECTID ':' TYPEID ASSIGN • expr ';'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -679,24 +679,24 @@ State 51
 
 State 52
 
-   12 feature: OBJECTID ':' TYPEID ';' .
+   12 feature: OBJECTID ':' TYPEID ';' •
 
     $default  reduce using rule 12 (feature)
 
 
 State 53
 
-   30 formal: OBJECTID ':' TYPEID .
+   30 formal: OBJECTID ':' TYPEID •
 
     $default  reduce using rule 30 (formal)
 
 
 State 54
 
-   14 feature: error '(' formal_list ')' ':' . TYPEID '{' expr '}' ';'
-   15        | error '(' formal_list ')' ':' . error '{' expr '}' ';'
-   16        | error '(' formal_list ')' ':' . error '{' expr '}' error
-   17        | error '(' formal_list ')' ':' . TYPEID '{' expr '}' error
+   14 feature: error '(' formal_list ')' ':' • TYPEID '{' expr '}' ';'
+   15        | error '(' formal_list ')' ':' • error '{' expr '}' ';'
+   16        | error '(' formal_list ')' ':' • error '{' expr '}' error
+   17        | error '(' formal_list ')' ':' • TYPEID '{' expr '}' error
 
     error   shift, and go to state 72
     TYPEID  shift, and go to state 73
@@ -704,7 +704,7 @@ State 54
 
 State 55
 
-   28 formalsc: formalsc ',' . formal
+   28 formalsc: formalsc ',' • formal
 
     OBJECTID  shift, and go to state 34
 
@@ -713,11 +713,11 @@ State 55
 
 State 56
 
-   11 feature: OBJECTID '(' formal_list ')' ':' . TYPEID '{' expr '}' ';'
-   18        | OBJECTID '(' formal_list ')' ':' . error '{' expr '}' ';'
-   19        | OBJECTID '(' formal_list ')' ':' . error '{' expr '}' error
-   20        | OBJECTID '(' formal_list ')' ':' . TYPEID '{' expr '}' error
-   21        | OBJECTID '(' formal_list ')' ':' . TYPEID '{' error '}' ';'
+   11 feature: OBJECTID '(' formal_list ')' ':' • TYPEID '{' expr '}' ';'
+   18        | OBJECTID '(' formal_list ')' ':' • error '{' expr '}' ';'
+   19        | OBJECTID '(' formal_list ')' ':' • error '{' expr '}' error
+   20        | OBJECTID '(' formal_list ')' ':' • TYPEID '{' expr '}' error
+   21        | OBJECTID '(' formal_list ')' ':' • TYPEID '{' error '}' ';'
 
     error   shift, and go to state 75
     TYPEID  shift, and go to state 76
@@ -725,7 +725,7 @@ State 56
 
 State 57
 
-   35 expr: IF . expr THEN expr ELSE expr FI
+   35 expr: IF • expr THEN expr ELSE expr FI
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -747,7 +747,7 @@ State 57
 
 State 58
 
-   55 expr: LET . let_init
+   55 expr: LET • let_init
 
     error     shift, and go to state 78
     OBJECTID  shift, and go to state 79
@@ -757,7 +757,7 @@ State 58
 
 State 59
 
-   36 expr: WHILE . expr LOOP expr POOL
+   36 expr: WHILE • expr LOOP expr POOL
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -779,8 +779,8 @@ State 59
 
 State 60
 
-   38 expr: CASE . expr OF case_stmts ESAC
-   57     | CASE . error ';'
+   38 expr: CASE • expr OF case_stmts ESAC
+   57     | CASE • error ';'
 
     error       shift, and go to state 82
     IF          shift, and go to state 57
@@ -803,14 +803,14 @@ State 60
 
 State 61
 
-   39 expr: NEW . TYPEID
+   39 expr: NEW • TYPEID
 
     TYPEID  shift, and go to state 84
 
 
 State 62
 
-   40 expr: ISVOID . expr
+   40 expr: ISVOID • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -832,30 +832,30 @@ State 62
 
 State 63
 
-   53 expr: STR_CONST .
+   53 expr: STR_CONST •
 
     $default  reduce using rule 53 (expr)
 
 
 State 64
 
-   52 expr: INT_CONST .
+   52 expr: INT_CONST •
 
     $default  reduce using rule 52 (expr)
 
 
 State 65
 
-   54 expr: BOOL_CONST .
+   54 expr: BOOL_CONST •
 
     $default  reduce using rule 54 (expr)
 
 
 State 66
 
-   31 expr: OBJECTID . ASSIGN expr
-   33     | OBJECTID . '(' expr_list ')'
-   51     | OBJECTID .
+   31 expr: OBJECTID • ASSIGN expr
+   33     | OBJECTID • '(' expr_list ')'
+   51     | OBJECTID •
 
     ASSIGN  shift, and go to state 86
     '('     shift, and go to state 87
@@ -865,7 +865,7 @@ State 66
 
 State 67
 
-   49 expr: NOT . expr
+   49 expr: NOT • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -887,7 +887,7 @@ State 67
 
 State 68
 
-   45 expr: '~' . expr
+   45 expr: '~' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -909,8 +909,8 @@ State 68
 
 State 69
 
-   37 expr: '{' . expr_stmts '}'
-   56     | '{' . error '}'
+   37 expr: '{' • expr_stmts '}'
+   56     | '{' • error '}'
 
     error       shift, and go to state 90
     IF          shift, and go to state 57
@@ -934,7 +934,7 @@ State 69
 
 State 70
 
-   50 expr: '(' . expr ')'
+   50 expr: '(' • expr ')'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -956,16 +956,16 @@ State 70
 
 State 71
 
-   13 feature: OBJECTID ':' TYPEID ASSIGN expr . ';'
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   13 feature: OBJECTID ':' TYPEID ASSIGN expr • ';'
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -981,56 +981,56 @@ State 71
 
 State 72
 
-   15 feature: error '(' formal_list ')' ':' error . '{' expr '}' ';'
-   16        | error '(' formal_list ')' ':' error . '{' expr '}' error
+   15 feature: error '(' formal_list ')' ':' error • '{' expr '}' ';'
+   16        | error '(' formal_list ')' ':' error • '{' expr '}' error
 
     '{'  shift, and go to state 104
 
 
 State 73
 
-   14 feature: error '(' formal_list ')' ':' TYPEID . '{' expr '}' ';'
-   17        | error '(' formal_list ')' ':' TYPEID . '{' expr '}' error
+   14 feature: error '(' formal_list ')' ':' TYPEID • '{' expr '}' ';'
+   17        | error '(' formal_list ')' ':' TYPEID • '{' expr '}' error
 
     '{'  shift, and go to state 105
 
 
 State 74
 
-   28 formalsc: formalsc ',' formal .
+   28 formalsc: formalsc ',' formal •
 
     $default  reduce using rule 28 (formalsc)
 
 
 State 75
 
-   18 feature: OBJECTID '(' formal_list ')' ':' error . '{' expr '}' ';'
-   19        | OBJECTID '(' formal_list ')' ':' error . '{' expr '}' error
+   18 feature: OBJECTID '(' formal_list ')' ':' error • '{' expr '}' ';'
+   19        | OBJECTID '(' formal_list ')' ':' error • '{' expr '}' error
 
     '{'  shift, and go to state 106
 
 
 State 76
 
-   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID . '{' expr '}' ';'
-   20        | OBJECTID '(' formal_list ')' ':' TYPEID . '{' expr '}' error
-   21        | OBJECTID '(' formal_list ')' ':' TYPEID . '{' error '}' ';'
+   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID • '{' expr '}' ';'
+   20        | OBJECTID '(' formal_list ')' ':' TYPEID • '{' expr '}' error
+   21        | OBJECTID '(' formal_list ')' ':' TYPEID • '{' error '}' ';'
 
     '{'  shift, and go to state 107
 
 
 State 77
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   35     | IF expr . THEN expr ELSE expr FI
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   35     | IF expr • THEN expr ELSE expr FI
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     THEN  shift, and go to state 108
     LE    shift, and go to state 94
@@ -1046,7 +1046,7 @@ State 77
 
 State 78
 
-   70 let_init: error . let_initc
+   70 let_init: error • let_initc
 
     IN   shift, and go to state 109
     ','  shift, and go to state 110
@@ -1056,31 +1056,31 @@ State 78
 
 State 79
 
-   68 let_init: OBJECTID . ':' TYPEID let_initc
-   69         | OBJECTID . ':' TYPEID ASSIGN expr let_initc
+   68 let_init: OBJECTID • ':' TYPEID let_initc
+   69         | OBJECTID • ':' TYPEID ASSIGN expr let_initc
 
     ':'  shift, and go to state 112
 
 
 State 80
 
-   55 expr: LET let_init .
+   55 expr: LET let_init •
 
     $default  reduce using rule 55 (expr)
 
 
 State 81
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   36     | WHILE expr . LOOP expr POOL
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   36     | WHILE expr • LOOP expr POOL
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LOOP  shift, and go to state 113
     LE    shift, and go to state 94
@@ -1096,23 +1096,23 @@ State 81
 
 State 82
 
-   57 expr: CASE error . ';'
+   57 expr: CASE error • ';'
 
     ';'  shift, and go to state 114
 
 
 State 83
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   38     | CASE expr . OF case_stmts ESAC
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   38     | CASE expr • OF case_stmts ESAC
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     OF   shift, and go to state 115
     LE   shift, and go to state 94
@@ -1128,23 +1128,23 @@ State 83
 
 State 84
 
-   39 expr: NEW TYPEID .
+   39 expr: NEW TYPEID •
 
     $default  reduce using rule 39 (expr)
 
 
 State 85
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   40     | ISVOID expr .
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   40     | ISVOID expr •
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '@'  shift, and go to state 101
     '.'  shift, and go to state 102
@@ -1154,7 +1154,7 @@ State 85
 
 State 86
 
-   31 expr: OBJECTID ASSIGN . expr
+   31 expr: OBJECTID ASSIGN • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1176,7 +1176,7 @@ State 86
 
 State 87
 
-   33 expr: OBJECTID '(' . expr_list ')'
+   33 expr: OBJECTID '(' • expr_list ')'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1201,16 +1201,16 @@ State 87
 
 State 88
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   49     | NOT expr .
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   49     | NOT expr •
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -1227,16 +1227,16 @@ State 88
 
 State 89
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   45     | '~' expr .
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   45     | '~' expr •
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '@'  shift, and go to state 101
     '.'  shift, and go to state 102
@@ -1246,23 +1246,23 @@ State 89
 
 State 90
 
-   56 expr: '{' error . '}'
+   56 expr: '{' error • '}'
 
     '}'  shift, and go to state 119
 
 
 State 91
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   63 expr_stmts: expr . ';'
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   63 expr_stmts: expr • ';'
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -1278,9 +1278,9 @@ State 91
 
 State 92
 
-   37 expr: '{' expr_stmts . '}'
-   62 expr_stmts: expr_stmts . expr ';'
-   64           | expr_stmts . error ';'
+   37 expr: '{' expr_stmts • '}'
+   62 expr_stmts: expr_stmts • expr ';'
+   64           | expr_stmts • error ';'
 
     error       shift, and go to state 121
     IF          shift, and go to state 57
@@ -1304,16 +1304,16 @@ State 92
 
 State 93
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   50     | '(' expr . ')'
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   50     | '(' expr • ')'
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -1329,7 +1329,7 @@ State 93
 
 State 94
 
-   47 expr: expr LE . expr
+   47 expr: expr LE • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1351,7 +1351,7 @@ State 94
 
 State 95
 
-   46 expr: expr '<' . expr
+   46 expr: expr '<' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1373,7 +1373,7 @@ State 95
 
 State 96
 
-   48 expr: expr '=' . expr
+   48 expr: expr '=' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1395,7 +1395,7 @@ State 96
 
 State 97
 
-   41 expr: expr '+' . expr
+   41 expr: expr '+' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1417,7 +1417,7 @@ State 97
 
 State 98
 
-   42 expr: expr '-' . expr
+   42 expr: expr '-' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1439,7 +1439,7 @@ State 98
 
 State 99
 
-   43 expr: expr '*' . expr
+   43 expr: expr '*' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1461,7 +1461,7 @@ State 99
 
 State 100
 
-   44 expr: expr '/' . expr
+   44 expr: expr '/' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1483,29 +1483,29 @@ State 100
 
 State 101
 
-   34 expr: expr '@' . TYPEID '.' OBJECTID '(' expr_list ')'
+   34 expr: expr '@' • TYPEID '.' OBJECTID '(' expr_list ')'
 
     TYPEID  shift, and go to state 132
 
 
 State 102
 
-   32 expr: expr '.' . OBJECTID '(' expr_list ')'
+   32 expr: expr '.' • OBJECTID '(' expr_list ')'
 
     OBJECTID  shift, and go to state 133
 
 
 State 103
 
-   13 feature: OBJECTID ':' TYPEID ASSIGN expr ';' .
+   13 feature: OBJECTID ':' TYPEID ASSIGN expr ';' •
 
     $default  reduce using rule 13 (feature)
 
 
 State 104
 
-   15 feature: error '(' formal_list ')' ':' error '{' . expr '}' ';'
-   16        | error '(' formal_list ')' ':' error '{' . expr '}' error
+   15 feature: error '(' formal_list ')' ':' error '{' • expr '}' ';'
+   16        | error '(' formal_list ')' ':' error '{' • expr '}' error
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1527,8 +1527,8 @@ State 104
 
 State 105
 
-   14 feature: error '(' formal_list ')' ':' TYPEID '{' . expr '}' ';'
-   17        | error '(' formal_list ')' ':' TYPEID '{' . expr '}' error
+   14 feature: error '(' formal_list ')' ':' TYPEID '{' • expr '}' ';'
+   17        | error '(' formal_list ')' ':' TYPEID '{' • expr '}' error
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1550,8 +1550,8 @@ State 105
 
 State 106
 
-   18 feature: OBJECTID '(' formal_list ')' ':' error '{' . expr '}' ';'
-   19        | OBJECTID '(' formal_list ')' ':' error '{' . expr '}' error
+   18 feature: OBJECTID '(' formal_list ')' ':' error '{' • expr '}' ';'
+   19        | OBJECTID '(' formal_list ')' ':' error '{' • expr '}' error
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1573,9 +1573,9 @@ State 106
 
 State 107
 
-   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' . expr '}' ';'
-   20        | OBJECTID '(' formal_list ')' ':' TYPEID '{' . expr '}' error
-   21        | OBJECTID '(' formal_list ')' ':' TYPEID '{' . error '}' ';'
+   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' • expr '}' ';'
+   20        | OBJECTID '(' formal_list ')' ':' TYPEID '{' • expr '}' error
+   21        | OBJECTID '(' formal_list ')' ':' TYPEID '{' • error '}' ';'
 
     error       shift, and go to state 137
     IF          shift, and go to state 57
@@ -1598,7 +1598,7 @@ State 107
 
 State 108
 
-   35 expr: IF expr THEN . expr ELSE expr FI
+   35 expr: IF expr THEN • expr ELSE expr FI
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1620,7 +1620,7 @@ State 108
 
 State 109
 
-   73 let_initc: IN . expr
+   73 let_initc: IN • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1642,9 +1642,9 @@ State 109
 
 State 110
 
-   71 let_initc: ',' . OBJECTID ':' TYPEID let_initc
-   72          | ',' . OBJECTID ':' TYPEID ASSIGN expr let_initc
-   74          | ',' . error let_initc
+   71 let_initc: ',' • OBJECTID ':' TYPEID let_initc
+   72          | ',' • OBJECTID ':' TYPEID ASSIGN expr let_initc
+   74          | ',' • error let_initc
 
     error     shift, and go to state 141
     OBJECTID  shift, and go to state 142
@@ -1652,22 +1652,22 @@ State 110
 
 State 111
 
-   70 let_init: error let_initc .
+   70 let_init: error let_initc •
 
     $default  reduce using rule 70 (let_init)
 
 
 State 112
 
-   68 let_init: OBJECTID ':' . TYPEID let_initc
-   69         | OBJECTID ':' . TYPEID ASSIGN expr let_initc
+   68 let_init: OBJECTID ':' • TYPEID let_initc
+   69         | OBJECTID ':' • TYPEID ASSIGN expr let_initc
 
     TYPEID  shift, and go to state 143
 
 
 State 113
 
-   36 expr: WHILE expr LOOP . expr POOL
+   36 expr: WHILE expr LOOP • expr POOL
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -1689,14 +1689,14 @@ State 113
 
 State 114
 
-   57 expr: CASE error ';' .
+   57 expr: CASE error ';' •
 
     $default  reduce using rule 57 (expr)
 
 
 State 115
 
-   38 expr: CASE expr OF . case_stmts ESAC
+   38 expr: CASE expr OF • case_stmts ESAC
 
     error     shift, and go to state 145
     OBJECTID  shift, and go to state 146
@@ -1706,16 +1706,16 @@ State 115
 
 State 116
 
-   31 expr: OBJECTID ASSIGN expr .
-   32     | expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   31 expr: OBJECTID ASSIGN expr •
+   32     | expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -1732,16 +1732,16 @@ State 116
 
 State 117
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   58 expr_list: expr . expr_listc
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   58 expr_list: expr • expr_listc
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -1760,51 +1760,51 @@ State 117
 
 State 118
 
-   33 expr: OBJECTID '(' expr_list . ')'
+   33 expr: OBJECTID '(' expr_list • ')'
 
     ')'  shift, and go to state 149
 
 
 State 119
 
-   56 expr: '{' error '}' .
+   56 expr: '{' error '}' •
 
     $default  reduce using rule 56 (expr)
 
 
 State 120
 
-   63 expr_stmts: expr ';' .
+   63 expr_stmts: expr ';' •
 
     $default  reduce using rule 63 (expr_stmts)
 
 
 State 121
 
-   64 expr_stmts: expr_stmts error . ';'
+   64 expr_stmts: expr_stmts error • ';'
 
     ';'  shift, and go to state 150
 
 
 State 122
 
-   37 expr: '{' expr_stmts '}' .
+   37 expr: '{' expr_stmts '}' •
 
     $default  reduce using rule 37 (expr)
 
 
 State 123
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   62 expr_stmts: expr_stmts expr . ';'
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   62 expr_stmts: expr_stmts expr • ';'
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -1820,23 +1820,23 @@ State 123
 
 State 124
 
-   50 expr: '(' expr ')' .
+   50 expr: '(' expr ')' •
 
     $default  reduce using rule 50 (expr)
 
 
 State 125
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   47     | expr LE expr .
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   47     | expr LE expr •
+   48     | expr • '=' expr
 
     '+'  shift, and go to state 97
     '-'  shift, and go to state 98
@@ -1854,16 +1854,16 @@ State 125
 
 State 126
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   46     | expr '<' expr .
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   46     | expr '<' expr •
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '+'  shift, and go to state 97
     '-'  shift, and go to state 98
@@ -1881,16 +1881,16 @@ State 126
 
 State 127
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   48     | expr '=' expr .
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   48     | expr '=' expr •
 
     '+'  shift, and go to state 97
     '-'  shift, and go to state 98
@@ -1908,16 +1908,16 @@ State 127
 
 State 128
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   41     | expr '+' expr .
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   41     | expr '+' expr •
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '*'  shift, and go to state 99
     '/'  shift, and go to state 100
@@ -1929,16 +1929,16 @@ State 128
 
 State 129
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   42     | expr '-' expr .
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   42     | expr '-' expr •
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '*'  shift, and go to state 99
     '/'  shift, and go to state 100
@@ -1950,16 +1950,16 @@ State 129
 
 State 130
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   43     | expr '*' expr .
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   43     | expr '*' expr •
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '@'  shift, and go to state 101
     '.'  shift, and go to state 102
@@ -1969,16 +1969,16 @@ State 130
 
 State 131
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   44     | expr '/' expr .
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   44     | expr '/' expr •
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     '@'  shift, and go to state 101
     '.'  shift, and go to state 102
@@ -1988,31 +1988,31 @@ State 131
 
 State 132
 
-   34 expr: expr '@' TYPEID . '.' OBJECTID '(' expr_list ')'
+   34 expr: expr '@' TYPEID • '.' OBJECTID '(' expr_list ')'
 
     '.'  shift, and go to state 152
 
 
 State 133
 
-   32 expr: expr '.' OBJECTID . '(' expr_list ')'
+   32 expr: expr '.' OBJECTID • '(' expr_list ')'
 
     '('  shift, and go to state 153
 
 
 State 134
 
-   15 feature: error '(' formal_list ')' ':' error '{' expr . '}' ';'
-   16        | error '(' formal_list ')' ':' error '{' expr . '}' error
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   15 feature: error '(' formal_list ')' ':' error '{' expr • '}' ';'
+   16        | error '(' formal_list ')' ':' error '{' expr • '}' error
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2028,17 +2028,17 @@ State 134
 
 State 135
 
-   14 feature: error '(' formal_list ')' ':' TYPEID '{' expr . '}' ';'
-   17        | error '(' formal_list ')' ':' TYPEID '{' expr . '}' error
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   14 feature: error '(' formal_list ')' ':' TYPEID '{' expr • '}' ';'
+   17        | error '(' formal_list ')' ':' TYPEID '{' expr • '}' error
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2054,17 +2054,17 @@ State 135
 
 State 136
 
-   18 feature: OBJECTID '(' formal_list ')' ':' error '{' expr . '}' ';'
-   19        | OBJECTID '(' formal_list ')' ':' error '{' expr . '}' error
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   18 feature: OBJECTID '(' formal_list ')' ':' error '{' expr • '}' ';'
+   19        | OBJECTID '(' formal_list ')' ':' error '{' expr • '}' error
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2080,24 +2080,24 @@ State 136
 
 State 137
 
-   21 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' error . '}' ';'
+   21 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' error • '}' ';'
 
     '}'  shift, and go to state 157
 
 
 State 138
 
-   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr . '}' ';'
-   20        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr . '}' error
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr • '}' ';'
+   20        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr • '}' error
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2113,16 +2113,16 @@ State 138
 
 State 139
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   35     | IF expr THEN expr . ELSE expr FI
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   35     | IF expr THEN expr • ELSE expr FI
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     ELSE  shift, and go to state 159
     LE    shift, and go to state 94
@@ -2138,16 +2138,16 @@ State 139
 
 State 140
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   73 let_initc: IN expr .
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   73 let_initc: IN expr •
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2164,7 +2164,7 @@ State 140
 
 State 141
 
-   74 let_initc: ',' error . let_initc
+   74 let_initc: ',' error • let_initc
 
     IN   shift, and go to state 109
     ','  shift, and go to state 110
@@ -2174,16 +2174,16 @@ State 141
 
 State 142
 
-   71 let_initc: ',' OBJECTID . ':' TYPEID let_initc
-   72          | ',' OBJECTID . ':' TYPEID ASSIGN expr let_initc
+   71 let_initc: ',' OBJECTID • ':' TYPEID let_initc
+   72          | ',' OBJECTID • ':' TYPEID ASSIGN expr let_initc
 
     ':'  shift, and go to state 161
 
 
 State 143
 
-   68 let_init: OBJECTID ':' TYPEID . let_initc
-   69         | OBJECTID ':' TYPEID . ASSIGN expr let_initc
+   68 let_init: OBJECTID ':' TYPEID • let_initc
+   69         | OBJECTID ':' TYPEID • ASSIGN expr let_initc
 
     IN      shift, and go to state 109
     ASSIGN  shift, and go to state 162
@@ -2194,16 +2194,16 @@ State 143
 
 State 144
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   36     | WHILE expr LOOP expr . POOL
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   36     | WHILE expr LOOP expr • POOL
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     POOL  shift, and go to state 164
     LE    shift, and go to state 94
@@ -2219,22 +2219,22 @@ State 144
 
 State 145
 
-   67 case_stmts: error . ';'
+   67 case_stmts: error • ';'
 
     ';'  shift, and go to state 165
 
 
 State 146
 
-   66 case_stmts: OBJECTID . ':' TYPEID DARROW expr ';'
+   66 case_stmts: OBJECTID • ':' TYPEID DARROW expr ';'
 
     ':'  shift, and go to state 166
 
 
 State 147
 
-   38 expr: CASE expr OF case_stmts . ESAC
-   65 case_stmts: case_stmts . OBJECTID ':' TYPEID DARROW expr ';'
+   38 expr: CASE expr OF case_stmts • ESAC
+   65 case_stmts: case_stmts • OBJECTID ':' TYPEID DARROW expr ';'
 
     ESAC      shift, and go to state 167
     OBJECTID  shift, and go to state 168
@@ -2242,8 +2242,8 @@ State 147
 
 State 148
 
-   58 expr_list: expr expr_listc .
-   60 expr_listc: expr_listc . ',' expr
+   58 expr_list: expr expr_listc •
+   60 expr_listc: expr_listc • ',' expr
 
     ','  shift, and go to state 169
 
@@ -2252,35 +2252,35 @@ State 148
 
 State 149
 
-   33 expr: OBJECTID '(' expr_list ')' .
+   33 expr: OBJECTID '(' expr_list ')' •
 
     $default  reduce using rule 33 (expr)
 
 
 State 150
 
-   64 expr_stmts: expr_stmts error ';' .
+   64 expr_stmts: expr_stmts error ';' •
 
     $default  reduce using rule 64 (expr_stmts)
 
 
 State 151
 
-   62 expr_stmts: expr_stmts expr ';' .
+   62 expr_stmts: expr_stmts expr ';' •
 
     $default  reduce using rule 62 (expr_stmts)
 
 
 State 152
 
-   34 expr: expr '@' TYPEID '.' . OBJECTID '(' expr_list ')'
+   34 expr: expr '@' TYPEID '.' • OBJECTID '(' expr_list ')'
 
     OBJECTID  shift, and go to state 170
 
 
 State 153
 
-   32 expr: expr '.' OBJECTID '(' . expr_list ')'
+   32 expr: expr '.' OBJECTID '(' • expr_list ')'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2305,8 +2305,8 @@ State 153
 
 State 154
 
-   15 feature: error '(' formal_list ')' ':' error '{' expr '}' . ';'
-   16        | error '(' formal_list ')' ':' error '{' expr '}' . error
+   15 feature: error '(' formal_list ')' ':' error '{' expr '}' • ';'
+   16        | error '(' formal_list ')' ':' error '{' expr '}' • error
 
     error  shift, and go to state 172
     ';'    shift, and go to state 173
@@ -2314,8 +2314,8 @@ State 154
 
 State 155
 
-   14 feature: error '(' formal_list ')' ':' TYPEID '{' expr '}' . ';'
-   17        | error '(' formal_list ')' ':' TYPEID '{' expr '}' . error
+   14 feature: error '(' formal_list ')' ':' TYPEID '{' expr '}' • ';'
+   17        | error '(' formal_list ')' ':' TYPEID '{' expr '}' • error
 
     error  shift, and go to state 174
     ';'    shift, and go to state 175
@@ -2323,8 +2323,8 @@ State 155
 
 State 156
 
-   18 feature: OBJECTID '(' formal_list ')' ':' error '{' expr '}' . ';'
-   19        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' . error
+   18 feature: OBJECTID '(' formal_list ')' ':' error '{' expr '}' • ';'
+   19        | OBJECTID '(' formal_list ')' ':' error '{' expr '}' • error
 
     error  shift, and go to state 176
     ';'    shift, and go to state 177
@@ -2332,15 +2332,15 @@ State 156
 
 State 157
 
-   21 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' . ';'
+   21 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' • ';'
 
     ';'  shift, and go to state 178
 
 
 State 158
 
-   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' . ';'
-   20        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' . error
+   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' • ';'
+   20        | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' • error
 
     error  shift, and go to state 179
     ';'    shift, and go to state 180
@@ -2348,7 +2348,7 @@ State 158
 
 State 159
 
-   35 expr: IF expr THEN expr ELSE . expr FI
+   35 expr: IF expr THEN expr ELSE • expr FI
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2370,22 +2370,22 @@ State 159
 
 State 160
 
-   74 let_initc: ',' error let_initc .
+   74 let_initc: ',' error let_initc •
 
     $default  reduce using rule 74 (let_initc)
 
 
 State 161
 
-   71 let_initc: ',' OBJECTID ':' . TYPEID let_initc
-   72          | ',' OBJECTID ':' . TYPEID ASSIGN expr let_initc
+   71 let_initc: ',' OBJECTID ':' • TYPEID let_initc
+   72          | ',' OBJECTID ':' • TYPEID ASSIGN expr let_initc
 
     TYPEID  shift, and go to state 182
 
 
 State 162
 
-   69 let_init: OBJECTID ':' TYPEID ASSIGN . expr let_initc
+   69 let_init: OBJECTID ':' TYPEID ASSIGN • expr let_initc
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2407,49 +2407,49 @@ State 162
 
 State 163
 
-   68 let_init: OBJECTID ':' TYPEID let_initc .
+   68 let_init: OBJECTID ':' TYPEID let_initc •
 
     $default  reduce using rule 68 (let_init)
 
 
 State 164
 
-   36 expr: WHILE expr LOOP expr POOL .
+   36 expr: WHILE expr LOOP expr POOL •
 
     $default  reduce using rule 36 (expr)
 
 
 State 165
 
-   67 case_stmts: error ';' .
+   67 case_stmts: error ';' •
 
     $default  reduce using rule 67 (case_stmts)
 
 
 State 166
 
-   66 case_stmts: OBJECTID ':' . TYPEID DARROW expr ';'
+   66 case_stmts: OBJECTID ':' • TYPEID DARROW expr ';'
 
     TYPEID  shift, and go to state 184
 
 
 State 167
 
-   38 expr: CASE expr OF case_stmts ESAC .
+   38 expr: CASE expr OF case_stmts ESAC •
 
     $default  reduce using rule 38 (expr)
 
 
 State 168
 
-   65 case_stmts: case_stmts OBJECTID . ':' TYPEID DARROW expr ';'
+   65 case_stmts: case_stmts OBJECTID • ':' TYPEID DARROW expr ';'
 
     ':'  shift, and go to state 185
 
 
 State 169
 
-   60 expr_listc: expr_listc ',' . expr
+   60 expr_listc: expr_listc ',' • expr
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2471,93 +2471,93 @@ State 169
 
 State 170
 
-   34 expr: expr '@' TYPEID '.' OBJECTID . '(' expr_list ')'
+   34 expr: expr '@' TYPEID '.' OBJECTID • '(' expr_list ')'
 
     '('  shift, and go to state 187
 
 
 State 171
 
-   32 expr: expr '.' OBJECTID '(' expr_list . ')'
+   32 expr: expr '.' OBJECTID '(' expr_list • ')'
 
     ')'  shift, and go to state 188
 
 
 State 172
 
-   16 feature: error '(' formal_list ')' ':' error '{' expr '}' error .
+   16 feature: error '(' formal_list ')' ':' error '{' expr '}' error •
 
     $default  reduce using rule 16 (feature)
 
 
 State 173
 
-   15 feature: error '(' formal_list ')' ':' error '{' expr '}' ';' .
+   15 feature: error '(' formal_list ')' ':' error '{' expr '}' ';' •
 
     $default  reduce using rule 15 (feature)
 
 
 State 174
 
-   17 feature: error '(' formal_list ')' ':' TYPEID '{' expr '}' error .
+   17 feature: error '(' formal_list ')' ':' TYPEID '{' expr '}' error •
 
     $default  reduce using rule 17 (feature)
 
 
 State 175
 
-   14 feature: error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' .
+   14 feature: error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' •
 
     $default  reduce using rule 14 (feature)
 
 
 State 176
 
-   19 feature: OBJECTID '(' formal_list ')' ':' error '{' expr '}' error .
+   19 feature: OBJECTID '(' formal_list ')' ':' error '{' expr '}' error •
 
     $default  reduce using rule 19 (feature)
 
 
 State 177
 
-   18 feature: OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' .
+   18 feature: OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';' •
 
     $default  reduce using rule 18 (feature)
 
 
 State 178
 
-   21 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' .
+   21 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';' •
 
     $default  reduce using rule 21 (feature)
 
 
 State 179
 
-   20 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error .
+   20 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error •
 
     $default  reduce using rule 20 (feature)
 
 
 State 180
 
-   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';' .
+   11 feature: OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';' •
 
     $default  reduce using rule 11 (feature)
 
 
 State 181
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   35     | IF expr THEN expr ELSE expr . FI
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   35     | IF expr THEN expr ELSE expr • FI
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
 
     FI   shift, and go to state 189
     LE   shift, and go to state 94
@@ -2573,8 +2573,8 @@ State 181
 
 State 182
 
-   71 let_initc: ',' OBJECTID ':' TYPEID . let_initc
-   72          | ',' OBJECTID ':' TYPEID . ASSIGN expr let_initc
+   71 let_initc: ',' OBJECTID ':' TYPEID • let_initc
+   72          | ',' OBJECTID ':' TYPEID • ASSIGN expr let_initc
 
     IN      shift, and go to state 109
     ASSIGN  shift, and go to state 190
@@ -2585,16 +2585,16 @@ State 182
 
 State 183
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   69 let_init: OBJECTID ':' TYPEID ASSIGN expr . let_initc
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   69 let_init: OBJECTID ':' TYPEID ASSIGN expr • let_initc
 
     IN   shift, and go to state 109
     LE   shift, and go to state 94
@@ -2613,30 +2613,30 @@ State 183
 
 State 184
 
-   66 case_stmts: OBJECTID ':' TYPEID . DARROW expr ';'
+   66 case_stmts: OBJECTID ':' TYPEID • DARROW expr ';'
 
     DARROW  shift, and go to state 193
 
 
 State 185
 
-   65 case_stmts: case_stmts OBJECTID ':' . TYPEID DARROW expr ';'
+   65 case_stmts: case_stmts OBJECTID ':' • TYPEID DARROW expr ';'
 
     TYPEID  shift, and go to state 194
 
 
 State 186
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   60 expr_listc: expr_listc ',' expr .
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   60 expr_listc: expr_listc ',' expr •
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2653,7 +2653,7 @@ State 186
 
 State 187
 
-   34 expr: expr '@' TYPEID '.' OBJECTID '(' . expr_list ')'
+   34 expr: expr '@' TYPEID '.' OBJECTID '(' • expr_list ')'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2678,21 +2678,21 @@ State 187
 
 State 188
 
-   32 expr: expr '.' OBJECTID '(' expr_list ')' .
+   32 expr: expr '.' OBJECTID '(' expr_list ')' •
 
     $default  reduce using rule 32 (expr)
 
 
 State 189
 
-   35 expr: IF expr THEN expr ELSE expr FI .
+   35 expr: IF expr THEN expr ELSE expr FI •
 
     $default  reduce using rule 35 (expr)
 
 
 State 190
 
-   72 let_initc: ',' OBJECTID ':' TYPEID ASSIGN . expr let_initc
+   72 let_initc: ',' OBJECTID ':' TYPEID ASSIGN • expr let_initc
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2714,21 +2714,21 @@ State 190
 
 State 191
 
-   71 let_initc: ',' OBJECTID ':' TYPEID let_initc .
+   71 let_initc: ',' OBJECTID ':' TYPEID let_initc •
 
     $default  reduce using rule 71 (let_initc)
 
 
 State 192
 
-   69 let_init: OBJECTID ':' TYPEID ASSIGN expr let_initc .
+   69 let_init: OBJECTID ':' TYPEID ASSIGN expr let_initc •
 
     $default  reduce using rule 69 (let_init)
 
 
 State 193
 
-   66 case_stmts: OBJECTID ':' TYPEID DARROW . expr ';'
+   66 case_stmts: OBJECTID ':' TYPEID DARROW • expr ';'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2750,30 +2750,30 @@ State 193
 
 State 194
 
-   65 case_stmts: case_stmts OBJECTID ':' TYPEID . DARROW expr ';'
+   65 case_stmts: case_stmts OBJECTID ':' TYPEID • DARROW expr ';'
 
     DARROW  shift, and go to state 198
 
 
 State 195
 
-   34 expr: expr '@' TYPEID '.' OBJECTID '(' expr_list . ')'
+   34 expr: expr '@' TYPEID '.' OBJECTID '(' expr_list • ')'
 
     ')'  shift, and go to state 199
 
 
 State 196
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   72 let_initc: ',' OBJECTID ':' TYPEID ASSIGN expr . let_initc
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   72 let_initc: ',' OBJECTID ':' TYPEID ASSIGN expr • let_initc
 
     IN   shift, and go to state 109
     LE   shift, and go to state 94
@@ -2792,16 +2792,16 @@ State 196
 
 State 197
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   66 case_stmts: OBJECTID ':' TYPEID DARROW expr . ';'
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   66 case_stmts: OBJECTID ':' TYPEID DARROW expr • ';'
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2817,7 +2817,7 @@ State 197
 
 State 198
 
-   65 case_stmts: case_stmts OBJECTID ':' TYPEID DARROW . expr ';'
+   65 case_stmts: case_stmts OBJECTID ':' TYPEID DARROW • expr ';'
 
     IF          shift, and go to state 57
     LET         shift, and go to state 58
@@ -2839,37 +2839,37 @@ State 198
 
 State 199
 
-   34 expr: expr '@' TYPEID '.' OBJECTID '(' expr_list ')' .
+   34 expr: expr '@' TYPEID '.' OBJECTID '(' expr_list ')' •
 
     $default  reduce using rule 34 (expr)
 
 
 State 200
 
-   72 let_initc: ',' OBJECTID ':' TYPEID ASSIGN expr let_initc .
+   72 let_initc: ',' OBJECTID ':' TYPEID ASSIGN expr let_initc •
 
     $default  reduce using rule 72 (let_initc)
 
 
 State 201
 
-   66 case_stmts: OBJECTID ':' TYPEID DARROW expr ';' .
+   66 case_stmts: OBJECTID ':' TYPEID DARROW expr ';' •
 
     $default  reduce using rule 66 (case_stmts)
 
 
 State 202
 
-   32 expr: expr . '.' OBJECTID '(' expr_list ')'
-   34     | expr . '@' TYPEID '.' OBJECTID '(' expr_list ')'
-   41     | expr . '+' expr
-   42     | expr . '-' expr
-   43     | expr . '*' expr
-   44     | expr . '/' expr
-   46     | expr . '<' expr
-   47     | expr . LE expr
-   48     | expr . '=' expr
-   65 case_stmts: case_stmts OBJECTID ':' TYPEID DARROW expr . ';'
+   32 expr: expr • '.' OBJECTID '(' expr_list ')'
+   34     | expr • '@' TYPEID '.' OBJECTID '(' expr_list ')'
+   41     | expr • '+' expr
+   42     | expr • '-' expr
+   43     | expr • '*' expr
+   44     | expr • '/' expr
+   46     | expr • '<' expr
+   47     | expr • LE expr
+   48     | expr • '=' expr
+   65 case_stmts: case_stmts OBJECTID ':' TYPEID DARROW expr • ';'
 
     LE   shift, and go to state 94
     '<'  shift, and go to state 95
@@ -2885,6 +2885,6 @@ State 202
 
 State 203
 
-   65 case_stmts: case_stmts OBJECTID ':' TYPEID DARROW expr ';' .
+   65 case_stmts: case_stmts OBJECTID ':' TYPEID DARROW expr ';' •
 
     $default  reduce using rule 65 (case_stmts)
